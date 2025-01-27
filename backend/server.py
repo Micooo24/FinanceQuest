@@ -4,19 +4,19 @@ from routes import users, characters
 
 app = FastAPI()
 
-# Configure CORS
+
 origins = [
-    "http://localhost:3000",  # React frontend origin
+    "http://localhost:3000", 
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Origins allowed
-    allow_credentials=True,  # Allow cookies/credentials
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_origins=origins,  
+    allow_credentials=True,  
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
 
-# Register the routers
+
 app.include_router(users.router, prefix="/users")
 app.include_router(characters.router, prefix="/characters")

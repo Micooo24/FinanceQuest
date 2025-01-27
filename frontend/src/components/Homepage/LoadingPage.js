@@ -6,18 +6,17 @@ const LoadingPage = () => {
   const [loadingDots, setLoadingDots] = useState("");
 
   useEffect(() => {
-    // Update progress every 50ms
+
     const progressInterval = setInterval(() => {
       setProgress((prev) => (prev < 100 ? prev + 1 : 100));
     }, 50);
 
-    // Animate dots for "Loading..."
     const dotsInterval = setInterval(() => {
       setLoadingDots((prev) => (prev.length < 3 ? prev + "." : ""));
     }, 500);
 
     return () => {
-      clearInterval(progressInterval); // Clear intervals when unmounted
+      clearInterval(progressInterval); 
       clearInterval(dotsInterval);
     };
   }, []);

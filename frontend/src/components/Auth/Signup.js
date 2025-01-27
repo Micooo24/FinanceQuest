@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi"; // Import icons
-import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import Google and Facebook icons
-import axios from "axios"; // Import Axios
+import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi"; 
+import { FaGoogle, FaFacebook } from "react-icons/fa"; 
+import axios from "axios"; 
 import "./Signup.css";
 
 const Signup = () => {
@@ -25,7 +25,7 @@ const Signup = () => {
   };
 
   const handleSignup = async (event) => {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault(); 
 
     const form = new FormData();
     form.append("username", formData.username);
@@ -51,7 +51,7 @@ const Signup = () => {
       );
       console.log("Success:", response.data);
 
-      // Navigate to login page after successful signup
+      
       navigate('/login');
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
