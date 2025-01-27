@@ -9,6 +9,7 @@ import bcrypt
 from utils import create_access_token
 from datetime import timedelta, datetime, date  # Import date
 from models.users import Role
+from fastapi import Body
 
 router = APIRouter()
 
@@ -65,35 +66,24 @@ async def register(
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
+
 @router.post("/login")
 async def login(
-    email: str = Form(...),
-    password: str = Form(...)
+    email: str = Body(...),  # Accept email as part of the request body
+    password: str = Body(...),  # Accept password as part of the request body
 ):
     try:
-        # Find the user by email
+        # Your existing login logic
         user = db["users"].find_one({"email": email})
         if not user:
             raise HTTPException(status_code=400, detail="Invalid email or password")
         
-        # Verify the password
         if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
             raise HTTPException(status_code=400, detail="Invalid email or password")
         
-        # Create JWT token
         access_token_expires = timedelta(minutes=30)
-        access_token = create_access_token(
-            data={"sub": user["email"]}, expires_delta=access_token_expires
-        )
-        
-        # Log the successful response with token
-        logger.info(f"User {email} logged in successfully. Token: {access_token}")
+        access_token = create_access_token(data={"sub": user["email"]}, expires_delta=access_token_expires)
         
         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-    
-    except HTTPException as e:
-        logger.error(f"HTTPException: {str(e)}")
-        raise e
     except Exception as e:
-        logger.error(f"An error occurred: {str(e)}")
-        raise HTTPException(status_code=500, detail="An error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

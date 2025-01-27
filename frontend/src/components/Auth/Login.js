@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock } from "react-icons/fi"; // Import icons for email and password
 import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import icons for Google and Facebook
+import axios from "axios"; // Axios for API calls
 import "./Login.css";
 
 const Login = () => {
@@ -12,23 +13,36 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    console.log("Login Request Payload:", { email, password }); // Log request body for debugging
+
     try {
-      const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ email, password }),
-      });
-      const data = await response.json();
-      if (response.ok) {
+      // Make POST request using Axios
+      const response = await axios.post(
+        "http://127.0.0.1:8000/users/login",
+        { email, password }, // Send the payload as JSON
+        {
+          headers: {
+            "Content-Type": "application/json", // Ensure JSON format
+          },
+        }
+      );      
+
+      if (response.status === 200) {
+        // Successful login
         alert("Login successful!");
-        console.log(data);
-      } else {
-        alert(data.detail || "Login failed");
+        console.log("Response Data:", response.data); // Log response
+        navigate("/loading"); // Redirect to home or dashboard
       }
     } catch (err) {
-      console.error(err);
+      // Handle errors
+      if (err.response) {
+        console.error("Error Response:", err.response.data); // Log server error
+        alert(`Login failed: ${err.response.data.detail || "Invalid input"}`);
+      } else {
+        console.error("Error:", err.message); // Log other errors
+        alert("An error occurred. Please try again later.");
+      }
     }
   };
 
@@ -72,7 +86,7 @@ const Login = () => {
           </button>
         </div>
         <p className="login-signup-link">
-          Don’t have an account? <span onClick={() => navigate('/signup')}>Sign up</span>
+          Don’t have an account? <span onClick={() => navigate("/signup")}>Sign up</span>
         </p>
       </div>
     </div>
