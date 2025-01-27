@@ -3,15 +3,16 @@ from enum import Enum
 from bson import ObjectId
 from typing import Optional
 
-class Gender(str, Enum):
-    MALE = "male"
-    FEMALE = "female"
-    
+class CharacterType(Enum):
+    STUDENT = "student"
+    ENTREPRENEUR = "entrepreneur"
+    SINGLE_PARENT = "single_parent"
+    EMPLOYEE = "employee"
+
 class Character(BaseModel):
-    gender: Gender
+    type: CharacterType
     description: str
     user_id: Optional[ObjectId] = None
 
     class Config:
         arbitrary_types_allowed = True
-        
