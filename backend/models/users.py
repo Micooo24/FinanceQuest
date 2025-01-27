@@ -14,7 +14,7 @@ class User(BaseModel):
     password: str
     birthday: date = None
     img_path: str = None
-    disabled: bool = None
+    # disabled: bool = None
     role: Role = Role.user
     character_id: Optional[ObjectId] = None  # Add this line to include character_id
     firebaseuid: Optional[str] = None  # Add this line to include firebaseuid

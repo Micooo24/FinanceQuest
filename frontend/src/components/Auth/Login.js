@@ -4,6 +4,8 @@ import { FiMail, FiLock } from "react-icons/fi";
 import { FaGoogle, FaFacebook } from "react-icons/fa"; 
 import axios from "axios"; 
 import "./Login.css";
+import { auth } from "../firebase/firebase"; // Import Firebase
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +19,6 @@ const Login = () => {
     console.log("Login Request Payload:", { email, password }); 
 
     try {
-      
       const response = await axios.post(
         "http://127.0.0.1:8000/users/login",
         { email, password }, 
@@ -29,13 +30,11 @@ const Login = () => {
       );      
 
       if (response.status === 200) {
-
         alert("Login successful!");
         console.log("Response Data:", response.data); 
         navigate("/loading");
       }
     } catch (err) {
-      
       if (err.response) {
         console.error("Error Response:", err.response.data); 
         alert(`Login failed: ${err.response.data.detail || "Invalid input"}`);
@@ -43,6 +42,33 @@ const Login = () => {
         console.error("Error:", err.message); 
         alert("An error occurred. Please try again later.");
       }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const token = await result.user.getIdToken();
+
+      const res = await axios.post(
+        "http://127.0.0.1:8000/users/google-login",
+        { token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.status === 200) {
+        alert("Google login successful!");
+        console.log("Google Login Response Data:", res.data);
+        navigate("/loading");
+      }
+    } catch (error) {
+      console.error("Google login failed", error);
+      alert(error.message || "Google login failed");
     }
   };
 
@@ -78,7 +104,7 @@ const Login = () => {
           <button type="submit" className="login-auth-btn">Login</button>
         </form>
         <div className="login-social-login">
-          <button className="login-google-btn">
+          <button onClick={handleGoogleLogin} className="login-google-btn">
             <FaGoogle className="login-social-icon" /> Google
           </button>
           <button className="login-facebook-btn">

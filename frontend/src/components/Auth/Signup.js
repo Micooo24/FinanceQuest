@@ -4,6 +4,8 @@ import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi";
 import { FaGoogle, FaFacebook } from "react-icons/fa"; 
 import axios from "axios"; 
 import "./Signup.css";
+import { auth } from "../firebase/firebase"; // Import Firebase
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -51,10 +53,34 @@ const Signup = () => {
       );
       console.log("Success:", response.data);
 
-      
       navigate('/login');
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    console.log("Google Sign-Up clicked"); // Debugging log
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const token = await result.user.getIdToken();
+
+      const res = await axios.post(
+        "http://127.0.0.1:8000/users/google-signup",
+        { token },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Google Signup Success:", res.data);
+
+      navigate('/login');
+    } catch (error) {
+      console.error("Google sign-up failed", error); // Debugging log
+      alert(error.message || "Google sign-up failed");
     }
   };
 
@@ -124,7 +150,7 @@ const Signup = () => {
           <button type="submit" className="signup-auth-btn">Signup</button>
         </form>
         <div className="signup-social-login">
-          <button className="signup-google-btn">
+          <button onClick={handleGoogleSignup} className="signup-google-btn">
             <FaGoogle className="signup-social-icon" /> Google
           </button>
           <button className="signup-facebook-btn">
