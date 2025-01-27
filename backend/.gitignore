@@ -1,2 +1,5 @@
 venv/
 backend/firebase_backend/serviceAccountKey.json
+__pycache__/
+routes/__pycache__/
+models/__pycache__/

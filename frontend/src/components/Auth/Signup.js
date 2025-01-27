@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi"; // Import icons
-import { FaGoogle, FaFacebook } from "react-icons/fa"; // Import Google and Facebook icons
+import { FiUser, FiMail, FiLock, FiCalendar } from "react-icons/fi"; 
+import { FaGoogle, FaFacebook } from "react-icons/fa"; 
+import axios from "axios"; 
 import "./Signup.css";
 
 const Signup = () => {
@@ -23,29 +24,37 @@ const Signup = () => {
     });
   };
 
-  
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const handleSignup = async (event) => {
+    event.preventDefault(); 
+
     const form = new FormData();
-    Object.keys(formData).forEach((key) => {
-      form.append(key, formData[key]);
-    });
+    form.append("username", formData.username);
+    form.append("email", formData.email);
+    form.append("password", formData.password);
+    form.append("birthday", formData.birthday);
+    form.append("disabled", false);
+    if (formData.img) {
+      form.append("img", formData.img);
+    } else {
+      console.error("No image file selected.");
+    }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/register", {
-        method: "POST",
-        body: form,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("Signup successful!");
-        console.log(data);
-        navigate("/login");
-      } else {
-        alert(data.detail || "Signup failed");
-      }
-    } catch (err) {
-      console.error(err);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/users/register",
+        form,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Success:", response.data);
+
+      
+      navigate('/login');
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
     }
   };
 
@@ -64,6 +73,7 @@ const Signup = () => {
                 type="text"
                 name="username"
                 placeholder="janeclarette"
+                value={formData.username}
                 onChange={handleChange}
                 required
               />
@@ -74,6 +84,7 @@ const Signup = () => {
                 type="email"
                 name="email"
                 placeholder="jane@gmail.com"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />
@@ -85,6 +96,7 @@ const Signup = () => {
               <input
                 type="date"
                 name="birthday"
+                value={formData.birthday}
                 onChange={handleChange}
                 required
               />
@@ -95,6 +107,7 @@ const Signup = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
+                value={formData.password}
                 onChange={handleChange}
                 required
               />

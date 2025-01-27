@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from bson import ObjectId
 from typing import Optional
-from models.characters import Character, CharacterType
+from models.characters import Character, Gender
 from config_db import db  # Import the MongoDB database
 from utils import get_current_user  # Import the function to get the current authenticated user
 import logging
@@ -10,7 +10,7 @@ import logging
 router = APIRouter()
 
 class CharacterCreate(BaseModel):
-    type: CharacterType
+    gender: Gender
     description: str
 
 @router.post("/create")
@@ -19,13 +19,13 @@ async def create_character(character: CharacterCreate, current_user: dict = Depe
     try:
         # Create a new character associated with the authenticated user
         new_character = Character(
-            type=character.type,
+            gender=character.gender,
             description=character.description,
             user_id=current_user["_id"]
         )
         # Convert the CharacterType enum to its value
         new_character_dict = new_character.dict()
-        new_character_dict["type"] = new_character.type.value
+        new_character_dict["gender"] = new_character.gender.value
 
         inserted_character = db["characters"].insert_one(new_character_dict)
         character_id = inserted_character.inserted_id
