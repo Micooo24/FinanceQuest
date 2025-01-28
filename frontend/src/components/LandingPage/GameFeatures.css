@@ -4,7 +4,7 @@
     flex-direction: column;
     align-items: center;
     height: 100vh;
-    background: url('C:/Users/Leah Pilapil/Downloads/College/4TH YR/2ND SEM/SAI 2/Finance Quest/pics/background.jpg') no-repeat center center fixed;
+    background: url('../../assets/background.png') no-repeat center center fixed;
     background-size: cover;
     color: white;
     position: relative;

@@ -3,9 +3,9 @@ import "./GameFeatures.css";
 import { Link } from "react-router-dom";
 
 const GameFeatures = () => {
-
+  // Create an array of booleans to track which feature's description is expanded
   const [expandedFeatures, setExpandedFeatures] = useState(
-    new Array(7).fill(false)
+    new Array(7).fill(false) // We initialize 7 features (adjust if there are more or less)
   );
 
   const features = [
@@ -46,9 +46,9 @@ const GameFeatures = () => {
     }
   ];
 
- 
+  // Function to toggle the expansion of a specific feature's details
   const handleFeatureClick = (index) => {
-
+    // Toggle the state for the specific feature (expand/collapse)
     const newExpandedFeatures = [...expandedFeatures];
     newExpandedFeatures[index] = !newExpandedFeatures[index];
     setExpandedFeatures(newExpandedFeatures);
@@ -79,15 +79,15 @@ const GameFeatures = () => {
             <h2 className="feature-title">{feature.title}</h2>
             <p className="feature-description">{feature.description}</p>
 
-            
+            {/* Button to toggle the specific feature's details */}
             <button 
               className="feature-learn-more" 
-              onClick={() => handleFeatureClick(index)} 
+              onClick={() => handleFeatureClick(index)} // Toggle the specific feature
             >
               {expandedFeatures[index] ? "Show Less" : "Learn More"}
             </button>
 
-
+            {/* Display details only for the clicked feature */}
             {expandedFeatures[index] && (
               <div className="feature-details">
                 <p>{feature.details}</p>
