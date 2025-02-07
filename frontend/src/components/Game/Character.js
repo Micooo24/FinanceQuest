@@ -60,40 +60,32 @@ const loadCharacter = (vehicleLayer, onLoad) => {
       if (!character) return;
       switch (event.key) {
         case 'w':
-          targetPosition.z += moveSpeed;
-          targetRotation.y = 0; // Face forward
+          targetPosition.z += moveSpeed * Math.cos(character.rotation.y);
+          targetPosition.x += moveSpeed * Math.sin(character.rotation.y);
+          character.rotation.y = 0; // Rotate the character to face forward
           if (walkAction && !walkAction.isRunning()) {
             console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
+          walkAction.setEffectiveTimeScale(1.0); // Play walk animation forward
           break;
         case 's':
-          targetPosition.z -= moveSpeed;
-          targetRotation.y = Math.PI; // Face backward
+          targetPosition.z -= moveSpeed * Math.cos(character.rotation.y);
+          targetPosition.x -= moveSpeed * Math.sin(character.rotation.y);
+          character.rotation.y = Math.PI; // Rotate the character to face backward
           if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation');
+            console.log('Starting walk animation'); 
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
-          break;
-        case 'a':
-          targetPosition.x -= moveSpeed;
-          targetRotation.y = -Math.PI / 2; // Face left
-          if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation');
-            idleAction.fadeOut(0.2);
-            walkAction.reset().fadeIn(0.2).play();
-          }
+          walkAction.setEffectiveTimeScale(1.0); // Play walk animation forward
           break;
         case 'd':
-          targetPosition.x += moveSpeed;
-          targetRotation.y = Math.PI / 2; // Face right
-          if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation');
-            idleAction.fadeOut(0.2);
-            walkAction.reset().fadeIn(0.2).play();
-          }
+          targetRotation.y -= Math.PI / 2; // Rotate right
+          break;
+        case 'a':
+          targetRotation.y += Math.PI / 2; // Rotate left
           break;
         case ' ':
           if (jumpAction && !jumpAction.isRunning()) {
@@ -120,8 +112,6 @@ const loadCharacter = (vehicleLayer, onLoad) => {
       switch (event.key) {
         case 'w':
         case 's':
-        case 'a':
-        case 'd':
           if (walkAction && walkAction.isRunning()) {
             console.log('Stopping walk animation');
             walkAction.fadeOut(0.2);
