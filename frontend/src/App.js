@@ -5,6 +5,7 @@ import Signup from "./components/Auth/Signup";
 import Login from "./components/Auth/Login";
 import GameFeatures from "./components/LandingPage/GameFeatures";
 import LoadingPage from "./components/Homepage/LoadingPage";
+import Gameplay from "./components/Game/Gameplay";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/gamefeatures" element={<GameFeatures />} />
         <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/gameplay" element={<Gameplay />} /> {/* Add the Gameplay route */}
+
         
       </Routes>
     </Router>
