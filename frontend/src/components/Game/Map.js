@@ -116,10 +116,10 @@ const Map = ({ scene, camera }) => {
       { type: 'road_straight', position: [0, 0, -20], rotation: [0, Math.PI / 2, 0], layer: roadLayer, loader: gltfLoader },
       { type: 'road_straight', position: [0, 0, -30], rotation: [0, Math.PI / 2, 0], layer: roadLayer, loader: gltfLoader },
       { type: 'traflight', position: [5, 0.5, -5], scale: [5, 5, 5], layer: extraLayer, loader: fbxLoader },
-      { type: 'stopsign', position: [35, 0, 0], rotation: [0, 0, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture },
-      { type: 'stopsign', position: [-35, 0, 0], rotation: [0, Math.PI, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture },
-      { type: 'stopsign', position: [0, 0, 35], rotation: [0, -Math.PI / 2, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture },
-      { type: 'stopsign', position: [0, 0, -35], rotation: [0, -Math.PI / 2, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture },
+      { type: 'stopsign', position: [35, 0, 0], rotation: [0, 0, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture }, //left side of the map
+      { type: 'stopsign', position: [-35, 0, 0], rotation: [0, Math.PI, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture },//right side of the map
+      { type: 'stopsign', position: [0, 0, 35], rotation: [0, -Math.PI / 2, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture }, //top side of the map
+      { type: 'stopsign', position: [0, 0, -35], rotation: [0, -Math.PI / 2, 0], scale: [0.01, 0.01, 0.01], layer: extraLayer, loader: objLoader, texturePath: assets.stopsignTexture }, //bottom side of the map
       { type: 'road_close', position: [35, 0, 0], rotation: [0, 0, 0], layer: roadLayer, loader: gltfLoader },
       { type: 'road_close', position: [-35, 0, 0], rotation: [0, Math.PI, 0], layer: roadLayer, loader: gltfLoader },
       { type: 'road_close', position: [0, 0, 35], rotation: [0, -Math.PI / 2, 0], layer: roadLayer, loader: gltfLoader },

@@ -49,8 +49,8 @@ const Gameplay = () => {
     // Load the character model
     let animationId;
     loadCharacter(vehicleLayer, (character, mixer) => {
-      // Position the camera behind and above the character for a third-person view
-      camera.position.set(0, 10, -15); // Adjust the height and distance as needed
+      // Position the camera closer to the character for a third-person view
+      camera.position.set(0, 2, -5); // Adjust the height and distance as needed
       camera.lookAt(0, 0, 0); // Look at the center of the scene
 
       const targetPosition = new THREE.Vector3();
@@ -63,7 +63,7 @@ const Gameplay = () => {
 
         // Make the camera follow the character
         if (character) {
-          const offset = new THREE.Vector3(0, 10, -15); // Offset from the character
+          const offset = new THREE.Vector3(0, 2, -5); // Offset from the character
           const relativeCameraOffset = offset.applyMatrix4(character.matrixWorld);
           targetPosition.copy(relativeCameraOffset);
           targetLookAt.copy(character.position);

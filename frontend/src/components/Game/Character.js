@@ -13,8 +13,7 @@ const loadCharacter = (vehicleLayer, onLoad) => {
   fbxLoader.load(idlePath, (fbx) => {
     character = fbx;
     character.scale.set(1, 1, 1); // Adjust the scale here to make the character larger
-    character.position.y = 0.5; // Set the y position to ensure the character is above the road
-    character.position.z = 1; // Set the z position to 1
+    character.position.set(-6.599999726980053, 0.7, 32.054316962328315); // Set the initial position to the specified pointer coordinates
     vehicleLayer.add(character); // Add character to vehicleLayer
 
     // Set up animation mixer
@@ -54,7 +53,7 @@ const loadCharacter = (vehicleLayer, onLoad) => {
 
     const moveSpeed = 0.2;
     const dampingFactor = 0.1;
-    const targetPosition = new THREE.Vector3();
+    const targetPosition = new THREE.Vector3(-6.599999726980053, 0.7, 32.054316962328315); // Set the initial target position to match the character's initial position
     const targetRotation = new THREE.Euler();
 
     const handleKeyDown = (event) => {
@@ -112,6 +111,7 @@ const loadCharacter = (vehicleLayer, onLoad) => {
         default:
           break;
       }
+      console.log(`Character position: ${character.position.x}, ${character.position.y}, ${character.position.z}`);
     };
 
     // Handle key up events
