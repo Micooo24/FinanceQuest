@@ -51,8 +51,8 @@ const Gameplay = () => {
       camera.position.set(0, 10, -15); // Adjust the height and distance as needed
       camera.lookAt(0, 0, 0); // Look at the center of the scene
 
-      // console.log(`Initial camera position: ${camera.position.x}, ${camera.position.y}, ${camera.position.z}`);
-      // console.log(`Initial camera lookAt: ${camera.getWorldDirection(new THREE.Vector3()).x}, ${camera.getWorldDirection(new THREE.Vector3()).y}, ${camera.getWorldDirection(new THREE.Vector3()).z}`);
+      const targetPosition = new THREE.Vector3();
+      const targetLookAt = new THREE.Vector3();
 
       // Animation loop
       const animate = () => {
@@ -63,8 +63,12 @@ const Gameplay = () => {
         if (character) {
           const offset = new THREE.Vector3(0, 10, -15); // Offset from the character
           const relativeCameraOffset = offset.applyMatrix4(character.matrixWorld);
-          camera.position.lerp(relativeCameraOffset, 0.1); // Smooth follow with damping
-          camera.lookAt(character.position);
+          targetPosition.copy(relativeCameraOffset);
+          targetLookAt.copy(character.position);
+
+          // Interpolate the camera's position and lookAt target
+          camera.position.lerp(targetPosition, 0.05); // Increase the interpolation factor for smoother movement
+          camera.lookAt(targetLookAt);
 
           // console.log(`Updated camera position: ${camera.position.x}, ${camera.position.y}, ${camera.position.z}`);
           // console.log(`Updated camera lookAt: ${camera.getWorldDirection(new THREE.Vector3()).x}, ${camera.getWorldDirection(new THREE.Vector3()).y}, ${camera.getWorldDirection(new THREE.Vector3()).z}`);

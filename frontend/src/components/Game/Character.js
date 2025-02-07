@@ -8,6 +8,7 @@ const jumpPath = require('../../assets/game/Jumping.fbx');
 const loadCharacter = (vehicleLayer, onLoad) => {
   const fbxLoader = new FBXLoader();
   let character, mixer, idleAction, walkAction, jumpAction;
+  const clock = new THREE.Clock();
 
   fbxLoader.load(idlePath, (fbx) => {
     character = fbx;
@@ -23,6 +24,9 @@ const loadCharacter = (vehicleLayer, onLoad) => {
       const idleClip = anim.animations[0];
       idleAction = mixer.clipAction(idleClip);
       idleAction.play();
+      console.log('Idle animation loaded:', idleAction);
+    }, undefined, (error) => {
+      console.error('Error loading idle animation:', error);
     });
 
     // Load the walk animation
@@ -30,59 +34,76 @@ const loadCharacter = (vehicleLayer, onLoad) => {
       const walkClip = anim.animations[0];
       walkAction = mixer.clipAction(walkClip);
       walkAction.setLoop(THREE.LoopRepeat); // Ensure the walk animation loops
-      walkAction.setDuration(0.5); // Adjust the duration to make the walk smoother
-      walkAction.setEffectiveTimeScale(2); // Increase the time scale to make the walk faster
+      walkAction.setDuration(1.0); // Adjust the duration to make the walk smoother
+      walkAction.setEffectiveTimeScale(1.0); // Adjust the time scale to match the movement speed
       walkAction.setEffectiveWeight(1); // Adjust the weight if needed
+      console.log('Walk animation loaded:', walkAction);
+    }, undefined, (error) => {
+      console.error('Error loading walk animation:', error);
     });
 
     // Load the jump animation
     fbxLoader.load(jumpPath, (anim) => {
       const jumpClip = anim.animations[0];
       jumpAction = mixer.clipAction(jumpClip);
+      console.log('Jump animation loaded:', jumpAction);
+    }, undefined, (error) => {
+      console.error('Error loading jump animation:', error);
     });
+
+    const moveSpeed = 0.2;
+    const dampingFactor = 0.1;
+    const targetPosition = new THREE.Vector3();
+    const targetRotation = new THREE.Euler();
 
     const handleKeyDown = (event) => {
       if (!character) return;
       switch (event.key) {
-        case 's':
-          character.position.z += 0.2; // Increase movement speed to match animation speed
-          character.rotation.y = 0; // Face forward
+        case 'w':
+          targetPosition.z += moveSpeed;
+          targetRotation.y = 0; // Face forward
           if (walkAction && !walkAction.isRunning()) {
+            console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
           break;
-        case 'w':
-          character.position.z -= 0.2; // Increase movement speed to match animation speed
-          character.rotation.y = Math.PI; // Face backward
+        case 's':
+          targetPosition.z -= moveSpeed;
+          targetRotation.y = Math.PI; // Face backward
           if (walkAction && !walkAction.isRunning()) {
+            console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
           break;
         case 'a':
-          character.position.x -= 0.2; // Increase movement speed to match animation speed
-          character.rotation.y = -Math.PI / 2; // Face left
+          targetPosition.x -= moveSpeed;
+          targetRotation.y = -Math.PI / 2; // Face left
           if (walkAction && !walkAction.isRunning()) {
+            console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
           break;
         case 'd':
-          character.position.x += 0.2; // Increase movement speed to match animation speed
-          character.rotation.y = Math.PI / 2; // Face right
+          targetPosition.x += moveSpeed;
+          targetRotation.y = Math.PI / 2; // Face right
           if (walkAction && !walkAction.isRunning()) {
+            console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
           break;
         case ' ':
           if (jumpAction && !jumpAction.isRunning()) {
+            console.log('Starting jump animation');
             if (walkAction && walkAction.isRunning()) walkAction.stop();
             if (idleAction && idleAction.isRunning()) idleAction.stop();
             jumpAction.reset().setLoop(THREE.LoopOnce).clampWhenFinished = true;
             jumpAction.setDuration(0.5).play();
             jumpAction.onFinish = () => {
+              console.log('Jump animation finished');
               if (idleAction) idleAction.fadeIn(0.2).play();
             };
           }
@@ -101,6 +122,7 @@ const loadCharacter = (vehicleLayer, onLoad) => {
         case 'a':
         case 'd':
           if (walkAction && walkAction.isRunning()) {
+            console.log('Stopping walk animation');
             walkAction.fadeOut(0.2);
             idleAction.reset().fadeIn(0.2).play();
           }
@@ -112,6 +134,21 @@ const loadCharacter = (vehicleLayer, onLoad) => {
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+
+      if (mixer) mixer.update(delta);
+
+      // Smoothly interpolate character's position and rotation
+      if (character) {
+        character.position.lerp(targetPosition, dampingFactor);
+        character.rotation.y += (targetRotation.y - character.rotation.y) * dampingFactor;
+      }
+    };
+    animate();
 
     // Call the onLoad callback with the character and mixer
     onLoad(character, mixer);
@@ -143,4 +180,3 @@ const loadCharacter = (vehicleLayer, onLoad) => {
 };
 
 export { loadCharacter };
-
