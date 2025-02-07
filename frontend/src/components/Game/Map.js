@@ -18,6 +18,17 @@ const Map = ({ scene, camera }) => {
   };
 
   useEffect(() => {
+    if (!scene) {
+      console.error('Scene is not defined in Map component');
+      return;
+    }
+    if (!camera) {
+      console.error('Camera is not defined in Map component');
+      return;
+    }
+
+    console.log('Scene and camera are defined in Map component:', scene, camera);
+
     const gltfLoader = new GLTFLoader();
     const fbxLoader = new FBXLoader();
     const objLoader = new OBJLoader();
@@ -144,14 +155,19 @@ const Map = ({ scene, camera }) => {
 
     // Add event listeners
     window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('click', (event) => onMouseClick(event, camera));
+    window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
 
     // Clean up on component unmount
     return () => {
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('click', (event) => onMouseClick(event, camera));
+      window.removeEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
     };
   }, [scene, camera]);
+
+  const handleBuildingClick = (buildingName) => {
+    console.log(`Building clicked: ${buildingName}`);
+    // Handle building click logic here
+  };
 
   return null;
 };

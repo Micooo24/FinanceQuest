@@ -5,10 +5,12 @@ import Map from './Map';
 import Menu from './Menu';
 import Stats from './Stats';
 import Mission from './Mission';
+import { onPointerMove, onMouseClick } from './Interaction/helper';
 
 const Gameplay = () => {  
   const mountRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [popupContent, setPopupContent] = useState(null);
 
   // Define the scene and camera variables outside the useEffect hook
   const scene = new THREE.Scene();
@@ -96,9 +98,17 @@ const Gameplay = () => {
     scene.add(buildingLayer);
     scene.add(vehicleLayer);
 
+    // Add event listeners
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
+
+    console.log('Event listeners added');
+
     // Clean up on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
       if (animationId) cancelAnimationFrame(animationId);
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
@@ -106,6 +116,11 @@ const Gameplay = () => {
       renderer.dispose();
     };
   }, []);
+
+  const handleBuildingClick = (buildingName) => {
+    console.log(`Building clicked: ${buildingName}`);
+    setPopupContent(buildingName);
+  };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -123,6 +138,13 @@ const Gameplay = () => {
         <Mission />
       </div>
       <Map scene={scene} camera={camera} />
+      {popupContent && (
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 200, backgroundColor: 'white', padding: '20px', border: '1px solid black' }}>
+          <h2>{popupContent}</h2>
+          <p>Interactive content for {popupContent}</p>
+          <button onClick={() => setPopupContent(null)}>Close</button>
+        </div>
+      )}
     </div>  
   );
 };

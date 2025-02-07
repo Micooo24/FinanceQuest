@@ -75,7 +75,7 @@ const loadBuildings = (scene, buildingLayer) => {
     });
   };
 
-  const loadAsset = (path, position, rotation = [0, 0, 0], scale = [1, 1, 1], isFBX = false, isOBJ = false, texturePath = null, highlightEdges = false, pulseEffect = false) => {
+  const loadAsset = (path, position, rotation = [0, 0, 0], scale = [1, 1, 1], isFBX = false, isOBJ = false, texturePath = null, highlightEdges = false, pulseEffect = false, name = '') => {
     const loader = isFBX ? fbxLoader : (isOBJ ? objLoader : gltfLoader);
     if (!loader) return;
 
@@ -84,9 +84,9 @@ const loadBuildings = (scene, buildingLayer) => {
       object.position.set(...position);
       object.rotation.set(...rotation);
       object.scale.set(...scale);
-      if (path === assets.Bank) {
-        object.name = 'Bank';
-      }
+      object.name = name; // Set the name of the object
+
+      console.log(`Loaded ${name} at position:`, position, 'with scale:', scale);
 
       if (isOBJ && texturePath) {
         const texture = textureLoader.load(texturePath);
@@ -163,18 +163,18 @@ const loadBuildings = (scene, buildingLayer) => {
 
   const layout = [
     { type: 'building_01', position: [25, 0, 18], scale: [0.01, 0.01, 0.01], isFBX: true, highlightEdges: true },
-    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true, pulseEffect: true },
+    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true, pulseEffect: true, name: 'house1' },
     { type: 'hospital', position: [-30, 3, -30], scale: [0.03, 0.03, 0.03], isOBJ: true, texturePath: assets.hospitalTexture, highlightEdges: true },
     { type: 'largeBuilding', position: [-15, 0, 20], rotation: [0, Math.PI / 2, 0], scale: [8, 8, 8], highlightEdges: true },
     { type: 'apartmentBuilding', position: [-15, 0, 8], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true },
     { type: 'houses', position: [-27, 0, 15], scale: [8, 8, 8], highlightEdges: true },
-    { type: 'school', position: [30.4, 0, -21], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, pulseEffect: true },
-    { type: 'Bank', position: [-11, 0, -11], rotation: [0, Math.PI / -2, 0], scale: [0.02, 0.02, 0.02], highlightEdges: true, pulseEffect: true },
-    { type: 'shop', position: [12, 0, 20], rotation: [0, Math.PI / -2, 0], scale: [70, 70, 70], highlightEdges: true, pulseEffect: true },
+    { type: 'school', position: [30.4, 0, -21], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, pulseEffect: true, name: 'school' },
+    { type: 'Bank', position: [-11, 0, -11], rotation: [0, Math.PI / -2, 0], scale: [0.02, 0.02, 0.02], highlightEdges: true, pulseEffect: true, name: 'Bank' },
+    { type: 'shop', position: [12, 0, 20], rotation: [0, Math.PI / -2, 0], scale: [70, 70, 70], highlightEdges: true, pulseEffect: true, name: 'shop' },
   ];
 
-  layout.forEach(({ type, position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect }) => {
-    loadAsset(assets[type], position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect);
+  layout.forEach(({ type, position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect, name }) => {
+    loadAsset(assets[type], position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect, name);
   });
 
   scene.add(buildingLayer);

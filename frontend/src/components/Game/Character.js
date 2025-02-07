@@ -14,6 +14,7 @@ const loadCharacter = (vehicleLayer, onLoad) => {
     character = fbx;
     character.scale.set(1, 1, 1); // Adjust the scale here to make the character larger
     character.position.y = 0.5; // Set the y position to ensure the character is above the road
+    character.position.z = 1; // Set the z position to 1
     vehicleLayer.add(character); // Add character to vehicleLayer
 
     // Set up animation mixer
