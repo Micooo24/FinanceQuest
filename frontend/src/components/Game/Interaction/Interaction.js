@@ -12,7 +12,7 @@ const createPopupScreen = (message) => {
   
   isPopupOpen = true;
   const popup = document.createElement('div');
-  currentPopup = popup;
+  currentPopup = popup; 
   
   // Base styles remain the same
   popup.style.position = 'fixed';

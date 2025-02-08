@@ -5,16 +5,37 @@ const idlePath = require('../../assets/game/Idle.fbx');
 const walkPath = require('../../assets/game/Walking.fbx');
 const jumpPath = require('../../assets/game/Jumping.fbx');
 
-const loadCharacter = (vehicleLayer, onLoad) => {
+const loadCharacter = (vehicleLayer, onLoad, camera) => {
   const fbxLoader = new FBXLoader();
   let character, mixer, idleAction, walkAction, jumpAction;
   const clock = new THREE.Clock();
+
+  // Rotate the camera 180 degrees around the Y-axis
+  camera.rotation.y = Math.PI;
 
   fbxLoader.load(idlePath, (fbx) => {
     character = fbx;
     character.scale.set(1, 1, 1); // Adjust the scale here to make the character larger
     character.position.set(-6.599999726980053, 0.7, 32.054316962328315); // Set the initial position to the specified pointer coordinates
     vehicleLayer.add(character); // Add character to vehicleLayer
+
+    // Log the character's initial rotation
+    console.log('Character initial rotation:', character.rotation);
+
+    // Calculate character's forward direction
+    const characterForward = new THREE.Vector3(0, 0, 1).applyQuaternion(character.quaternion);
+
+    // Calculate camera's direction
+    const cameraDirection = new THREE.Vector3();
+    camera.getWorldDirection(cameraDirection);
+
+    // Determine if the camera is facing the front or back of the character
+    const dotProduct = characterForward.dot(cameraDirection);
+    if (dotProduct > 0) {
+      console.log('Camera is facing the back of the character');
+    } else {
+      console.log('Camera is facing the front of the character');
+    }
 
     // Set up animation mixer
     mixer = new THREE.AnimationMixer(character);
@@ -72,13 +93,12 @@ const loadCharacter = (vehicleLayer, onLoad) => {
         case 's':
           targetPosition.z -= moveSpeed * Math.cos(character.rotation.y);
           targetPosition.x -= moveSpeed * Math.sin(character.rotation.y);
-          character.rotation.y += Math.PI; // Rotate the character 180 degrees to face backward
           if (walkAction && !walkAction.isRunning()) {
             console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
-          walkAction.setEffectiveTimeScale(1.0); // Play walk animation forward
+          walkAction.setEffectiveTimeScale(-1.0); 
           break;
         case 'd':
           targetRotation.y -= Math.PI / 2; // Rotate right

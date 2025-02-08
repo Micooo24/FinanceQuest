@@ -27,14 +27,14 @@ const Gameplay = () => {
       return;
     }
 
-    console.log('Mount ref is available');
+    // console.log('Mount ref is available');
 
     // Set up the renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
-    console.log('Scene, camera, and renderer set up');
+    // console.log('Scene, camera, and renderer set up');
 
     // Add lights
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -44,7 +44,7 @@ const Gameplay = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    console.log('Lights added');
+    // console.log('Lights added');
 
     // Load the character model
     let animationId;
@@ -81,7 +81,7 @@ const Gameplay = () => {
       animate();
     }, camera);
 
-    console.log('Camera and character set up');
+    // console.log('Camera and character set up');
 
     // Handle window resize
     const handleResize = () => {
@@ -91,7 +91,7 @@ const Gameplay = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    console.log('Resize handler added');
+    // console.log('Resize handler added');
 
     // Add layers to the scene in the correct order
     scene.add(roadLayer);
@@ -102,7 +102,7 @@ const Gameplay = () => {
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
 
-    console.log('Event listeners added');
+    // console.log('Event listeners added');
 
     // Clean up on component unmount
     return () => {
