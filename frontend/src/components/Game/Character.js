@@ -62,7 +62,6 @@ const loadCharacter = (vehicleLayer, onLoad) => {
         case 'w':
           targetPosition.z += moveSpeed * Math.cos(character.rotation.y);
           targetPosition.x += moveSpeed * Math.sin(character.rotation.y);
-          character.rotation.y = 0; // Rotate the character to face forward
           if (walkAction && !walkAction.isRunning()) {
             console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
@@ -73,9 +72,9 @@ const loadCharacter = (vehicleLayer, onLoad) => {
         case 's':
           targetPosition.z -= moveSpeed * Math.cos(character.rotation.y);
           targetPosition.x -= moveSpeed * Math.sin(character.rotation.y);
-          character.rotation.y = Math.PI; // Rotate the character to face backward
+          character.rotation.y += Math.PI; // Rotate the character 180 degrees to face backward
           if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation'); 
+            console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
