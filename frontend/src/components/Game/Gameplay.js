@@ -27,14 +27,10 @@ const Gameplay = () => {
       return;
     }
 
-    // console.log('Mount ref is available');
-
     // Set up the renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
-
-    // console.log('Scene, camera, and renderer set up');
 
     // Add lights
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -44,11 +40,12 @@ const Gameplay = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // console.log('Lights added');
-
     // Load the character model
     let animationId;
     loadCharacter(vehicleLayer, (character, mixer) => {
+      // Set character rotation to 180 degrees
+      character.rotation.y = Math.PI;
+
       // Position the camera closer to the character for a third-person view
       camera.position.set(0, 2, -5); // Adjust the height and distance as needed
       camera.lookAt(0, 0, 0); // Look at the center of the scene
@@ -71,17 +68,12 @@ const Gameplay = () => {
           // Interpolate the camera's position and lookAt target
           camera.position.lerp(targetPosition, 0.05); // Increase the interpolation factor for smoother movement
           camera.lookAt(targetLookAt);
-
-          // console.log(`Updated camera position: ${camera.position.x}, ${camera.position.y}, ${camera.position.z}`);
-          // console.log(`Updated camera lookAt: ${camera.getWorldDirection(new THREE.Vector3()).x}, ${camera.getWorldDirection(new THREE.Vector3()).y}, ${camera.getWorldDirection(new THREE.Vector3()).z}`);
         }
 
         renderer.render(scene, camera);
       };
       animate();
     }, camera);
-
-    // console.log('Camera and character set up');
 
     // Handle window resize
     const handleResize = () => {
@@ -91,8 +83,6 @@ const Gameplay = () => {
     };
     window.addEventListener('resize', handleResize);
 
-    // console.log('Resize handler added');
-
     // Add layers to the scene in the correct order
     scene.add(roadLayer);
     scene.add(buildingLayer);
@@ -101,8 +91,6 @@ const Gameplay = () => {
     // Add event listeners
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
-
-    // console.log('Event listeners added');
 
     // Clean up on component unmount
     return () => {

@@ -6,6 +6,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { loadBuildings } from './Terrain/Building';
 import { loadCars } from './Terrain/Car';
 import { onPointerMove, onMouseClick, pointer } from './Interaction/helper';
+import { loadNPC, loadNPC2 } from './Terrain/NPC';
 
 const Map = ({ scene, camera }) => {
   const assets = {
@@ -134,6 +135,10 @@ const Map = ({ scene, camera }) => {
     // Load buildings and cars
     loadBuildings(scene, buildingLayer, camera);
     loadCars(scene, vehicleLayer);
+
+    // Load NPC
+    loadNPC(scene);
+    // loadNPC2(scene);
 
     // Add layers to the scene
     scene.add(roadLayer);
