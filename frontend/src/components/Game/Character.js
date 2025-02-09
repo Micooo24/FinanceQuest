@@ -51,7 +51,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
   bankModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
   bankModal.style.zIndex = '1000';
   bankModal.style.display = 'none'; // Initially hidden
-  bankModal.style.backgroundImage = 'url("https://res.cloudinary.com/dwp8u82sd/image/upload/v1739076760/bank_y9a4bz.jpg")'; // Add a bank interior background image
+  bankModal.style.backgroundImage = 'url("https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077519/bank_c0ka8r.jpg")'; // Add a bank interior background image
   bankModal.style.backgroundSize = 'cover';
   bankModal.style.backgroundPosition = 'center';
   bankModal.style.overflow = 'hidden';

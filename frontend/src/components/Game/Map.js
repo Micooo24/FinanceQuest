@@ -13,12 +13,12 @@ const debugMode = false;
 
 const Map = ({ scene, camera }) => {
   const assets = {
-    road_4way: require('../../assets/game/road_4way.glb'),
-    road_straight: require('../../assets/game/road_straight.glb'),
-    road_close: require('../../assets/game/road_Close.glb'),
-    traflight: require('../../assets/game/trafficlight_C.fbx'),
-    stopsign: require('../../assets/game/stopsign.obj'),
-    stopsignTexture: require('../../assets/game/stopsign.png'),
+    road_4way: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077540/road_4way_zmi07m.glb',
+    road_straight: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077541/road_straight_fjgevx.glb',
+    road_close: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077525/road_Close_blahfe.glb',
+    traflight: 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077537/trafficlight_C_ycippj.fbx',
+    stopsign: 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077539/stopsign_a3l4o9.obj',
+    stopsignTexture: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077538/stopsign_nu1kqc.png',
   };
 
   useEffect(() => {

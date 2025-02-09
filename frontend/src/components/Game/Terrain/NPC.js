@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-const npcPath = require('../../../assets/game/Business Man.glb');
-const npc2Path = require('../../../assets/game/Suit.glb');
-const npc3Path = require('../../../assets/game/Worker.glb');
-const npc4Path = require('../../../assets/game/Animated Woman.glb');
-const npc5Path = require('../../../assets/game/Man.glb');
-const npc6Path = require('../../../assets/game/Casual Character.glb');
+const npcPath ='https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077522/Business_Man_iixsxz.glb';
+const npc2Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077524/Suit_p9buvg.glb';
+const npc3Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/Worker_eehgdr.glb';
+const npc4Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/Animated_Woman_eovuop.glb';
+const npc5Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077521/Man_qn0rsz.glb';
+const npc6Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/Casual_Character_fexykr.glb';
 
 // Global debug mode variable
 const debugMode = false;
