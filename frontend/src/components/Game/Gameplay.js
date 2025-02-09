@@ -7,6 +7,8 @@ import Stats from './Stats';
 import Mission from './Mission';
 import { onPointerMove, onMouseClick } from './Interaction/helper';
 import StatsJS from 'stats.js';
+import './Gameplay.css'; // Import the CSS file
+import backgroundMusic from '../../assets/music.mp3'; // Import the MP3 file
 
 // Global debug mode variable
 let debugMode = false;
@@ -15,6 +17,7 @@ const Gameplay = () => {
   const mountRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
+  const [gameStarted, setGameStarted] = useState(false);
 
   // Define the scene and camera variables outside the useEffect hook
   const scene = new THREE.Scene();
@@ -26,8 +29,8 @@ const Gameplay = () => {
   const vehicleLayer = new THREE.Group();
 
   useEffect(() => {
-    if (!mountRef.current) {
-      if (debugMode) console.error('Mount ref is not available');
+    if (!mountRef.current || !gameStarted) {
+      if (debugMode) console.error('Mount ref is not available or game not started');
       return;
     }
 
@@ -103,6 +106,11 @@ const Gameplay = () => {
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
 
+    // Play background music
+    const audio = new Audio(backgroundMusic);
+    audio.loop = true;
+    audio.play();
+
     // Clean up on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -114,8 +122,10 @@ const Gameplay = () => {
       }
       renderer.dispose();
       document.body.removeChild(stats.dom);
+      audio.pause();
+      audio.currentTime = 0;
     };
-  }, []);
+  }, [gameStarted]);
 
   const handleBuildingClick = (buildingName) => {
     if (debugMode) console.log(`Building clicked: ${buildingName}`);
@@ -129,25 +139,39 @@ const Gameplay = () => {
   const toggleDebugMode = () => {
     debugMode = !debugMode;
   };
+
+  const startGame = () => {
+    setGameStarted(true);
+  };
   
   return (
-    <div ref={mountRef} style={{ width: '100%', height: '100vh', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 100 }}>
-        <Stats health={100} exp={75} level={5} money={1500} />
-      </div>
-      <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100 }}>
-        <Menu menuOpen={menuOpen} toggleMenu={toggleMenu} />
-      </div>
-      <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100 }}>
-        <Mission />
-      </div>
-      <Map scene={scene} camera={camera} />
-      {popupContent && (
+    <div ref={mountRef} className="gameplay-container">
+      {!gameStarted && (
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 200, backgroundColor: 'white', padding: '20px', border: '1px solid black' }}>
-          <h2>{popupContent}</h2>
-          <p>Interactive content for {popupContent}</p>
-          <button onClick={() => setPopupContent(null)}>Close</button>
+          <h2>Welcome to the Game</h2>
+          <button onClick={startGame}>Start Game</button>
         </div>
+      )}
+      {gameStarted && (
+        <>
+          <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 100 }}>
+            <Stats health={100} exp={75} level={5} money={1500} />
+          </div>
+          <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100 }}>
+            <Menu menuOpen={menuOpen} toggleMenu={toggleMenu} />
+          </div>
+          <div style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100 }}>
+            <Mission />
+          </div>
+          <Map scene={scene} camera={camera} />
+          {popupContent && (
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 200, backgroundColor: 'white', padding: '20px', border: '1px solid black' }}>
+              <h2>{popupContent}</h2>
+              <p>Interactive content for {popupContent}</p>
+              <button onClick={() => setPopupContent(null)}>Close</button>
+            </div>
+          )}
+        </>
       )}
     </div>  
   );

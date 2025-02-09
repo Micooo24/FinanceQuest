@@ -1,17 +1,12 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
+import { initializeBankInteraction, updateBankInteractionButton, handleBankInteractionClick } from './Interaction/BankInteraction';
+import { initializeNPCInteraction, updateNPCInteractionButton, handleNPCInteractionClick, createInteractionButton } from './Interaction/NPCInteraction';
 
 const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
 const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739094607/Walking_c7lfpe.fbx';
 const jumpPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077533/Jumping_hxqlkv.fbx';
-
-// Coordinates for the bank and NPC
-const bankCoordinates = new THREE.Vector3(-8.084952974061496, 0.6999999999999995, -6.289548765549087);
-const npcCoordinates = new THREE.Vector3(-3.827592715703327, 0.6999999999999995, -5.437556845461079);
-
-// Proximity threshold (e.g., 2 units)
-const proximityThreshold = 2;
 
 // Global debug mode variable
 const debugMode = true;
@@ -22,84 +17,13 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
   const clock = new THREE.Clock();
 
   // Create a button for interaction
-  const interactionButton = document.createElement('button');
-  interactionButton.style.position = 'absolute';
-  interactionButton.style.bottom = '20px';
-  interactionButton.style.left = '50%';
-  interactionButton.style.transform = 'translateX(-50%)';
-  interactionButton.style.padding = '30px 60px'; // Increased padding for larger button
-  interactionButton.style.fontSize = '25px'; // Increased font size
-  interactionButton.style.backgroundColor = '#4CAF50';
-  interactionButton.style.color = 'white';
-  interactionButton.style.border = 'none';
-  interactionButton.style.borderRadius = '5px';
-  interactionButton.style.cursor = 'pointer';
-  interactionButton.style.display = 'none'; // Initially hidden
-  interactionButton.innerText = 'Talk to Person';
-  document.body.appendChild(interactionButton);
+  const interactionButton = createInteractionButton();
 
-  // Create a modal for the bank pop-up
-  const bankModal = document.createElement('div');
-  bankModal.style.position = 'fixed';
-  bankModal.style.top = '50%';
-  bankModal.style.left = '50%';
-  bankModal.style.transform = 'translate(-50%, -50%)';
-  bankModal.style.width = '600px'; // Set a fixed width
-  bankModal.style.height = '400px'; // Set a fixed height
-  bankModal.style.backgroundColor = '#FFFFFF';
-  bankModal.style.borderRadius = '10px';
-  bankModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-  bankModal.style.zIndex = '1000';
-  bankModal.style.display = 'none'; // Initially hidden
-  bankModal.style.backgroundImage = 'url("https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077519/bank_c0ka8r.jpg")'; // Add a bank interior background image
-  bankModal.style.backgroundSize = 'cover';
-  bankModal.style.backgroundPosition = 'center';
-  bankModal.style.overflow = 'hidden';
-  bankModal.innerHTML = `
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6);"></div>
-    <div style="position: relative; z-index: 1; text-align: center; padding: 20px;">
-      <h2 style="color: #FFD700; font-size: 30px; margin-bottom: 20px;">Welcome to the Bank</h2>
-      <div style="display: flex; flex-direction: column; gap: 15px;">
-        <button id="deposit" style="padding: 15px; font-size: 20px; background-color: #002F6C; color: #FFD700; border: 2px solid #FFD700; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
-          Deposit
-        </button>
-        <button id="withdraw" style="padding: 15px; font-size: 20px; background-color: #002F6C; color: #FFD700; border: 2px solid #FFD700; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
-          Withdraw
-        </button>
-        <button id="checkBalance" style="padding: 15px; font-size: 20px; background-color: #002F6C; color: #FFD700; border: 2px solid #FFD700; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
-          Check Balance
-        </button>
-        <button id="closeBankModal" style="padding: 15px; font-size: 20px; background-color: #C0C0C0; color: #002F6C; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
-          Exit Bank
-        </button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(bankModal);
+  // Initialize NPC interaction
+  initializeNPCInteraction();
 
-  // Create a modal for the NPC interaction
-  const npcModal = document.createElement('div');
-  npcModal.style.position = 'fixed';
-  npcModal.style.top = '50%';
-  npcModal.style.left = '50%';
-  npcModal.style.transform = 'translate(-50%, -50%)';
-  npcModal.style.width = '400px';
-  npcModal.style.height = '200px';
-  npcModal.style.backgroundColor = '#FFFFFF';
-  npcModal.style.borderRadius = '10px';
-  npcModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-  npcModal.style.zIndex = '1000';
-  npcModal.style.display = 'none'; // Initially hidden
-  npcModal.innerHTML = `
-    <div style="padding: 20px; text-align: center;">
-      <h2 id="npcMessage" style="margin-bottom: 20px;">How are you doing?</h2>
-      <div id="npcChoices">
-        <button id="okay" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">I'm okay</button>
-        <button id="ignore" style="padding: 10px 20px; background-color: #C0C0C0; color: black; border: none; border-radius: 5px; cursor: pointer;">Ignore</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(npcModal);
+  // Initialize bank interaction
+  initializeBankInteraction();
 
   // Function to calculate distance between two points
   const calculateDistance = (position1, position2) => {
@@ -108,15 +32,10 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
 
   // Function to show/hide the button based on proximity
   const updateInteractionButton = (characterPosition) => {
-    const distanceToNPC = calculateDistance(characterPosition, npcCoordinates);
-    const distanceToBank = calculateDistance(characterPosition, bankCoordinates);
-
-    if (distanceToNPC <= proximityThreshold) {
-      interactionButton.innerText = 'Talk to Person';
-      interactionButton.style.display = 'block';
-    } else if (distanceToBank <= proximityThreshold) {
-      interactionButton.innerText = 'Go to Bank';
-      interactionButton.style.display = 'block';
+    if (updateNPCInteractionButton(characterPosition, interactionButton)) {
+      // NPC interaction button update handled in NPCInteraction.js
+    } else if (updateBankInteractionButton(characterPosition, interactionButton)) {
+      // Bank interaction button update handled in BankInteraction.js
     } else {
       interactionButton.style.display = 'none';
     }
@@ -125,42 +44,10 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
   // Event listeners for button clicks
   interactionButton.addEventListener('click', () => {
     if (interactionButton.innerText === 'Talk to Person') {
-      toast('How are you?');
-      npcModal.style.display = 'block'; // Show the NPC modal
+      handleNPCInteractionClick(interactionButton);
     } else if (interactionButton.innerText === 'Go to Bank') {
-      bankModal.style.display = 'block'; // Show the bank modal
+      handleBankInteractionClick(interactionButton);
     }
-  });
-
-  // Event listeners for NPC modal buttons
-  npcModal.querySelector('#okay').addEventListener('click', () => {
-    toast('You responded: I\'m okay');
-    npcModal.style.display = 'none'; // Hide the NPC modal
-  });
-
-  npcModal.querySelector('#ignore').addEventListener('click', () => {
-    toast('You ignored the NPC');
-    npcModal.style.display = 'none'; // Hide the NPC modal
-  });
-
-  // Event listeners for bank modal buttons
-  bankModal.querySelector('#deposit').addEventListener('click', () => {
-    toast('Deposit selected!');
-    // Add deposit logic here
-  });
-
-  bankModal.querySelector('#withdraw').addEventListener('click', () => {
-    toast('Withdraw selected!');
-    // Add withdraw logic here
-  });
-
-  bankModal.querySelector('#checkBalance').addEventListener('click', () => {
-    toast('Check Balance selected!');
-    // Add check balance logic here
-  });
-
-  bankModal.querySelector('#closeBankModal').addEventListener('click', () => {
-    bankModal.style.display = 'none'; // Hide the bank modal
   });
 
   fbxLoader.load(idlePath, (fbx) => {
@@ -310,8 +197,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
       document.body.removeChild(interactionButton); // Remove the button on cleanup
-      document.body.removeChild(bankModal); // Remove the bank modal on cleanup
-      document.body.removeChild(npcModal); // Remove the NPC modal on cleanup
+      document.getElementById('npcModal')?.remove(); // Remove the NPC modal on cleanup
       if (character) {
         vehicleLayer.remove(character);
         character.traverse((child) => {
