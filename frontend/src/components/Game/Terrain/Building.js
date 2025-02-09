@@ -18,6 +18,9 @@ const assets = {
   shop: require('../../../assets/game/shop.glb'),
 };
 
+// Global debug mode variable
+const debugMode = false;
+
 const loadBuildings = (scene, buildingLayer) => {
   const fbxLoader = new FBXLoader();
   const objLoader = new OBJLoader();
@@ -86,7 +89,7 @@ const loadBuildings = (scene, buildingLayer) => {
       object.scale.set(...scale);
       object.name = name; // Set the name of the object
 
-      console.log(`Loaded ${name} at position:`, position, 'with scale:', scale);
+      if (debugMode) console.log(`Loaded ${name} at position:`, position, 'with scale:', scale);
 
       if (isOBJ && texturePath) {
         const texture = textureLoader.load(texturePath);
@@ -155,9 +158,9 @@ const loadBuildings = (scene, buildingLayer) => {
       }
 
       buildingLayer.add(object);
-      console.log(`${path} loaded and added to the scene`);
+      if (debugMode) console.log(`${path} loaded and added to the scene`);
     }, undefined, (error) => {
-      console.error(`An error occurred while loading ${path}: ${error.message}`);
+      if (debugMode) console.error(`An error occurred while loading ${path}: ${error.message}`);
     });
   };
 

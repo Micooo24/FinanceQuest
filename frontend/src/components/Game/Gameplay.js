@@ -6,6 +6,10 @@ import Menu from './Menu';
 import Stats from './Stats';
 import Mission from './Mission';
 import { onPointerMove, onMouseClick } from './Interaction/helper';
+import StatsJS from 'stats.js';
+
+// Global debug mode variable
+let debugMode = false;
 
 const Gameplay = () => {  
   const mountRef = useRef(null);
@@ -23,7 +27,7 @@ const Gameplay = () => {
 
   useEffect(() => {
     if (!mountRef.current) {
-      console.error('Mount ref is not available');
+      if (debugMode) console.error('Mount ref is not available');
       return;
     }
 
@@ -40,13 +44,17 @@ const Gameplay = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
+    // Set up stats.js
+    const stats = new StatsJS();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+
     // Load the character model
     let animationId;
     loadCharacter(vehicleLayer, (character, mixer) => {
-      // Set character rotation to 180 degrees
-      character.rotation.y = Math.PI;
 
       // Position the camera closer to the character for a third-person view
+      camera.rotation.y = Math.PI;
       camera.position.set(0, 2, -5); // Adjust the height and distance as needed
       camera.lookAt(0, 0, 0); // Look at the center of the scene
 
@@ -55,6 +63,8 @@ const Gameplay = () => {
 
       // Animation loop
       const animate = () => {
+        stats.begin();
+
         animationId = requestAnimationFrame(animate);
         if (mixer) mixer.update(0.01);
 
@@ -64,13 +74,14 @@ const Gameplay = () => {
           const relativeCameraOffset = offset.applyMatrix4(character.matrixWorld);
           targetPosition.copy(relativeCameraOffset);
           targetLookAt.copy(character.position);
-
           // Interpolate the camera's position and lookAt target
           camera.position.lerp(targetPosition, 0.05); // Increase the interpolation factor for smoother movement
           camera.lookAt(targetLookAt);
         }
 
         renderer.render(scene, camera);
+
+        stats.end();
       };
       animate();
     }, camera);
@@ -102,16 +113,21 @@ const Gameplay = () => {
         mountRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      document.body.removeChild(stats.dom);
     };
   }, []);
 
   const handleBuildingClick = (buildingName) => {
-    console.log(`Building clicked: ${buildingName}`);
+    if (debugMode) console.log(`Building clicked: ${buildingName}`);
     setPopupContent(buildingName);
   };
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const toggleDebugMode = () => {
+    debugMode = !debugMode;
   };
   
   return (

@@ -13,13 +13,13 @@ const npcCoordinates = new THREE.Vector3(-6.571751181307473, 0.5, -5.71329678175
 // Proximity threshold (e.g., 2 units)
 const proximityThreshold = 2;
 
+// Global debug mode variable
+const debugMode = false;
+
 const loadCharacter = (vehicleLayer, onLoad, camera) => {
   const fbxLoader = new FBXLoader();
   let character, mixer, idleAction, walkAction, jumpAction;
   const clock = new THREE.Clock();
-
-  // Rotate the camera 180 degrees around the Y-axis
-  camera.rotation.y = Math.PI;
 
   // Create a button for interaction
   const interactionButton = document.createElement('button');
@@ -166,12 +166,12 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
   fbxLoader.load(idlePath, (fbx) => {
     character = fbx;
     character.scale.set(1, 1, 1);
-    character.rotation.y = Math.PI;
+    // character.rotation.y = Math.PI * 2; // Rotates 360 degrees
     character.position.set(-6.599999726980053, 0.5, 32.054316962328315);
     vehicleLayer.add(character);
 
     // Log the character's initial rotation
-    console.log('Character initial rotation:', character.rotation);
+    if (debugMode) console.log('Character initial rotation:', character.rotation);
 
     // Set up animation mixer
     mixer = new THREE.AnimationMixer(character);
@@ -181,9 +181,9 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
       const idleClip = anim.animations[0];
       idleAction = mixer.clipAction(idleClip);
       idleAction.play();
-      console.log('Idle animation loaded:', idleAction);
+      if (debugMode) console.log('Idle animation loaded:', idleAction);
     }, undefined, (error) => {
-      console.error('Error loading idle animation:', error);
+      if (debugMode) console.error('Error loading idle animation:', error);
     });
 
     // Load the walk animation
@@ -194,18 +194,18 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
       walkAction.setDuration(1.0);
       walkAction.setEffectiveTimeScale(1.0);
       walkAction.setEffectiveWeight(1);
-      console.log('Walk animation loaded:', walkAction);
+      if (debugMode) console.log('Walk animation loaded:', walkAction);
     }, undefined, (error) => {
-      console.error('Error loading walk animation:', error);
+      if (debugMode) console.error('Error loading walk animation:', error);
     });
 
     // Load the jump animation
     fbxLoader.load(jumpPath, (anim) => {
       const jumpClip = anim.animations[0];
       jumpAction = mixer.clipAction(jumpClip);
-      console.log('Jump animation loaded:', jumpAction);
+      if (debugMode) console.log('Jump animation loaded:', jumpAction);
     }, undefined, (error) => {
-      console.error('Error loading jump animation:', error);
+      if (debugMode) console.error('Error loading jump animation:', error);
     });
 
     const moveSpeed = 0.2;
@@ -220,17 +220,18 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
           targetPosition.z += moveSpeed * Math.cos(character.rotation.y);
           targetPosition.x += moveSpeed * Math.sin(character.rotation.y);
           if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation');
+            if (debugMode) console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
           walkAction.setEffectiveTimeScale(1.0);
           break;
         case 's':
-          targetPosition.z -= moveSpeed * Math.cos(character.rotation.y);
-          targetPosition.x -= moveSpeed * Math.sin(character.rotation.y);
+          character.rotation.y += Math.PI;
+          targetPosition.z += moveSpeed * Math.cos(character.rotation.y);
+          targetPosition.x += moveSpeed * Math.sin(character.rotation.y);
           if (walkAction && !walkAction.isRunning()) {
-            console.log('Starting walk animation');
+            if (debugMode) console.log('Starting walk animation');
             idleAction.fadeOut(0.2);
             walkAction.reset().fadeIn(0.2).play();
           }
@@ -244,13 +245,13 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
           break;
         case ' ':
           if (jumpAction && !jumpAction.isRunning()) {
-            console.log('Starting jump animation');
+            if (debugMode) console.log('Starting jump animation');
             if (walkAction && walkAction.isRunning()) walkAction.stop();
             if (idleAction && idleAction.isRunning()) idleAction.stop();
             jumpAction.reset().setLoop(THREE.LoopOnce).clampWhenFinished = true;
             jumpAction.setDuration(0.5).play();
             jumpAction.onFinish = () => {
-              console.log('Jump animation finished');
+              if (debugMode) console.log('Jump animation finished');
               if (idleAction) idleAction.fadeIn(0.2).play();
             };
           }
@@ -258,7 +259,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
         default:
           break;
       }
-      console.log(`Character position: ${character.position.x}, ${character.position.y}, ${character.position.z}`);
+      if (debugMode) console.log(`Character position: ${character.position.x}, ${character.position.y}, ${character.position.z}`);
     };
 
     // Handle key up events
@@ -268,7 +269,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
         case 'w':
         case 's':
           if (walkAction && walkAction.isRunning()) {
-            console.log('Stopping walk animation');
+            if (debugMode) console.log('Stopping walk animation');
             walkAction.fadeOut(0.2);
             idleAction.reset().fadeIn(0.2).play();
           }
@@ -290,6 +291,9 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
 
       // Smoothly interpolate character's position and rotation
       if (character) {
+        // Rotate the character 180 degrees
+        character.rotation.y = Math.PI;
+
         character.position.lerp(targetPosition, dampingFactor);
         character.rotation.y += (targetRotation.y - character.rotation.y) * dampingFactor;
 
@@ -327,7 +331,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
       if (mixer) mixer.uncacheRoot(character);
     };
   }, undefined, (error) => {
-    console.error('An error occurred while loading the character model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the character model: ' + error.message);
   });
 };
 

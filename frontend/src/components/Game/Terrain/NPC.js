@@ -8,6 +8,9 @@ const npc4Path = require('../../../assets/game/Animated Woman.glb');
 const npc5Path = require('../../../assets/game/Man.glb');
 const npc6Path = require('../../../assets/game/Casual Character.glb');
 
+// Global debug mode variable
+const debugMode = false;
+
 const loadNPC = (scene) => {
   const gltfLoader = new GLTFLoader();
 
@@ -18,7 +21,7 @@ const loadNPC = (scene) => {
     scene.add(npc); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC initial position:', npc.position);
+    if (debugMode) console.log('NPC initial position:', npc.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc);
@@ -36,7 +39,7 @@ const loadNPC = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC model: ' + error.message);
   });
 };
 
@@ -50,7 +53,7 @@ const loadNPC2 = (scene) => {
     scene.add(npc2); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC2 initial position:', npc2.position);
+    if (debugMode) console.log('NPC2 initial position:', npc2.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc2);
@@ -68,7 +71,7 @@ const loadNPC2 = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC2 model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC2 model: ' + error.message);
   });
 };
 
@@ -82,7 +85,7 @@ const loadNPC3 = (scene) => {
     scene.add(npc3); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC3 initial position:', npc3.position);
+    if (debugMode) console.log('NPC3 initial position:', npc3.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc3);
@@ -100,7 +103,7 @@ const loadNPC3 = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC3 model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC3 model: ' + error.message);
   });
 };
 
@@ -114,7 +117,7 @@ const loadNPC4 = (scene) => {
     scene.add(npc4); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC4 initial position:', npc4.position);
+    if (debugMode) console.log('NPC4 initial position:', npc4.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc4); 
@@ -132,7 +135,7 @@ const loadNPC4 = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC4 model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC4 model: ' + error.message);
   });
 };
 
@@ -146,7 +149,7 @@ const loadNPC5 = (scene) => {
     scene.add(npc5); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC5 initial position:', npc5.position);
+    if (debugMode) console.log('NPC5 initial position:', npc5.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc5);
@@ -164,7 +167,7 @@ const loadNPC5 = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC5 model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC5 model: ' + error.message);
   });
 };
 
@@ -178,7 +181,7 @@ const loadNPC6 = (scene) => {
     scene.add(npc6); // Add NPC to the scene
 
     // Log the NPC's initial position
-    console.log('NPC6 initial position:', npc6.position);
+    if (debugMode) console.log('NPC6 initial position:', npc6.position);
 
     // Set up animation mixer
     const mixer = new THREE.AnimationMixer(npc6);
@@ -196,7 +199,7 @@ const loadNPC6 = (scene) => {
     };
     animate();
   }, undefined, (error) => {
-    console.error('An error occurred while loading the NPC6 model: ' + error.message);
+    if (debugMode) console.error('An error occurred while loading the NPC6 model: ' + error.message);
   });
 };
 

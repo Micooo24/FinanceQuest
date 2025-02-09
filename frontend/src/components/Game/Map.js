@@ -6,7 +6,10 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { loadBuildings } from './Terrain/Building';
 import { loadCars } from './Terrain/Car';
 import { onPointerMove, onMouseClick, pointer } from './Interaction/helper';
-import { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6  } from './Terrain/NPC';
+import { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6 } from './Terrain/NPC';
+
+// Global debug mode variable
+const debugMode = false;
 
 const Map = ({ scene, camera }) => {
   const assets = {
@@ -20,15 +23,15 @@ const Map = ({ scene, camera }) => {
 
   useEffect(() => {
     if (!scene) {
-      console.error('Scene is not defined in Map component');
+      if (debugMode) console.error('Scene is not defined in Map component');
       return;
     }
     if (!camera) {
-      console.error('Camera is not defined in Map component');
+      if (debugMode) console.error('Camera is not defined in Map component');
       return;
     }
 
-    console.log('Scene and camera are defined in Map component:', scene, camera);
+    if (debugMode) console.log('Scene and camera are defined in Map component:', scene, camera);
 
     const gltfLoader = new GLTFLoader();
     const fbxLoader = new FBXLoader();
@@ -95,9 +98,9 @@ const Map = ({ scene, camera }) => {
         }
 
         layer.add(object);
-        console.log(`${path} loaded and added to the scene`);
+        if (debugMode) console.log(`${path} loaded and added to the scene`);
       }, undefined, (error) => {
-        console.error(`An error occurred while loading ${path}: ${error.message}`);
+        if (debugMode) console.error(`An error occurred while loading ${path}: ${error.message}`);
       });
     };
 
@@ -174,7 +177,7 @@ const Map = ({ scene, camera }) => {
   }, [scene, camera]);
 
   const handleBuildingClick = (buildingName) => {
-    console.log(`Building clicked: ${buildingName}`);
+    if (debugMode) console.log(`Building clicked: ${buildingName}`);
     // Handle building click logic here
   };
 
