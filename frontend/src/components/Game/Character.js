@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
 
-const idlePath = require('../../assets/game/Idle.fbx');
-const walkPath = require('../../assets/game/Walking.fbx');
-const jumpPath = require('../../assets/game/Jumping.fbx');
+const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
+const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Walking_xq8xkz.fbx';
+const jumpPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077533/Jumping_hxqlkv.fbx';
 
 // Coordinates for the bank and NPC
 const bankCoordinates = new THREE.Vector3(-8.084952974061496, 0.6999999999999995, -6.289548765549087);
@@ -51,7 +51,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
   bankModal.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
   bankModal.style.zIndex = '1000';
   bankModal.style.display = 'none'; // Initially hidden
-  bankModal.style.backgroundImage = 'url("https://example.com/bank-interior.jpg")'; // Add a bank interior background image
+  bankModal.style.backgroundImage = 'url("https://res.cloudinary.com/dwp8u82sd/image/upload/v1739076760/bank_y9a4bz.jpg")'; // Add a bank interior background image
   bankModal.style.backgroundSize = 'cover';
   bankModal.style.backgroundPosition = 'center';
   bankModal.style.overflow = 'hidden';

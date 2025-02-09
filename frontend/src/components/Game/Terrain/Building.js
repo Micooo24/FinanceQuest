@@ -5,17 +5,17 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three';
 
 const assets = {
-  building_01: require('../../../assets/game/building_01.fbx'),
-  hospital: require('../../../assets/game/hospital.obj'),
-  hospitalTexture: require('../../../assets/game/hospitalSurface_Color.png'),
-  house1: require('../../../assets/game/house.glb'),
-  largeBuilding: require('../../../assets/game/Large Building.glb'),
-  apartmentBuilding: require('../../../assets/game/Apartment building.glb'),
-  houses: require('../../../assets/game/Houses.glb'),
-  school: require('../../../assets/game/school.glb'),
-  schoolTexture: require('../../../assets/game/school.png'),
-  Bank: require('../../../assets/game/Bank.glb'),
-  shop: require('../../../assets/game/shop.glb'),
+  building_01: 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077544/building_01_mv5zsp.fbx',
+  hospital: 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077537/hospital_r41wiq.obj',
+  hospitalTexture: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077536/hospitalSurface_Color_agyz6e.png',
+  house1: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077531/house_o0jgic.glb',
+  largeBuilding: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077531/Large_Building_popyev.glb',
+  apartmentBuilding: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077530/Apartment_building_vguzuy.glb',
+  houses: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077530/Houses_rg89nr.glb',
+  school: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077530/school_fv9uw1.glb',
+  schoolTexture: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077543/school_umdm2b.png',
+  Bank: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077526/Bank_cfyenl.glb',
+  shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077525/shop_tvtc8d.glb'
 };
 
 // Global debug mode variable

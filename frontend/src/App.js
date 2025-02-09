@@ -18,6 +18,7 @@ function App() {
           style: {
             fontSize: '25px', // Increase font size
             padding: '25px', // Increase padding
+            borderRadius: '50px', // Add rounded edges
           },
         }}
       />

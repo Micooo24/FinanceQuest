@@ -11,9 +11,9 @@ const Mission = () => {
   };
 
   const missions = [
-    { id: 1, name: 'Task 1', completed: true },
-    { id: 2, name: 'Task 2', completed: false },
-    { id: 3, name: 'Task 3', completed: true },
+    { id: 1, name: 'Get Accepted into University', completed: false},
+    { id: 2, name: 'Find a Part-Time Job', completed: false },
+    { id: 3, name: 'Create a Weekly Budget Plan', completed: false },
   ];
 
   return (
