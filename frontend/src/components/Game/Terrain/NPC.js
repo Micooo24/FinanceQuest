@@ -17,7 +17,7 @@ const loadNPC = (scene) => {
   gltfLoader.load(npcPath, (gltf) => {
     const npc = gltf.scene;
     npc.scale.set(1, 1, 1); // Adjust the scale if needed
-    npc.position.set(-6.571751181307473, 0.5, -5.713296781757897); // Set the position to the specified coordinates
+    npc.position.set(-3.827592715703327, 0.6999999999999995, -5.437556845461079); // Set the position to the specified coordinates
     scene.add(npc); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -49,7 +49,7 @@ const loadNPC2 = (scene) => {
   gltfLoader.load(npc2Path, (gltf) => {
     const npc2 = gltf.scene;
     npc2.scale.set(1, 1, 1); // Adjust the scale if needed
-    npc2.position.set(4.988791451309085, 0.6999999999999995, 2.9551386344863566); // Set the position to the specified coordinates
+    npc2.position.set(4.988791451309085, 0.5, 2.9551386344863566); // Set the position to the specified coordinates
     scene.add(npc2); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -81,7 +81,8 @@ const loadNPC3 = (scene) => {
   gltfLoader.load(npc3Path, (gltf) => {
     const npc3 = gltf.scene;
     npc3.scale.set(1, 1, 1); // Adjust the scale if needed
-    npc3.position.set(-1.4618297841309467, 0.6999999999999995, 32.37681833857714); // Set the position to the specified coordinates
+    npc3.position.set(-1.4618297841309467, 0.5, 32.37681833857714); // Set the position to the specified coordinates
+    npc3.rotation.y = Math.PI; // Rotate the NPC to 30 degrees
     scene.add(npc3); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -112,8 +113,8 @@ const loadNPC4 = (scene) => {
 
   gltfLoader.load(npc4Path, (gltf) => {
     const npc4 = gltf.scene;
-    npc4.scale.set(0.5, 0.5, 0.5); // Adjust the scale if needed
-    npc4.position.set(-21.237018260660506, 0.6999999999999995, 12.04255223695793); // Set the position to the specified coordinates
+    npc4.scale.set(0.3, 0.3, 0.3); // Adjust the scale if needed
+    npc4.position.set(-21.237018260660506, 0.5, 12.04255223695793); // Set the position to the specified coordinates
     scene.add(npc4); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -144,8 +145,8 @@ const loadNPC5 = (scene) => {
 
   gltfLoader.load(npc5Path, (gltf) => {
     const npc5 = gltf.scene;
-    npc5.scale.set(0.7, 0.7, 0.7); // Adjust the scale if needed
-    npc5.position.set(-23.230934589425242, 0.6999999999999995, -9.172435066843477); // Set the position to the specified coordinates
+    npc5.scale.set(0.5, 0.5, 0.5); // Adjust the scale if needed
+    npc5.position.set(-24.379178316021466, 0.6999999999999995, -3.5041644738649715); // Set the position to the specified coordinates
     scene.add(npc5); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -177,7 +178,7 @@ const loadNPC6 = (scene) => {
   gltfLoader.load(npc6Path, (gltf) => {
     const npc6 = gltf.scene;
     npc6.scale.set(1, 1, 1); // Adjust the scale if needed
-    npc6.position.set(14.705890170749713, 0.6999999999999995, -4.925546255337703); // Set the position to the specified coordinates
+    npc6.position.set(14.705890170749713, 0.5, -4.925546255337703); // Set the position to the specified coordinates
     scene.add(npc6); // Add NPC to the scene
 
     // Log the NPC's initial position

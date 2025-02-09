@@ -3,18 +3,18 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
 
 const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
-const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Walking_xq8xkz.fbx';
+const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739094607/Walking_c7lfpe.fbx';
 const jumpPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077533/Jumping_hxqlkv.fbx';
 
 // Coordinates for the bank and NPC
 const bankCoordinates = new THREE.Vector3(-8.084952974061496, 0.6999999999999995, -6.289548765549087);
-const npcCoordinates = new THREE.Vector3(-6.571751181307473, 0.5, -5.713296781757897);
+const npcCoordinates = new THREE.Vector3(-3.827592715703327, 0.6999999999999995, -5.437556845461079);
 
 // Proximity threshold (e.g., 2 units)
 const proximityThreshold = 2;
 
 // Global debug mode variable
-const debugMode = false;
+const debugMode = true;
 
 const loadCharacter = (vehicleLayer, onLoad, camera) => {
   const fbxLoader = new FBXLoader();
@@ -191,7 +191,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
       const walkClip = anim.animations[0];
       walkAction = mixer.clipAction(walkClip);
       walkAction.setLoop(THREE.LoopRepeat);
-      walkAction.setDuration(1.0);
+      walkAction.setDuration(1.0); // Increase duration to make the animation slower
       walkAction.setEffectiveTimeScale(1.0);
       walkAction.setEffectiveWeight(1);
       if (debugMode) console.log('Walk animation loaded:', walkAction);
@@ -227,9 +227,8 @@ const loadCharacter = (vehicleLayer, onLoad, camera) => {
           walkAction.setEffectiveTimeScale(1.0);
           break;
         case 's':
-          character.rotation.y += Math.PI;
-          targetPosition.z += moveSpeed * Math.cos(character.rotation.y);
-          targetPosition.x += moveSpeed * Math.sin(character.rotation.y);
+          targetPosition.z -= moveSpeed * Math.cos(character.rotation.y);
+          targetPosition.x -= moveSpeed * Math.sin(character.rotation.y);
           if (walkAction && !walkAction.isRunning()) {
             if (debugMode) console.log('Starting walk animation');
             idleAction.fadeOut(0.2);

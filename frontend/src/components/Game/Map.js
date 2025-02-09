@@ -7,6 +7,7 @@ import { loadBuildings } from './Terrain/Building';
 import { loadCars } from './Terrain/Car';
 import { onPointerMove, onMouseClick, pointer } from './Interaction/helper';
 import { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6 } from './Terrain/NPC';
+import { loadTrees } from './Terrain/Extra';
 
 // Global debug mode variable
 const debugMode = false;
@@ -46,7 +47,7 @@ const Map = ({ scene, camera }) => {
 
     // Add a ground plane
     const planeGeometry = new THREE.PlaneGeometry(71, 71);
-    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x848884 });
+    const planeMaterial = new THREE.MeshStandardMaterial({ color: 0x645f5e });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = -0.5;
@@ -147,6 +148,8 @@ const Map = ({ scene, camera }) => {
     loadNPC5(scene);
     loadNPC6(scene);
 
+    // Load Trees
+    loadTrees(scene, extraLayer);
     // Add layers to the scene
     scene.add(roadLayer);
     scene.add(buildingLayer);

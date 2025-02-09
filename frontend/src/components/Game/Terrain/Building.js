@@ -15,7 +15,10 @@ const assets = {
   school: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077530/school_fv9uw1.glb',
   schoolTexture: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077543/school_umdm2b.png',
   Bank: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077526/Bank_cfyenl.glb',
-  shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077525/shop_tvtc8d.glb'
+  shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077525/shop_tvtc8d.glb',
+  supermarket: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739099166/supermarket_kteqr7.glb',
+  coffee_shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739099164/coffeeshop_dnlpie.glb',
+  donut_shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739101338/Donut_Store_gmynji.glb'
 };
 
 // Global debug mode variable
@@ -139,23 +142,23 @@ const loadBuildings = (scene, buildingLayer) => {
         });
       }
 
-      if (pulseEffect) {
-        const initialScale = object.scale.clone();
-        const pulseSpeed = 1.5;
-        const pulseScale = 1.1;
+      // if (pulseEffect) {
+      //   const initialScale = object.scale.clone();
+      //   const pulseSpeed = 1.5;
+      //   const pulseScale = 1.1;
 
-        const pulse = () => {
-          const time = clock.getElapsedTime();
-          const scaleFactor = 1 + Math.sin(time * pulseSpeed) * (pulseScale - 1);
-          object.scale.set(
-            initialScale.x * scaleFactor,
-            initialScale.y * scaleFactor,
-            initialScale.z * scaleFactor
-          );
-          requestAnimationFrame(pulse);
-        };
-        pulse();
-      }
+      //   const pulse = () => {
+      //     const time = clock.getElapsedTime();
+      //     const scaleFactor = 1 + Math.sin(time * pulseSpeed) * (pulseScale - 1);
+      //     object.scale.set(
+      //       initialScale.x * scaleFactor,
+      //       initialScale.y * scaleFactor,
+      //       initialScale.z * scaleFactor
+      //     );
+      //     requestAnimationFrame(pulse);
+      //   };
+      //   pulse();
+      // }
 
       buildingLayer.add(object);
       if (debugMode) console.log(`${path} loaded and added to the scene`);
@@ -166,14 +169,17 @@ const loadBuildings = (scene, buildingLayer) => {
 
   const layout = [
     { type: 'building_01', position: [25, 0, 18], scale: [0.01, 0.01, 0.01], isFBX: true, highlightEdges: true },
-    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true, pulseEffect: true, name: 'house1' },
+    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true,  name: 'house1' },
     { type: 'hospital', position: [-30, 3, -30], scale: [0.03, 0.03, 0.03], isOBJ: true, texturePath: assets.hospitalTexture, highlightEdges: true },
     { type: 'largeBuilding', position: [-15, 0, 20], rotation: [0, Math.PI / 2, 0], scale: [8, 8, 8], highlightEdges: true },
     { type: 'apartmentBuilding', position: [-15, 0, 8], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true },
     { type: 'houses', position: [-27, 0, 15], scale: [8, 8, 8], highlightEdges: true },
-    { type: 'school', position: [30.4, 0, -21], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, pulseEffect: true, name: 'school' },
-    { type: 'Bank', position: [-11, 0, -11], rotation: [0, Math.PI / -2, 0], scale: [0.02, 0.02, 0.02], highlightEdges: true, pulseEffect: true, name: 'Bank' },
-    { type: 'shop', position: [12, 0, 20], rotation: [0, Math.PI / -2, 0], scale: [70, 70, 70], highlightEdges: true, pulseEffect: true, name: 'shop' },
+    { type: 'school', position: [30.4, 0, -21], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, name: 'school' },
+    { type: 'Bank', position: [-11, 0, -11], rotation: [0, Math.PI / -2, 0], scale: [0.02, 0.02, 0.02], highlightEdges: true,  name: 'Bank' },
+    { type: 'shop', position: [12, 0, 27], rotation: [0, Math.PI / -2, 0], scale: [70, 70, 70], highlightEdges: true,  name: 'shop' },
+    { type: 'supermarket', position: [-10, 0, -22.6663653383522], rotation: [0, -Math.PI / 2, 0], scale: [8, 8, 8], highlightEdges: true,  name: 'supermarket' },
+    { type: 'coffee_shop', position: [-23, 0, -12], rotation: [0, 0, 0], scale: [5, 5, 5], highlightEdges: true, name: 'coffee_shop' },
+    { type: 'donut_shop', position: [13, 2, 12.681531645492328], rotation: [0, Math.PI / 2, 0], scale: [2, 2, 2], highlightEdges: true, name: 'bakery' },
   ];
 
   layout.forEach(({ type, position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect, name }) => {
