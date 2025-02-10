@@ -29,7 +29,7 @@ function App() {
         <Route path="/gameplay" element={<Gameplay />} />
       </Routes>
     </Router>
-  );
+  );  
 }
 
 export default App;
