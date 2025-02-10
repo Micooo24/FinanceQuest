@@ -19,6 +19,7 @@ class User(BaseModel):
     character_id: Optional[ObjectId] = None  # Add this line to include character_id
     firebaseuid: Optional[str] = None  # Add this line to include firebaseuid
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))  # Add created_at field
+    verified: bool = False  # Add verified field
 
 
     class Config:
