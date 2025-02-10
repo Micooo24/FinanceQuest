@@ -9,6 +9,7 @@ import Minigame from "./components/Minigames/Minigame";
 import BudgetingPage from "./components/Minigames/Budgeting/BudgetingPage";
 import SavingPage from "./components/Minigames/Saving/SavingPage";
 import InvestingPage from "./components/Minigames/Investing/InvestingPage";
+import Gameplay from "./components/Game/Gameplay";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/budgeting" element={<BudgetingPage />} />
         <Route path="/saving" element={<SavingPage />} />
         <Route path="/investment" element={<InvestingPage />} />
+        <Route path="/gameplay" element={<Gameplay />} />
       </Routes>
     </Router>
   );
