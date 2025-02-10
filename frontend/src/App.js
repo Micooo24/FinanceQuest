@@ -5,35 +5,28 @@ import Signup from "./components/Auth/Signup";
 import Login from "./components/Auth/Login";
 import GameFeatures from "./components/LandingPage/GameFeatures";
 import LoadingPage from "./components/Homepage/LoadingPage";
-import Gameplay from "./components/Game/Gameplay";
-import { Toaster } from 'react-hot-toast';
+import Minigame from "./components/Minigames/Minigame";
+import BudgetingPage from "./components/Minigames/Budgeting/BudgetingPage";
+import SavingPage from "./components/Minigames/Saving/SavingPage";
+import InvestingPage from "./components/Minigames/Investing/InvestingPage";
 
 function App() {
   return (
-    <>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{
-          style: {
-            fontSize: '25px', // Increase font size
-            padding: '25px', // Increase padding
-            borderRadius: '50px', // Add rounded edges
-          },
-        }}
-      />
-      <Router>
-        <Routes>
-          {/* Route for Landing Page */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/gamefeatures" element={<GameFeatures />} />
-          <Route path="/loading" element={<LoadingPage />} />
-          <Route path="/gameplay" element={<Gameplay />} /> {/* Add the Gameplay route */}
-        </Routes>
-      </Router>
-    </>
+    <Router>
+      <Routes>
+        {/* Route for Landing Page */}
+        <Route path="/" element={<LandingPage />} />
+
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/gamefeatures" element={<GameFeatures />} />
+        <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/miniGame" element={<Minigame />} />
+        <Route path="/budgeting" element={<BudgetingPage />} />
+        <Route path="/saving" element={<SavingPage />} />
+        <Route path="/investment" element={<InvestingPage />} />
+      </Routes>
+    </Router>
   );
 }
 
