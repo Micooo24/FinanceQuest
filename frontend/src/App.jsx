@@ -16,9 +16,23 @@ import Explore from "./components/LandingPage/Explore";
 import SavingPage from "./components/Minigames/Saving/SavingPage";
 import InvestingPage from "./components/Minigames/Investing/InvestingPage";
 import Gameplay from "./components/Game/Gameplay";
+import { Toaster } from 'react-hot-toast';
+
 
 function App() {
   return (
+    <>
+    <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: '25px', // Increase font size
+            padding: '25px', // Increase padding
+            borderRadius: '50px', // Add rounded edges
+          },
+        }}
+      />
     <Router>
       <Routes>
         {/* Route for Landing Page */}
@@ -42,7 +56,9 @@ function App() {
 
       </Routes>
     </Router>
+    </>
   );
 }
+
 
 export default App;
