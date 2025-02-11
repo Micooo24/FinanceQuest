@@ -8,3 +8,7 @@ uri = "mongodb+srv://mico:mico123@cluster0.xciyc.mongodb.net/finance_quest?retry
 client = MongoClient(uri, server_api=ServerApi('1'))
 
 db = client.finance_quest
+
+
+# Secret key for signing tokens
+SECRET_KEY = "b6562e66f1c68ffe24fa"
