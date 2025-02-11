@@ -29,7 +29,7 @@ async def register(
     password: str = Form(...),
     birthday: date = Form(...), 
     disabled: bool = Form(False),
-    img: UploadFile = File(...)
+    img: UploadFile = File(None)  # Make img optional
 ):
     try:
         if db["users"].find_one({"email": email}):
@@ -37,12 +37,15 @@ async def register(
         
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         
-        try:
-            result = cloudinary.uploader.upload(img.file)
-            img_url = result.get("secure_url")
-        except Exception as e:
-            logger.error(f"Image upload failed: {str(e)}")
-            raise HTTPException(status_code=500, detail=f"Image upload failed: {str(e)}")
+        img_url = None
+        if img:
+            try:
+                # Ensure the "users" folder exists in Cloudinary
+                result = cloudinary.uploader.upload(img.file, folder="users")
+                img_url = result.get("secure_url")
+            except Exception as e:
+                logger.error(f"Image upload failed: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Image upload failed: {str(e)}")
         
         birthday_str = birthday.strftime("%Y-%m-%d")
         
