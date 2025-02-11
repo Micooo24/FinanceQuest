@@ -52,7 +52,7 @@ async def register(
             "password": hashed_password.decode('utf-8'),
             "birthday": birthday_str,
             "img_path": img_url,
-            "disabled": disabled,
+            # "disabled": disabled,
             "role": Role.user  
         }
         inserted_user = db["users"].insert_one(user_dict)
