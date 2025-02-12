@@ -2,12 +2,12 @@ from fastapi import APIRouter, HTTPException, File, UploadFile, Form, Request
 from fastapi.responses import JSONResponse
 
 # MongoDB and Secret Key
-from config_db import db  
-from config_db import SECRET_KEY
+from config.db import db  
+from config.db import SECRET_KEY
 
 # Cloudinary
 import cloudinary.uploader
-import config_cloudinary 
+import config.cloudinary 
 # Logging
 import logging
 
@@ -20,7 +20,7 @@ from models.users import Role
 from fastapi import Body
 
 # Mailtrap
-from config_mailtrap import MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM
+from config.mailtrap import MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize the serializer with the SECRET_KEY
 serializer = URLSafeTimedSerializer(SECRET_KEY)
+
 def send_verification_email(email: str, token: str):
     subject = "Email Verification"
     verification_url = f"http://localhost:8000/users/verify-email?token={token}"
@@ -65,7 +66,6 @@ def send_verification_email(email: str, token: str):
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to send email")
-
 
 @router.post("/register")
 async def register(
@@ -272,7 +272,8 @@ async def google_login(request: Request):
                 "birthday": birthday,
                 "img_path": img_path,
                 "firebase_uid": user_record.uid,
-                "role": Role.user
+                "role": Role.user,
+                "verified": True
             }
             inserted_user = db["users"].insert_one(user_dict)
             user_dict["_id"] = str(inserted_user.inserted_id)
@@ -296,8 +297,8 @@ async def google_login(request: Request):
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
     
-@router.post("/facebook-signup")
-async def facebook_signup(request: Request):
+# @router.post("/facebook-signup")
+# async def facebook_signup(request: Request):
     try:
         body = await request.json()
         token = body.get("token")

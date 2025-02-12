@@ -13,7 +13,6 @@ const investingFacts = [
 ];
 
 let currentFactIndex = 0;
-
 const initializeNPCInteraction = () => {
   // Create a modal for the NPC interaction
   const npcModal = document.createElement('div');
@@ -31,25 +30,40 @@ const initializeNPCInteraction = () => {
   npcModal.style.display = 'none'; // Initially hidden
   npcModal.innerHTML = `
     <div style="padding: 20px; text-align: center;">
-      <h2 id="npcMessage" style="margin-bottom: 20px;">Hello, are you interested in investing?</h2>
-      <div id="npcChoices">
-        <button id="yes" style="padding: 10px 20px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
-        <button id="no" style="padding: 10px 20px; background-color: #C0C0C0; color: black; border: none; border-radius: 5px; cursor: pointer;">No</button>
+      <div id="npcChoices" style="display: flex; justify-content: center; align-items: center;">
+        <button id="leftArrow" style="padding: 10px; background-color: transparent; border: none; cursor: pointer;">&#9664;</button>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <button id="yes" style="padding: 10px 20px; margin-bottom: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">Yes</button>
+          <button id="no" style="padding: 10px 20px; background-color: #C0C0C0; color: black; border: none; border-radius: 5px; cursor: pointer;">No</button>
+        </div>
+        <button id="rightArrow" style="padding: 10px; background-color: transparent; border: none; cursor: pointer;">&#9654;</button>
       </div>
     </div>
   `;
   document.body.appendChild(npcModal);
 
-  // Event listeners for NPC modal buttons
-  npcModal.querySelector('#yes').addEventListener('click', () => {
+  let selectedButton = 'yes';
+
+  const updateSelection = () => {
+    document.getElementById('yes').style.backgroundColor = selectedButton === 'yes' ? '#4CAF50' : '#C0C0C0';
+    document.getElementById('no').style.backgroundColor = selectedButton === 'no' ? '#4CAF50' : '#C0C0C0';
+  };
+
+  document.getElementById('leftArrow').addEventListener('click', () => {
+    selectedButton = selectedButton === 'yes' ? 'no' : 'yes';
+    updateSelection();
+  });
+
+  document.getElementById('rightArrow').addEventListener('click', () => {
+    selectedButton = selectedButton === 'yes' ? 'no' : 'yes';
+    updateSelection();
+  });
+
+  document.getElementById('yes').addEventListener('click', () => {
     if (currentFactIndex < investingFacts.length) {
-      const npcMessage = document.getElementById('npcMessage');
-      npcMessage.innerText = investingFacts[currentFactIndex];
       toast(investingFacts[currentFactIndex]);
       currentFactIndex++;
     } else {
-      const npcMessage = document.getElementById('npcMessage');
-      npcMessage.innerText = 'Thank you for listening to all the facts!';
       toast('Thank you for listening to all the facts!');
       const npcChoices = document.getElementById('npcChoices');
       npcChoices.innerHTML = `
@@ -63,11 +77,13 @@ const initializeNPCInteraction = () => {
     }
   });
 
-  npcModal.querySelector('#no').addEventListener('click', () => {
+  document.getElementById('no').addEventListener('click', () => {
     toast('You declined the offer.');
     npcModal.style.display = 'none'; // Hide the NPC modal
     currentFactIndex = 0; // Reset the fact index for the next interaction
   });
+
+  updateSelection(); // Initialize the selection
 };
 
 const updateNPCInteractionButton = (characterPosition, interactionButton) => {
