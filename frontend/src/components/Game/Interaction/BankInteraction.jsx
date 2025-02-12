@@ -14,7 +14,7 @@ const initializeBankInteraction = () => {
     body {
       font-family: 'Open Sans';
       line-height: 200%;
-      background: #d75f70;
+  
     }
 
     .main {
@@ -106,7 +106,7 @@ const initializeBankInteraction = () => {
       right: 10px;
       transition: all ease 0.5s;
       border-radius: 1000px;
-      background: #d75f70;
+
       font-weight: bold;
       text-decoration: none;
       color: #fff;

@@ -8,7 +8,7 @@ import Mission from './Mission';
 import { onPointerMove, onMouseClick } from './Interaction/helper';
 import StatsJS from 'stats.js';
 import './Gameplay.css'; // Import the CSS file
-const backgroundMusic = 'https://res.cloudinary.com/dwp8u82sd/video/upload/v1739117255/music_oxl9oy.mp3'; // URL of the MP3 file
+// const backgroundMusic = 'https://res.cloudinary.com/dwp8u82sd/video/upload/v1739117255/music_oxl9oy.mp3'; // URL of the MP3 file
 
 // Global debug mode variable
 let debugMode = false;
@@ -107,9 +107,9 @@ const Gameplay = () => {
     window.addEventListener('click', (event) => onMouseClick(event, camera, scene, handleBuildingClick));
 
     // Play background music
-    const audio = new Audio(backgroundMusic);
-    audio.loop = true;
-    audio.play();
+    // const audio = new Audio(backgroundMusic);
+    // audio.loop = true;
+    // audio.play();
 
     // Clean up on component unmount
     return () => {
@@ -122,8 +122,8 @@ const Gameplay = () => {
       }
       renderer.dispose();
       document.body.removeChild(stats.dom);
-      audio.pause();
-      audio.currentTime = 0;
+      // audio.pause();
+      // audio.currentTime = 0;
     };
   }, [gameStarted]);
 

@@ -37,7 +37,7 @@ function App() {
       <Routes>
         {/* Route for Landing Page */}
         <Route path="/" element={<LandingPage />} />
-
+        <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/gamefeatures" element={<GameFeatures />} />
@@ -52,7 +52,6 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/saving" element={<SavingPage />} />
         <Route path="/investment" element={<InvestingPage />} />
-        <Route path="/gameplay" element={<Gameplay />} />
 
       </Routes>
     </Router>
