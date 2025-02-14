@@ -10,5 +10,4 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.finance_quest
 
 
-# Secret key for signing tokens
-SECRET_KEY = "b6562e66f1c68ffe24fa"
+

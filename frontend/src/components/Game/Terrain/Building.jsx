@@ -18,7 +18,8 @@ const assets = {
   shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077525/shop_tvtc8d.glb',
   supermarket: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739099166/supermarket_kteqr7.glb',
   coffee_shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739099164/coffeeshop_dnlpie.glb',
-  donut_shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739101338/Donut_Store_gmynji.glb'
+  donut_shop: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739101338/Donut_Store_gmynji.glb',
+  private_school: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739374560/privateschool_dvoxlm.glb' // Add the new building
 };
 
 // Global debug mode variable
@@ -169,17 +170,18 @@ const loadBuildings = (scene, buildingLayer) => {
 
   const layout = [
     { type: 'building_01', position: [25, 0, 18], scale: [0.01, 0.01, 0.01], isFBX: true, highlightEdges: true },
-    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true,  name: 'house1' },
+    { type: 'house1', position: [-15, 3, 30], rotation: [0, -Math.PI / 2, 0], scale: [5, 5, 5], highlightEdges: true, name: 'house1' },
     { type: 'hospital', position: [-30, 3, -30], scale: [0.03, 0.03, 0.03], isOBJ: true, texturePath: assets.hospitalTexture, highlightEdges: true },
     { type: 'largeBuilding', position: [-15, 0, 20], rotation: [0, Math.PI / 2, 0], scale: [8, 8, 8], highlightEdges: true },
     { type: 'apartmentBuilding', position: [-15, 0, 8], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true },
-    { type: 'houses', position: [-27, 0, 15], scale: [8, 8, 8], highlightEdges: true },
+    { type: 'houses', position: [-28.011252865906858, 0, 27], rotation: [0, Math.PI, 0], scale: [7, 7, 7], highlightEdges: true },
     { type: 'school', position: [30.4, 0, -21], rotation: [0, Math.PI / -1, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, name: 'school' },
     { type: 'Bank', position: [-11, 0, -11], rotation: [0, Math.PI / -2, 0], scale: [0.02, 0.02, 0.02], highlightEdges: true,  name: 'Bank' },
     { type: 'shop', position: [12, 0, 27], rotation: [0, Math.PI / -2, 0], scale: [70, 70, 70], highlightEdges: true,  name: 'shop' },
     { type: 'supermarket', position: [-10, 0, -22.6663653383522], rotation: [0, -Math.PI / 2, 0], scale: [8, 8, 8], highlightEdges: true,  name: 'supermarket' },
     { type: 'coffee_shop', position: [-23, 0, -12], rotation: [0, 0, 0], scale: [5, 5, 5], highlightEdges: true, name: 'coffee_shop' },
     { type: 'donut_shop', position: [13, 2, 12.681531645492328], rotation: [0, Math.PI / 2, 0], scale: [2, 2, 2], highlightEdges: true, name: 'bakery' },
+    { type: 'private_school', position: [-29.086473248892965, 0, 12],  rotation:[0, Math.PI, 0], scale: [0.8, 0.8, 0.8], highlightEdges: true, name: 'private_school' } // Add the new building
   ];
 
   layout.forEach(({ type, position, rotation, scale, isFBX, isOBJ, texturePath, highlightEdges, pulseEffect, name }) => {

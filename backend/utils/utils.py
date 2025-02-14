@@ -2,11 +2,13 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from config_db import db  # Import the MongoDB database
+from config.db import db  # Import the MongoDB database
 from bson import ObjectId
 import logging
 
+# Secret key for signing tokens
 SECRET_KEY = "b6562e66f1c68ffe24fa"
+
 ALGORITHM = "HS256"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

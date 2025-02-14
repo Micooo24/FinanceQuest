@@ -114,7 +114,7 @@ const loadNPC4 = (scene) => {
   gltfLoader.load(npc4Path, (gltf) => {
     const npc4 = gltf.scene;
     npc4.scale.set(0.4, 0.4, 0.4); // Adjust the scale if needed
-    npc4.position.set(-21.237018260660506, 0.2, 12.04255223695793); // Set the position to the specified coordinates
+    npc4.position.set(-19.6094392563778, 0.2, 28.64377086354049); // Set the position to the specified coordinates
     scene.add(npc4); // Add NPC to the scene
 
     // Log the NPC's initial position

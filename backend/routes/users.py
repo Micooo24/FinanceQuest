@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 
 # MongoDB and Secret Key
 from config.db import db  
-from config.db import SECRET_KEY
+from utils.utils import SECRET_KEY
 
 # Cloudinary
 import cloudinary.uploader
@@ -14,7 +14,7 @@ import logging
 from itsdangerous import URLSafeTimedSerializer
 from bson import ObjectId
 import bcrypt
-from utils import create_access_token
+from utils.utils import create_access_token
 from datetime import timedelta, datetime, date  
 from models.users import Role
 from fastapi import Body
@@ -101,7 +101,8 @@ async def register(
             "birthday": birthday_str,
             "img_path": img_url,
             "verified": verified,
-            "role": Role.user  
+            "role": Role.user,
+            "created_at": datetime.now()  # Add created_at field
         }
         inserted_user = db["users"].insert_one(user_dict)
         user_dict["_id"] = str(inserted_user.inserted_id)
@@ -152,10 +153,27 @@ async def login(
         access_token_expires = timedelta(minutes=30)
         access_token = create_access_token(data={"sub": user["email"]}, expires_delta=access_token_expires)
         
+        # Initialize stats for the user if they don't already exist
+        user_id = user["_id"]
+        existing_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+        if not existing_stats:
+            new_stats = {
+                "user_id": ObjectId(user_id),
+                "health": 100,
+                "level": 1,
+                "money": 5000,
+                "experience": 0,
+                "location": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+            db["stats"].insert_one(new_stats)
+        
         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    
     
 @router.post("/google-signup")
 async def google_signup(request: Request):
