@@ -16,30 +16,42 @@ import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
 
-
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [img, setImg] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Username:", username);
+    console.log("Birthday:", birthday);
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("username", username);
+    formData.append("birthday", birthday);
+    formData.append("img", img);
+
     try {
-      const response = await axios.post("http://127.0.0.1:8000/users/register", {
-        email,
-        password,
-        username,
-        birthday,
+      const response = await axios.post("http://127.0.0.1:8000/users/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       if (response.status === 200) {
         alert("Signup successful!");
         navigate("/login");
       }
     } catch (err) {
+      console.error(err);
       alert("Signup failed. Please try again.");
     }
   };
@@ -202,9 +214,19 @@ const Signup = () => {
                 InputProps={{ startAdornment: <Cake /> }}
                 InputLabelProps={{ shrink: true }}
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'" ,color: "white",
-            backgroundColor: "#451d6b",
-            "&:hover": { backgroundColor: "#8c2fc7" }}}>
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
+              >
+                Upload Image
+                <input
+                  type="file"
+                  hidden
+                  onChange={(e) => setImg(e.target.files[0])}
+                />
+              </Button>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}>
                 SIGNUP
               </Button>
             </Box>
@@ -222,7 +244,6 @@ const Signup = () => {
                   height: 50,
                   transition: "0.3s",
                   "&:hover": { backgroundColor: "#C1351D" },
-                  
                 }}
               >
                 <GoogleIcon />
@@ -243,7 +264,7 @@ const Signup = () => {
             </Box>
 
             <Typography variant="body2" sx={{ mt: 2, fontFamily: "'Lilita One'", color: "#331540" }}>
-              Already have an account? <Button onClick={() => navigate("/login")} sx={{ color: "#331540" ,fontFamily: "'Lilita One'"}}>Login</Button>
+              Already have an account? <Button onClick={() => navigate("/login")} sx={{ color: "#331540", fontFamily: "'Lilita One'" }}>Login</Button>
             </Typography>
           </Box>
         </Grid>

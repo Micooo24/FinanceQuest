@@ -13,14 +13,31 @@ import Blog from "./components/LandingPage/Blog";
 import Budgeting from "./components/LandingPage/Budgeting";
 import Minigame from "./components/Homepage/Minigame";
 import Explore from "./components/LandingPage/Explore";
+import SavingPage from "./components/Minigames/Saving/SavingPage";
+import InvestingPage from "./components/Minigames/Investing/InvestingPage";
+import Gameplay from "./components/Game/Gameplay";
+import { Toaster } from 'react-hot-toast';
+
 
 function App() {
   return (
+    <>
+    <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: '25px', // Increase font size
+            padding: '25px', // Increase padding
+            borderRadius: '50px', // Add rounded edges
+          },
+        }}
+      />
     <Router>
       <Routes>
         {/* Route for Landing Page */}
         <Route path="/" element={<LandingPage />} />
-
+        <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/gamefeatures" element={<GameFeatures />} />
@@ -33,10 +50,14 @@ function App() {
         <Route path="/blogs" element={<Blog />} />
         <Route path="/budgeting" element={<Budgeting />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/saving" element={<SavingPage />} />
+        <Route path="/investment" element={<InvestingPage />} />
 
       </Routes>
     </Router>
+    </>
   );
 }
+
 
 export default App;

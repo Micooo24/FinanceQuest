@@ -1,0 +1,439 @@
+/* Overall Container */
+.minigame-container {
+  /* background-image: url("https://source.unsplash.com/featured/?nature,forest"); */
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px; /* Circle size */
+  height: 50px; /* Circle size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid #fff; /* White border */
+  border-radius: 50%; /* Circular shape */
+  background-color: transparent; /* No background */
+}
+
+.back-button::before {
+  content: "";
+  display: block;
+  width: 12px; /* Arrow width */
+  height: 12px; /* Arrow height */
+  border-left: 4px solid #fff; /* Left stroke of the arrow */
+  border-bottom: 4px solid #fff; /* Bottom stroke of the arrow */
+  transform: rotate(45deg); /* Rotates to create the '<' shape */
+}
+
+/* Title Section */
+.title-container {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative; /* Enable positioning for child elements */
+  border: 2px solid #003366; /* Dark blue border */
+  background-color: rgba(0, 0, 50, 0.8);
+  border-radius: 80px; /* Rounded corners */
+  padding: 20px; /* Add some space inside the container */
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Adjust this based on your layout */
+  width: 40%;
+}
+
+.title {
+  font-size: 32px;
+  margin: 0;
+  border-radius: 50%;
+  padding: 10px 20px;
+  border-radius: 10px;
+  width: 100%;
+  height: 100px;
+  display: flex; /* Align content inside title */
+  justify-content: center; /* Center the text horizontally */
+  align-items: center; /* Center the text vertically */
+  position: relative;
+  z-index: 1; /* Ensure text stays above dots */
+}
+
+/* Indicator Dots */
+.indicators {
+  margin-top: 10px;
+  position: absolute;
+  top: 10px; /* Adjust position inside title */
+  left: 50%; /* Center horizontally */
+  transform: translateX(
+    -50%
+  ); /* Correct centering due to absolute positioning */
+  display: flex;
+  gap: 8px;
+  z-index: 2; /* Ensure dots appear above the title background */
+}
+
+.indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Options Section */
+.options-container {
+  text-align: center;
+  outline: none;
+}
+
+.option {
+  font-size: 35px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center; /* Align arrow and text vertically */
+  justify-content: center; /* Center content */
+  position: relative;
+  font-family: "Fraunces", serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-right: 30px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.arrow {
+  font-size: 20px;
+  color: #fff;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  position: absolute;
+  right: 0px; /* Position it to the right */
+  transform: translateY(-50%);
+}
+
+.option:hover .arrow,
+.option.selected .arrow {
+  /* Ensure arrow shows on hover or selection */
+  opacity: 1;
+  transform: translateX(10px); /* Move the arrow slightly */
+}
+
+.option.selected span {
+  font-size: 37px; /* Increase the font size when selected */
+  transform: scale(1); /* Optional: Scale the option to make it bigger */
+  transition: font-size 0.3s ease, transform 0.3s ease;
+  color: white; /* Text color */
+  -webkit-text-stroke: 1px rgb(255, 255, 255); /* Border around the text, dark blue */
+}
+
+.option.selected {
+  background-color: transparent;
+}
+
+.LoadingPage {
+  text-align: center; /* Centers the text */
+  font-family: "Fraunces", serif;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.LoadingPage h1 {
+  font-size: 150px;
+  margin-bottom: 150px;
+  letter-spacing: 10px;
+}
+
+.LoadingPage p {
+  font-size: 40px;
+}
+.loading-container {
+  width: 80%; /* Adjust as needed */
+  height: 30px; /* Height of the loading bar */
+  border: 3px solid #003366; /* Border color */
+  border-radius: 80px; /* Rounded corners */
+  overflow: hidden; /* Ensures the bar stays within the border */
+  margin: 50px auto; /* Centers the loading bar */
+  background-color: #f3f3f3; /* Background color inside the border */
+}
+/* Outer border container */
+.loading-bar-border {
+  height: 7vh; /* Use viewport height for responsive height */
+  width: 30vw; /* Use viewport width for responsive width */
+  border-radius: 50px;
+  border: 2px solid white; /* Visible white border */
+  display: flex;
+  align-items: center; /* Center align the inner bar vertically */
+  justify-content: center; /* Center the inner bar horizontally */
+  padding: 2px; /* Padding to adjust positioning */
+  box-sizing: border-box; /* Include padding in total size */
+}
+
+/* Inner animated loading bar */
+.loading-bar {
+  height: 88%; /* Use a percentage for height */
+  width: 99%; /* Full width of the parent container */
+  border-radius: 50px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    white 100%
+  ); /* Initial gradient */
+  background-size: 200% 100%; /* Double the size for animation */
+  background-position: 0 0; /* Start position */
+  animation: loading-background 7s ease-in-out infinite; /* Smooth background animation */
+}
+
+/* Animation keyframes */
+@keyframes loading-background {
+  0% {
+    background-position: 0 0; /* Start from the left */
+  }
+  100% {
+    background-position: -100% 0; /* Move to the right */
+  }
+}
+
+.how-to-play {
+  text-align: center; /* Centers the text */
+  font-family: "Fraunces", serif;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.how-to-play .objectives {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative; /* Enable positioning for child elements */
+  border: 4px solid #003366; /* Dark blue border */
+  background-color: rgba(0, 0, 50, 0.8);
+  border-radius: 100px; /* Rounded corners */
+  padding: 20px; /* Add some space inside the container */
+  align-items: center;
+  justify-content: space-between; /* Adjust this based on your layout */
+  width: 150vh;
+  height: 75vh;
+  font-weight: bold;
+}
+.how-to-play h1 {
+  font-size: 7vh;
+}
+
+.how-to-play p {
+  font-size: 4vh;
+  text-align: left;
+  margin-left: 5vh;
+}
+
+.skip-button {
+  font-family: "Fraunces", serif;
+  background-color: transparent;
+  color: white;
+  font-size: 40px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 2vh;
+  margin-bottom: 4vh;
+  margin-left: 185vh;
+  margin-top: -15vh;
+}
+
+.skip-button:hover {
+  background-color: white;
+  color: #003366;
+}
+
+.skip-button:focus {
+  outline: none;
+}
+
+.game-container {
+  text-align: center; /* Centers the text */
+  font-family: "Fraunces", serif;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.game-questions-container {
+  font-family: "Fraunces", serif;
+  text-align: center;
+  margin-bottom: 10%;
+  position: relative; /* Enable positioning for child elements */
+  border: 3px solid #003366; /* Dark blue border */
+  background-color: rgba(0, 0, 50, 0.8);
+  border-radius: 100px; /* Rounded corners */
+  padding: 20px; /* Add some space inside the container */
+  align-items: center;
+  justify-content: space-between; /* Adjust this based on your layout */
+  width: 100vh;
+  height: 25vh;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.game-questions-container .questions {
+  font-size: 30px;
+  top: 5vh;
+  position: absolute; /* Fixes the position */
+  width: 100%; /* Ensures it spans the full width */
+  left: 0; /* Positions it at the left edge */
+  z-index: 10; /* Optional: Keeps it above other elements */
+}
+
+.game-option {
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the buttons horizontally */
+  justify-content: center;
+  top: 15vh;
+  position: relative; /* Keeps the option in a consistent spot below the question */
+}
+
+.game-option button {
+  font-family: "Fraunces", serif;
+  text-align: left;
+  justify-content: space-between;
+  position: relative; /* Position it relative to its parent */
+  border: 3px solid #003366; /* Dark blue border */
+  background-color: rgba(0, 0, 50, 0.8);
+  border-radius: 100px; /* Rounded corners */
+  padding: 10px 20px; /* Add some space inside the container */
+  width: 80vh; /* Full width of the parent container */
+  height: 10vh;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 2vh;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 10px;
+  transition: all 0.3s ease;
+  background-position: center;
+}
+
+.game-option button:hover {
+  border-color: #0879eb;
+}
+
+.game-option button.correct {
+  border-color: green;
+}
+
+.game-option button.incorrect {
+  border-color: red;
+}
+.game-option button:disabled {
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+.feedback {
+  position: relative;
+  font-size: 20px;
+  color: #ffd800;
+  bottom: 30vh;
+}
+
+.points {
+  font-family: "Fraunces", serif;
+  text-align: center;
+  border: 3px solid #003366; /* Dark blue border */
+  background-color: rgba(0, 0, 50, 0.8);
+  border-radius: 100px; /* Rounded corners */
+  padding: 10px 20px; /* Add some space inside the container */
+  width: 25vh; /* Full width of the parent container */
+  height: 5vh;
+  font-weight: bold;
+  color: #fff;
+  font-size: 25px;
+  position: relative;
+  right: 90vh;
+  bottom: 35vh;
+}
+
+/* Container positioned at the top right */
+.clock-timer {
+  position: absolute;
+  top: 5vh;
+  right: 15vh;
+  width: 100px; /* Adjust size as needed */
+  height: 100px;
+  z-index: 1000; /* Ensure it sits on top of other elements */
+}
+
+/* Clock face styled as a small sphere with a subtle gradient */
+.clock-face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, #888 40%, #444 100%);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Seconds hand */
+.hand {
+  position: absolute;
+  width: 50%; /* Half the width of the clock face */
+  height: 2px; /* Slim hand */
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform-origin: left center;
+  animation: rotate-hand 300s linear infinite;
+}
+
+/* Center dot */
+.center-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Animation to rotate the hand 360° over 60 seconds */
+@keyframes rotate-hand {
+  from {
+    transform: rotate(0deg) translateX(-50%);
+  }
+  to {
+    transform: rotate(360deg) translateX(-50%);
+  }
+}
+
+.time-label {
+  margin-top: 10vh;
+}

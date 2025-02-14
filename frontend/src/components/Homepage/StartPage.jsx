@@ -152,7 +152,7 @@ const StartPage = () => {
   const navigate = useNavigate();
 
   const buttons = [
-    { label: "START", onClick: () => navigate("/game") },
+    { label: "START", onClick: () => navigate("/gameplay") },
     { label: "MENU", onClick: () => navigate("/menu") },
     { label: "HOW TO PLAY", onClick: () => navigate("/howtoplay") },
     { label: "LEADERBOARDS", onClick: () => navigate("/leaderboards") }

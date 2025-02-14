@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from bson import ObjectId
 from typing import Optional
 from models.characters import Character, CharacterType
-from config_db import db  # Import the MongoDB database
-from utils import get_current_user  # Import the function to get the current authenticated user
+from config.db import db  # Import the MongoDB database
+from utils.utils import get_current_user  # Import the function to get the current authenticated user
 import logging
 
 router = APIRouter()
