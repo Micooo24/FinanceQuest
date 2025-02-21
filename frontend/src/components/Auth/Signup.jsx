@@ -8,6 +8,10 @@ import {
   Typography,
   Paper,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { Email, Lock, AccountCircle, Cake, Close } from "@mui/icons-material";
 import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
@@ -22,6 +26,8 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
   const [img, setImg] = useState(null);
+  const [otp, setOtp] = useState("");
+  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   const navigate = useNavigate();
@@ -48,7 +54,7 @@ const Signup = () => {
       });
       if (response.status === 200) {
         alert("Signup successful!");
-        navigate("/login");
+        setOtpDialogOpen(true);
       }
     } catch (err) {
       console.error(err);
@@ -79,6 +85,20 @@ const Signup = () => {
       navigate("/login");
     } catch (error) {
       alert("Facebook signup failed");
+    }
+  };
+
+  const handleOtpSubmit = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email, otp });
+      if (response.status === 200) {
+        alert("Email verification successful!");
+        setOtpDialogOpen(false);
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("OTP verification failed. Please try again.");
     }
   };
 
@@ -269,6 +289,25 @@ const Signup = () => {
           </Box>
         </Grid>
       </Grid>
+
+      {/* OTP Verification Dialog */}
+      <Dialog open={otpDialogOpen} onClose={() => setOtpDialogOpen(false)}>
+        <DialogTitle>Enter OTP</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="OTP"
+            variant="outlined"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOtpDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleOtpSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

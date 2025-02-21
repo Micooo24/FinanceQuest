@@ -204,6 +204,7 @@ const MenuPage = () => {
     { label: "Music", onClick: () => setShowModal(true) }, // Open the modal on Music button click
       { label: "Logout", onClick: () => {
         localStorage.removeItem("authToken");
+        localStorage.removeItem("userRole")
         toast.success("Logged out successfully!");  
         navigate("/");
       }
