@@ -14,7 +14,7 @@ import ChecklistModal from '../Checklist/ChecklistModal';
 import { Button } from '@mui/material';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
-const Quest1 = ({ onComplete }) => {  
+const Quest1 = ({ onComplete, setPlayerStats }) => {  
   const [currentModal, setCurrentModal] = useState(1);
   const [rentDecision, setRentDecision] = useState(null);
   const [isQuest1Completed, setIsQuest1Completed] = useState(false);
@@ -43,7 +43,7 @@ const Quest1 = ({ onComplete }) => {
       {currentModal === 4 && <Modal3BoardingHouse onContinue={handleNextModal} />}
       {currentModal === 5 && <Modal4MeetingLandlord onContinue={handleNextModal} />}
       {currentModal === 6 && <Modal5PlayerReaction onContinue={handleNextModal} />}
-      {currentModal === 7 && <Modal6RentDecision onSelectChoice={handleRentDecision} />}
+      {currentModal === 7 && <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />}
       
       {rentDecision === 'pay' && currentModal === 8 && <Modal7A_PayRent onContinue={() => setCurrentModal(9)} />}
       {rentDecision === 'pay' && currentModal === 9 && <Modal8A_LandlordResponse onContinue={handleNextModal} />}

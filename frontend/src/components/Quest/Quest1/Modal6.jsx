@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
+import { updatePlayerMoney } from '../../Utils/decisions';
 
-const Modal6RentDecision = ({ onSelectChoice }) => {
+const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
   const [showModal, setShowModal] = useState(true);
 
-  const handleChoice = (choice) => {
+  const handleChoice = async (choice) => {
     setShowModal(false);
+    if (choice === 'pay') {
+      await updatePlayerMoney(-2500, (newBalance) => {
+        setPlayerStats((prevStats) => ({ ...prevStats, money: newBalance }));
+      });
+    } else if (choice === 'delay') {
+      await updatePlayerMoney(2500, (newBalance) => {
+        setPlayerStats((prevStats) => ({ ...prevStats, money: newBalance }));
+      });
+    }
     onSelectChoice(choice); // Pass the player's decision to the next step
   };
 

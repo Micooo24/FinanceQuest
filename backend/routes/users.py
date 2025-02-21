@@ -169,9 +169,9 @@ async def login(
                 "money": 5000,
                 "experience": 0,
                 "location": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -8.389501036635487,
+                    "y": 0.5,
+                    "z": 33.26385975348472
                 }
             }
             db["stats"].insert_one(new_stats)

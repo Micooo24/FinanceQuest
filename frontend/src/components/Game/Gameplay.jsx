@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import axios from 'axios';
 import { loadCharacter } from './Character';
 import Map from './Map';
 import Menu from './Menu';
@@ -9,6 +10,8 @@ import { onPointerMove, onMouseClick } from './Interaction/helper';
 import StatsJS from 'stats.js';
 import Quest1 from '../Quest/Quest1/Quest1';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
+import Modal6RentDecision from '../Quest/Quest1/Modal6';
+import { updatePlayerMoney } from '../Utils/decisions';
 // import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
 // MUI Imports
@@ -24,6 +27,8 @@ const Gameplay = () => {
   const [popupContent, setPopupContent] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [quest1Completed, setQuest1Completed] = useState(false);
+  const [playerStats, setPlayerStats] = useState(null);
+  const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -34,7 +39,25 @@ const Gameplay = () => {
   const vehicleLayer = new THREE.Group();
 
   useEffect(() => {
-    if (!mountRef.current || !gameStarted) return;
+    const fetchPlayerStats = async () => {
+      const authToken = localStorage.getItem('authToken');
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/stats/get/player', {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        setPlayerStats(response.data);
+      } catch (error) {
+        console.error('Error fetching player stats:', error);
+      }
+    };
+
+    fetchPlayerStats();
+  }, []);
+
+  useEffect(() => {
+    if (!mountRef.current || !gameStarted || !playerStats) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -50,6 +73,7 @@ const Gameplay = () => {
     document.body.appendChild(stats.dom);
 
     let animationId;
+    const initialPosition = new THREE.Vector3(playerStats.location.x, playerStats.location.y, playerStats.location.z);
     loadCharacter(vehicleLayer, (character, mixer) => {
       camera.rotation.y = Math.PI;
       camera.position.set(0, 2, -5);
@@ -68,7 +92,7 @@ const Gameplay = () => {
         stats.end();
       };
       animate();
-    }, camera);
+    }, camera, initialPosition);
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -90,11 +114,15 @@ const Gameplay = () => {
       renderer.dispose();
       document.body.removeChild(stats.dom);
     };
-  }, [gameStarted]);
+  }, [gameStarted, playerStats]);
 
   const handleBuildingClick = (buildingName) => setPopupContent(buildingName);
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const startGame = () => setGameStarted(true);
+
+  const handleRentDecision = (choice) => {
+    setShowRentDecisionModal(false);
+  };
 
   // Cloud Animation Data
   const clouds = [
@@ -162,20 +190,19 @@ const Gameplay = () => {
         </Box>
       )}
 
-      {gameStarted && (
+      {gameStarted && playerStats && (
         <>
-          <Quest1 onComplete={() => setQuest1Completed(true)} />
+          <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} />
           {quest1Completed && <SideQuest1 />}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
-            <Stats health={100} exp={75} level={5} money={1500} />
+            <Stats health={playerStats.health} exp={playerStats.experience} level={playerStats.level} money={playerStats.money} />
           </Box>
 
           <Box sx={{ position: 'absolute', top: 20, right: 20, zIndex: 100 }}>
             <Menu menuOpen={menuOpen} toggleMenu={toggleMenu} />
           </Box>
 
-         
           <Map scene={scene} camera={camera} />
 
           {popupContent && (
@@ -195,6 +222,10 @@ const Gameplay = () => {
               <Typography variant="h5">{popupContent}</Typography>
               <Button onClick={() => setPopupContent(null)}>Close</Button>
             </Box>
+          )}
+
+          {showRentDecisionModal && (
+            <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
           )}
         </>
       )}
