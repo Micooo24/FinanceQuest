@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import users, characters,stats
+import firebase_backend.firebaseconfig
 
 app = FastAPI()
 
