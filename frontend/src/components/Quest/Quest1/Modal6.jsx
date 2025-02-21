@@ -11,10 +11,6 @@ const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
       await updatePlayerMoney(-2500, (newBalance) => {
         setPlayerStats((prevStats) => ({ ...prevStats, money: newBalance }));
       });
-    } else if (choice === 'delay') {
-      await updatePlayerMoney(2500, (newBalance) => {
-        setPlayerStats((prevStats) => ({ ...prevStats, money: newBalance }));
-      });
     }
     onSelectChoice(choice); // Pass the player's decision to the next step
   };
