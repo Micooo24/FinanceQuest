@@ -1,29 +1,40 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LandingPage from "./components/LandingPage/LandingPage";
+
 import Signup from "./components/Auth/Signup";
 import Login from "./components/Auth/Login";
+
+import LandingPage from "./components/LandingPage/LandingPage";
 import GameFeatures from "./components/LandingPage/GameFeatures";
+import About from "./components/LandingPage/About";
+import Blog from "./components/LandingPage/Blog";
+import Budgeting from "./components/LandingPage/Budgeting";
+import Explore from "./components/LandingPage/Explore";
+// import FinanceTracker from "./components/LandingPage/FinanceTracker";
+
 import LoadingPage from "./components/Homepage/LoadingPage";
 import Startpage from "./components/Homepage/StartPage";
 import Menu from "./components/Homepage/Menu";
-import About from "./components/LandingPage/About";
 import Howtoplay from "./components/Homepage/Howtoplay";
-import Blog from "./components/LandingPage/Blog";
-import Budgeting from "./components/LandingPage/Budgeting";
 import Minigame from "./components/Homepage/Minigame";
-import Explore from "./components/LandingPage/Explore";
-import SavingPage from "./components/Minigames/Saving/SavingPage";
-import InvestingPage from "./components/Minigames/Investing/InvestingPage";
+
+import Budget from "./components/Minigames/Budgeting/Budget";
+import Savings from "./components/Minigames/Saving/SavingPage";
+import Investment from "./components/Minigames/Investing/InvestingPage";
+
+//Budgeting-Minigame
+// import BLevel1 from "./components/Minigames/Budget/BLevel1";
+
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
-import Dashboard from "./components/Admin/Dashboard";
-import ProtectedRoute from "./components/Route/ProtectedRoute.jsx";
+import AdminDashboard from "./components/Admin/Dashboard";
+
+
 
 function App() {
   return (
     <>
-      <Toaster
+    <Toaster
         position="top-center"
         reverseOrder={false}
         toastOptions={{
@@ -34,111 +45,46 @@ function App() {
           },
         }}
       />
-      <Router>
-        <Routes>
-          {/* Route for Landing Page */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/howtoplay" element={<Howtoplay />} />
-          <Route path="/blogs" element={<Blog />} />
+    <Router>
+      <Routes>
+        {/* Route for Landing Page */}
 
-          {/* Protected Routes for Users */}
-          <Route
-            path="/gameplay"
-            element={
-              <ProtectedRoute>
-                <Gameplay />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/gamefeatures"
-            element={
-              <ProtectedRoute>
-                <GameFeatures />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/loading"
-            element={
-              <ProtectedRoute>
-                <LoadingPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/start"
-            element={
-              <ProtectedRoute>
-                <Startpage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu"
-            element={
-              <ProtectedRoute>
-                <Menu />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/minigame"
-            element={
-              <ProtectedRoute>
-                <Minigame />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/budgeting"
-            element={
-              <ProtectedRoute>
-                <Budgeting />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/explore"
-            element={
-              <ProtectedRoute>
-                <Explore />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/saving"
-            element={
-              <ProtectedRoute>
-                <SavingPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/investment"
-            element={
-              <ProtectedRoute>
-                <InvestingPage />
-              </ProtectedRoute>
-            }
-          />
+        <Route path="/gameplay" element={<Gameplay />} />
 
-          {/* Protected Route for Admin */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute isAdmin={true}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
+        {/* <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/tracker" element={<FinanceTracker />} /> */}
+
+        <Route path="/" element={<LandingPage />} />
+
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/gamefeatures" element={<GameFeatures />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/explore" element={<Explore />} />
+
+        <Route path="/blogs" element={<Blog />} />
+        <Route path="/budgeting" element={<Budgeting />} />
+
+        <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/start" element={<Startpage />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/minigame" element={<Minigame />} />
+        <Route path="/howtoplay" element={<Howtoplay />} />
+
+
+        <Route path="/budget" element={<Budget />} />
+        <Route path="/savings" element={<Savings />} />
+        <Route path="/investment" element={<Investment />} />
+
+        {/* Minigame - Budgeting*/}
+        {/* <Route path="/blevel1" element={<BLevel1 />} /> */}
+
+      </Routes>
+    </Router>
     </>
   );
 }
+
 
 export default App;
