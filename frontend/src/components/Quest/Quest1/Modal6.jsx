@@ -97,7 +97,7 @@ const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
             }} 
             onClick={() => handleChoice('delay')}
           >
-            ⏳ B. Delay payment until the deadline (+₱2,500 for now but risks late fees and the landlord’s trust)
+            ⏳ B. Delay payment until the deadline (I'll stay ₱5000 for now but risks late fees and the landlord’s trust)
           </Button>
         </Box>
       </Fade>

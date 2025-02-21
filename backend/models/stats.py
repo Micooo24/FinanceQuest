@@ -14,7 +14,7 @@ class Stats(BaseModel):
     level: int = 1
     money: int = 5000
     experience: int = 0
-    location: Coordinates = Coordinates(x=0.0, y=0.0, z=0.0)
+    location: Coordinates = Coordinates(x=0.0, z=0.0, y=0.0)
     
 
     class Config:

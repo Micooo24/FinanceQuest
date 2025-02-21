@@ -170,8 +170,8 @@ async def login(
                 "experience": 0,
                 "location": {
                     "x": -8.389501036635487,
-                    "y": 0.5,
-                    "z": 33.26385975348472
+                    "z": 0.5,
+                    "y": 33.26385975348472
                 }
             }
             db["stats"].insert_one(new_stats)
