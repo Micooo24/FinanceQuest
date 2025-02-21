@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, AppBar, Toolbar, IconButton, Card, CardContent } from "@mui/material";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login, ArrowUpward } from "@mui/icons-material";
+import { Home, SportsEsports, Article, TravelExplore, Info, Login, ArrowUpward, PlayArrow } from "@mui/icons-material";
 
 const blogPosts = [
   { 
@@ -28,6 +28,8 @@ const blogPosts = [
 ];
 
 const Blog = () => {
+  const authToken = localStorage.getItem("authToken");
+
   return (
     <Box sx={{ position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh", background: "linear-gradient(135deg, #5e3967, #351742)", overflowY: "auto" }}>
       
@@ -56,7 +58,11 @@ const Blog = () => {
             <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
             <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
             <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+             {authToken ? (
+              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
+            ) : (
+              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

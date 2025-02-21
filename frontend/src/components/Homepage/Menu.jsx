@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
-
+import toast from "react-hot-toast";
 // Keyframe animation for bouncing effect
 const bounce = keyframes`
   0% {
@@ -202,7 +202,12 @@ const MenuPage = () => {
     { label: "User Profile", onClick: () => navigate("/user-profile") },
     { label: "Minigame", onClick: () => navigate("/minigame") },
     { label: "Music", onClick: () => setShowModal(true) }, // Open the modal on Music button click
-    { label: "Logout", onClick: () => navigate("/") }
+      { label: "Logout", onClick: () => {
+        localStorage.removeItem("authToken");
+        toast.success("Logged out successfully!");  
+        navigate("/");
+      }
+    }
   ];
 
   // Auto-play audio on page load

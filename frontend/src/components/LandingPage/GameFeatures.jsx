@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Box, Button, Typography, AppBar, Toolbar, IconButton } from "@mui/material";
 import { motion } from "framer-motion";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login } from "@mui/icons-material";
+import { Home, SportsEsports, Article, TravelExplore, Info, Login, PlayArrow } from "@mui/icons-material";
 import SavingsIcon from "@mui/icons-material/Savings";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
@@ -20,6 +20,8 @@ const features = [
 ];
 
 const GameFeatures = () => {
+  const authToken = localStorage.getItem("authToken");
+
   return (
     <Box
       sx={{
@@ -59,7 +61,11 @@ const GameFeatures = () => {
             <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
             <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
             <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+            {authToken ? (
+              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
+            ) : (
+              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>
