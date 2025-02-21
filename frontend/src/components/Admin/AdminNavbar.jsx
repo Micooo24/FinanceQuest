@@ -31,11 +31,13 @@ import {
   ExpandLess,
   ExpandMore,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
   const [anchorEl, setAnchorEl] = useState(null); 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); 
   const [miniGamesOpen, setMiniGamesOpen] = useState(false); 
+  const navigate = useNavigate();
 
   const userName = "User 1";
 
@@ -68,7 +70,9 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
   };
 
   const handleLogoutConfirm = () => {
-    console.log("Logged out");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userRole");
+    navigate("/login");
     setLogoutDialogOpen(false);
   };
 
