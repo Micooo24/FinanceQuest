@@ -19,6 +19,7 @@ import axios from "axios";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
+import toast, { Toaster } from 'react-hot-toast';
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -53,12 +54,12 @@ const Signup = () => {
         },
       });
       if (response.status === 200) {
-        alert("Signup successful!");
+        toast.success("Signup successful!");
         setOtpDialogOpen(true);
       }
     } catch (err) {
       console.error(err);
-      alert("Signup failed. Please try again.");
+      toast.error("Signup failed. Please try again.");
     }
   };
 
@@ -68,10 +69,10 @@ const Signup = () => {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
       await axios.post("http://127.0.0.1:8000/users/google-signup", { token });
-      alert("Google signup successful!");
+      toast.success("Google signup successful!");
       navigate("/login");
     } catch (error) {
-      alert("Google signup failed");
+      toast.error("Google signup failed");
     }
   };
 
@@ -81,10 +82,10 @@ const Signup = () => {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
       await axios.post("http://127.0.0.1:8000/users/facebook-signup", { token });
-      alert("Facebook signup successful!");
+      toast.success("Facebook signup successful!");
       navigate("/login");
     } catch (error) {
-      alert("Facebook signup failed");
+      toast.error("Facebook signup failed");
     }
   };
 
@@ -92,13 +93,13 @@ const Signup = () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email, otp });
       if (response.status === 200) {
-        alert("Email verification successful!");
+        toast.success("Email verification successful!");
         setOtpDialogOpen(false);
         navigate("/login");
       }
     } catch (err) {
       console.error(err);
-      alert("OTP verification failed. Please try again.");
+      toast.error("OTP verification failed. Please try again.");
     }
   };
 
@@ -120,6 +121,7 @@ const Signup = () => {
         padding: 0,
       }}
     >
+      <Toaster />
       <Grid
         container
         sx={{

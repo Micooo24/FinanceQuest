@@ -32,6 +32,7 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
   const [anchorEl, setAnchorEl] = useState(null); 
@@ -72,6 +73,7 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
   const handleLogoutConfirm = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userRole");
+    toast.success("Logged out successfully!");
     navigate("/login");
     setLogoutDialogOpen(false);
   };
