@@ -10,7 +10,7 @@ import About from "./components/LandingPage/About";
 import Blog from "./components/LandingPage/Blog";
 import Budgeting from "./components/LandingPage/Budgeting";
 import Explore from "./components/LandingPage/Explore";
-import FinanceTracker from "./components/LandingPage/FinanceTracker";
+// import FinanceTracker from "./components/LandingPage/FinanceTracker";
 
 import LoadingPage from "./components/Homepage/LoadingPage";
 import Startpage from "./components/Homepage/StartPage";
@@ -27,11 +27,8 @@ import Investment from "./components/Minigames/Investing/InvestingPage";
 
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
-<<<<<<< Updated upstream
-=======
 import AdminDashboard from "./components/Admin/Dashboard";
 
->>>>>>> Stashed changes
 
 
 function App() {
@@ -54,8 +51,8 @@ function App() {
 
         <Route path="/gameplay" element={<Gameplay />} />
 
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/tracker" element={<FinanceTracker />} />
+        {/* <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/tracker" element={<FinanceTracker />} /> */}
 
         <Route path="/" element={<LandingPage />} />
 
@@ -74,13 +71,6 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/minigame" element={<Minigame />} />
         <Route path="/howtoplay" element={<Howtoplay />} />
-<<<<<<< Updated upstream
-        <Route path="/blogs" element={<Blog />} />
-        <Route path="/budgeting" element={<Budgeting />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/saving" element={<SavingPage />} />
-        <Route path="/investment" element={<InvestingPage />} />
-=======
 
 
         <Route path="/budget" element={<Budget />} />
@@ -89,7 +79,6 @@ function App() {
 
         {/* Minigame - Budgeting*/}
         {/* <Route path="/blevel1" element={<BLevel1 />} /> */}
->>>>>>> Stashed changes
 
       </Routes>
     </Router>

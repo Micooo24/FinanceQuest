@@ -7,18 +7,13 @@ import Stats from './Stats';
 import Mission from './Mission';
 import { onPointerMove, onMouseClick } from './Interaction/helper';
 import StatsJS from 'stats.js';
-<<<<<<< Updated upstream
-import './Gameplay.css'; // Import the CSS file
-// const backgroundMusic = 'https://res.cloudinary.com/dwp8u82sd/video/upload/v1739117255/music_oxl9oy.mp3'; // URL of the MP3 file
-=======
 import Quest1 from '../Quest/Quest1/Quest1';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
-import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';
+// import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
 // MUI Imports
 import { Box, Button, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
->>>>>>> Stashed changes
 
 // Debug mode
 let debugMode = false;
@@ -97,27 +92,6 @@ const Gameplay = () => {
     };
   }, [gameStarted]);
 
-<<<<<<< Updated upstream
-  const handleBuildingClick = (buildingName) => {
-    if (debugMode) console.log(`Building clicked: ${buildingName}`);
-    setPopupContent(buildingName);
-  };
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const toggleDebugMode = () => {
-    debugMode = !debugMode;
-  };
-
-  const startGame = () => {
-    setGameStarted(true);
-  };
-  
-  return (
-    <div ref={mountRef} className="gameplay-container">
-=======
   const handleBuildingClick = (buildingName) => setPopupContent(buildingName);
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const startGame = () => setGameStarted(true);
@@ -149,7 +123,6 @@ const Gameplay = () => {
         left: 0,
       }}
     >
->>>>>>> Stashed changes
       {!gameStarted && (
         <Box
           sx={{
@@ -191,14 +164,10 @@ const Gameplay = () => {
 
       {gameStarted && (
         <>
-<<<<<<< Updated upstream
-          <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 100 }}>
-=======
           <Quest1 onComplete={() => setQuest1Completed(true)} />
           {quest1Completed && <SideQuest1 />}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
->>>>>>> Stashed changes
             <Stats health={100} exp={75} level={5} money={1500} />
           </Box>
 

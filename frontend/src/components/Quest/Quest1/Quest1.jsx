@@ -58,7 +58,7 @@ const Quest1 = ({ onComplete }) => {
             position: 'fixed', 
             top: 100, 
             right: 20, 
-            zIndex: 999,
+            zIndex: 9999,
             minWidth: 'auto', 
             padding: '8px',
             color: '#fff',
@@ -68,7 +68,7 @@ const Quest1 = ({ onComplete }) => {
         </Button>
       )}
 
-      {/* Checklist Modal */}
+      {/* Checklist Modal */}     
       <ChecklistModal 
         open={showChecklist} 
         onClose={() => setShowChecklist(false)} 
