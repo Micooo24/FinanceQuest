@@ -32,7 +32,21 @@ const Login = () => {
         const { access_token } = response.data;
         localStorage.setItem("authToken", access_token);
         alert("Login successful!");
-        navigate("/loading");
+
+        // Fetch user role
+        const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        const userRole = userResponse.data.users.find(user => user.email === email).role;
+        localStorage.setItem("userRole", userRole);
+
+        if (userRole === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/loading");
+        }
       }
     } catch (err) {
       alert("Login failed. Please try again.");
@@ -49,7 +63,21 @@ const Login = () => {
         const { access_token } = response.data;
         localStorage.setItem("authToken", access_token);
         alert("Google login successful!");
-        navigate("/loading");
+
+        // Fetch user role
+        const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        const userRole = userResponse.data.users.find(user => user.email === result.user.email).role;
+        localStorage.setItem("userRole", userRole);
+
+        if (userRole === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/loading");
+        }
       }
     } catch (error) {
       alert("Google login failed");
