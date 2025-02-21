@@ -15,6 +15,7 @@ import axios from "axios";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,16 +32,20 @@ const Login = () => {
       if (response.status === 200) {
         const { access_token } = response.data;
         localStorage.setItem("authToken", access_token);
-        alert("Login successful!");
+        toast.success("Login successful!");
 
-        // Fetch user role
+        // Fetch user details
         const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
         });
-        const userRole = userResponse.data.users.find(user => user.email === email).role;
+        const user = userResponse.data.users.find(user => user.email === email);
+        const userRole = user.role;
+        const userId = user._id;
         localStorage.setItem("userRole", userRole);
+        localStorage.setItem("userId", userId);
+        console.log("User ID:", userId);
 
         if (userRole === "admin") {
           navigate("/dashboard");
@@ -49,7 +54,7 @@ const Login = () => {
         }
       }
     } catch (err) {
-      alert("Login failed. Please try again.");
+      toast.error("Login failed. Please try again.");
     }
   };
 
@@ -62,16 +67,20 @@ const Login = () => {
       if (response.status === 200) {
         const { access_token } = response.data;
         localStorage.setItem("authToken", access_token);
-        alert("Google login successful!");
+        toast.success("Google login successful!");
 
-        // Fetch user role
+        // Fetch user details
         const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
           headers: {
             Authorization: `Bearer ${access_token}`,
           },
         });
-        const userRole = userResponse.data.users.find(user => user.email === result.user.email).role;
+        const user = userResponse.data.users.find(user => user.email === result.user.email);
+        const userRole = user.role;
+        const userId = user._id;
         localStorage.setItem("userRole", userRole);
+        localStorage.setItem("userId", userId);
+        console.log("User ID:", userId);
 
         if (userRole === "admin") {
           navigate("/dashboard");
@@ -80,7 +89,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      alert("Google login failed");
+      toast.error("Google login failed");
     }
   };
 
@@ -102,6 +111,7 @@ const Login = () => {
         overflow: "hidden",
       }}
     >
+  
       <Grid
         container
         sx={{
