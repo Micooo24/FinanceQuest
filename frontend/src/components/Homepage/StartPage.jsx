@@ -155,7 +155,8 @@ const StartPage = () => {
     { label: "START", onClick: () => navigate("/gameplay") },
     { label: "MENU", onClick: () => navigate("/menu") },
     { label: "HOW TO PLAY", onClick: () => navigate("/howtoplay") },
-    { label: "LEADERBOARDS", onClick: () => navigate("/leaderboards") }
+    { label: "LEADERBOARDS", onClick: () => navigate("/leaderboards") },
+    { label: "HOME", onClick: () => navigate("/") }
   ];
 
   // Auto-play audio on page load

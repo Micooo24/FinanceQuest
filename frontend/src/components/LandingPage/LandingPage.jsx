@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Toolbar, IconButton, Box, Typography, Button } from "@mui/material";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login, Savings, TrendingUp, AccountBalanceWallet } from "@mui/icons-material";
+import { Home, SportsEsports, Article, TravelExplore, Info, Login, Savings, TrendingUp, AccountBalanceWallet, PlayArrow } from "@mui/icons-material";
 import { styled } from "@mui/system";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -18,6 +18,7 @@ const StyledButton = styled(Button)({
 });
 
 const LandingPage = () => {
+  const authToken = localStorage.getItem("authToken");  
   return (
     <Box
       sx={{
@@ -61,7 +62,11 @@ const LandingPage = () => {
             <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
             <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
             <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+            {authToken ? (
+              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
+            ) : (
+              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

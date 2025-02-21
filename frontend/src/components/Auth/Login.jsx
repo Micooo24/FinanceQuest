@@ -10,12 +10,11 @@ import {
   IconButton,
 } from "@mui/material";
 import { Email, Lock, Close } from "@mui/icons-material";
-import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
+import { Google as GoogleIcon } from "@mui/icons-material";
 import axios from "axios";
 import { auth } from "../firebase/firebase";
-import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
-
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,6 +29,8 @@ const Login = () => {
         password,
       });
       if (response.status === 200) {
+        const { access_token } = response.data;
+        localStorage.setItem("authToken", access_token);
         alert("Login successful!");
         navigate("/loading");
       }
@@ -43,44 +44,35 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
-      await axios.post("http://127.0.0.1:8000/users/google-login", { token });
-      alert("Google login successful!");
-      navigate("/loading");
+      const response = await axios.post("http://127.0.0.1:8000/users/google-login", { token });
+      if (response.status === 200) {
+        const { access_token } = response.data;
+        localStorage.setItem("authToken", access_token);
+        alert("Google login successful!");
+        navigate("/loading");
+      }
     } catch (error) {
       alert("Google login failed");
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
-      await axios.post("http://127.0.0.1:8000/users/facebook-login", { token });
-      alert("Facebook login successful!");
-      navigate("/loading");
-    } catch (error) {
-      alert("Facebook login failed");
     }
   };
 
   return (
     <Box
       sx={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      background: "linear-gradient(180deg, #5e3967, #351742)",
-      margin: 0,
-      padding: 0,
-      overflow: "hidden",
-    }}
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(180deg, #5e3967, #351742)",
+        margin: 0,
+        padding: 0,
+        overflow: "hidden",
+      }}
     >
       <Grid
         container
@@ -94,7 +86,6 @@ const Login = () => {
           position: "relative",
         }}
       >
-        
         <IconButton
           onClick={() => navigate("/")}
           sx={{
@@ -109,7 +100,6 @@ const Login = () => {
           <Close />
         </IconButton>
 
-        
         <Grid
           item
           xs={12}
@@ -141,7 +131,7 @@ const Login = () => {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              filter: "brightness(70%) contrast(100%) hue-rotate(240deg)", 
+              filter: "brightness(70%) contrast(100%) hue-rotate(240deg)",
             }}
           >
             <source src={SunCity} type="video/mp4" />
@@ -149,11 +139,8 @@ const Login = () => {
           </video>
         </Grid>
 
-
-
-        
-        <Grid item xs={12} md={6} component={Paper} elevation={6} square >
-          <Box sx={{ p: 6, display: "flex", flexDirection: "column", alignItems: "center" , color: "#331540"}}>
+        <Grid item xs={12} md={6} component={Paper} elevation={6} square>
+          <Box sx={{ p: 6, display: "flex", flexDirection: "column", alignItems: "center", color: "#331540" }}>
             <Typography variant="h4" fontFamily="'Lilita One'" gutterBottom>
               LOGIN
             </Typography>
@@ -181,9 +168,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 InputProps={{ startAdornment: <Lock /> }}
               />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'" ,color: "white",
-            backgroundColor: "#451d6b",
-            "&:hover": { backgroundColor: "#8c2fc7" }}}>
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}>
                 Login
               </Button>
             </Box>
@@ -205,23 +190,10 @@ const Login = () => {
               >
                 <GoogleIcon />
               </IconButton>
-              <IconButton
-                onClick={handleFacebookLogin}
-                sx={{
-                  backgroundColor: "#1877F2",
-                  color: "white",
-                  width: 50,
-                  height: 50,
-                  transition: "0.3s",
-                  "&:hover": { backgroundColor: "#0F65D4" },
-                }}
-              >
-                <FacebookIcon />
-              </IconButton>
             </Box>
 
-            <Typography variant="body2" sx={{ mt: 1, fontFamily: "'Lilita One'" , color: "#331540"}}>
-              Don't have an account? <Button onClick={() => navigate("/signup")} sx={{ color: "#331540" ,fontFamily: "'Lilita One'"}}>Signup</Button>
+            <Typography variant="body2" sx={{ mt: 1, fontFamily: "'Lilita One'", color: "#331540" }}>
+              Don't have an account? <Button onClick={() => navigate("/signup")} sx={{ color: "#331540", fontFamily: "'Lilita One'" }}>Signup</Button>
             </Typography>
           </Box>
         </Grid>
