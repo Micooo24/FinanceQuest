@@ -202,9 +202,8 @@ const MenuPage = () => {
     { label: "User Profile", onClick: () => navigate("/user-profile") },
     { label: "Minigame", onClick: () => navigate("/minigame") },
     { label: "Music", onClick: () => setShowModal(true) }, // Open the modal on Music button click
-      { label: "Logout", onClick: () => {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userRole")
+    { label: "Logout", onClick: () => {
+        localStorage.clear(); 
         toast.success("Logged out successfully!");  
         navigate("/");
       }

@@ -71,8 +71,7 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
   };
 
   const handleLogoutConfirm = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userRole");
+    localStorage.clear();
     toast.success("Logged out successfully!");
     navigate("/login");
     setLogoutDialogOpen(false);

@@ -69,7 +69,7 @@ const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
               border: '2px solid rgba(0, 0, 0, 0.8)',
             }}
           >
-            🎮 Player Choice
+            🎮 Your Choice
           </Typography>
 
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>

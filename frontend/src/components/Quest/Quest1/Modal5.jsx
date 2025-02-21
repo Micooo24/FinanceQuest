@@ -1,13 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
+import axios from 'axios';
 
 const Modal5PlayerReaction = ({ onContinue }) => {
   const [showModal, setShowModal] = useState(true);
+  const [username, setUsername] = useState('');
 
   const handleClose = () => {
     setShowModal(false);
     onContinue(); // Proceed to the next modal
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const authToken = localStorage.getItem('authToken');
+      const email = localStorage.getItem('email'); // Assuming you store the user's email in localStorage
+      try {
+        const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const user = userResponse.data.users.find(user => user.email === email);
+        setUsername(user.username);
+      } catch (error) {
+        console.error('Error fetching username:', error);
+      }
+    };
+
+    fetchUsername();
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.overflow = showModal ? 'hidden' : 'auto';
@@ -57,7 +79,7 @@ const Modal5PlayerReaction = ({ onContinue }) => {
               border: '2px solid rgba(0, 0, 0, 0.8)',
             }}
           >
-            💬 Player 
+            💬 {username}
           </Typography>
 
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>

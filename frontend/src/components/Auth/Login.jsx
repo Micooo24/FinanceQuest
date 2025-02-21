@@ -31,6 +31,7 @@ const Login = () => {
       });
       if (response.status === 200) {
         const { access_token } = response.data;
+        localStorage.setItem("email", email);
         localStorage.setItem("authToken", access_token);
         toast.success("Login successful!");
 
