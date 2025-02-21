@@ -23,6 +23,7 @@ let debugMode = false;
 
 const Gameplay = () => {
   const mountRef = useRef(null);
+  const rendererRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
@@ -56,12 +57,13 @@ const Gameplay = () => {
     fetchPlayerStats();
   }, []);
 
-  useEffect(() => {
-    if (!mountRef.current || !gameStarted || !playerStats) return;
+  const initializeScene = () => {
+    if (!mountRef.current || rendererRef.current) return;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7.5);
@@ -114,6 +116,12 @@ const Gameplay = () => {
       renderer.dispose();
       document.body.removeChild(stats.dom);
     };
+  };
+
+  useEffect(() => {
+    if (gameStarted && playerStats) {
+      initializeScene();
+    }
   }, [gameStarted, playerStats]);
 
   const handleBuildingClick = (buildingName) => setPopupContent(buildingName);
@@ -202,7 +210,7 @@ const Gameplay = () => {
           <Box sx={{ position: 'absolute', top: 20, right: 20, zIndex: 100 }}>
             <Menu menuOpen={menuOpen} toggleMenu={toggleMenu} />
           </Box>
-
+          
           <Map scene={scene} camera={camera} />
 
           {popupContent && (
@@ -223,7 +231,7 @@ const Gameplay = () => {
               <Button onClick={() => setPopupContent(null)}>Close</Button>
             </Box>
           )}
-
+          
           {showRentDecisionModal && (
             <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
           )}

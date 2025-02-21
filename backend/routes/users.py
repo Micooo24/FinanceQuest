@@ -155,7 +155,7 @@ async def login(
         if not user["verified"]:
             raise HTTPException(status_code=400, detail="Email not verified. Please check your email to verify your account.")
         
-        access_token_expires = timedelta(minutes=30)
+        access_token_expires = timedelta(days=7)
         access_token = create_access_token(data={"sub": user["email"]}, expires_delta=access_token_expires)
         
         # Initialize stats for the user if they don't already exist
