@@ -27,15 +27,14 @@ import Investment from "./components/Minigames/Investing/InvestingPage";
 
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
-import Dashboard from "./components/Admin/Dashboard";
-import ProtectedRoute from "./components/Route/ProtectedRoute.jsx";import AdminDashboard from "./components/Admin/Dashboard";
+import AdminDashboard from "./components/Admin/Dashboard";
 
 
 
 function App() {
   return (
     <>
-      <Toaster
+    <Toaster
         position="top-center"
         reverseOrder={false}
         toastOptions={{
@@ -49,27 +48,43 @@ function App() {
     <Router>
       <Routes>
         {/* Route for Landing Page */}
-        <Route path="/" element={<LandingPage />} />
+
         <Route path="/gameplay" element={<Gameplay />} />
+
+        {/* <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/tracker" element={<FinanceTracker />} /> */}
+
+        <Route path="/" element={<LandingPage />} />
+
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+
         <Route path="/gamefeatures" element={<GameFeatures />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/explore" element={<Explore />} />
+
+        <Route path="/blogs" element={<Blog />} />
+        <Route path="/budgeting" element={<Budgeting />} />
+
         <Route path="/loading" element={<LoadingPage />} />
         <Route path="/start" element={<Startpage />} />
-        <Route path="/about" element={<About />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/minigame" element={<Minigame />} />
         <Route path="/howtoplay" element={<Howtoplay />} />
-        <Route path="/blogs" element={<Blog />} />
-        <Route path="/budgeting" element={<Budgeting />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/saving" element={<SavingPage />} />
-        <Route path="/investment" element={<InvestingPage />} />
+
+
+        <Route path="/budget" element={<Budget />} />
+        <Route path="/savings" element={<Savings />} />
+        <Route path="/investment" element={<Investment />} />
+
+        {/* Minigame - Budgeting*/}
+        {/* <Route path="/blevel1" element={<BLevel1 />} /> */}
 
       </Routes>
     </Router>
     </>
   );
 }
+
 
 export default App;
