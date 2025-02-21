@@ -1,39 +1,43 @@
-// import  {useState} from 'react'
-// import { Navigate } from 'react-router-dom'
-
-// // import Loader from '../Layout/Loader'
-// import { getUser } from '../../utils/helpers';
-
-// const ProtectedRoute = ({ children, isAdmin = false }) => {
-//     const [loading, setLoading] = useState(getUser() === false && false )
-//     const [error, setError] = useState('')
-//     const [user, setUser] = useState(getUser())
-    
-//     console.log(children.type.name, loading)
-    
-//     if (loading === false) {
-//         if (!user) {
-//             return <Navigate to='/login' />
-//         }
-//         if (isAdmin === true && user.role !== 'admin') {
-//             return <Navigate to='/' />
-//         }
-//         return children
-//     }
-//     return <Loader />;
-
-// };
-
-// export default ProtectedRoute;
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const ProtectedRoute = ({ children, isAdmin }) => {
-  const user = JSON.parse(sessionStorage.getItem("user")); 
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const authToken = localStorage.getItem("authToken");
+      if (!authToken) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/admin/get-users", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const userData = response.data;
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!user || (isAdmin && user.role !== "admin")) {
-    return <Navigate to="/login" replace />; 
+    return <Navigate to="/login" replace />;
   }
 
   return children;

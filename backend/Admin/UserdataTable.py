@@ -226,7 +226,7 @@ async def create_user(
             "birthday": str(birthday_date),  
             "img_path": img_url,
             "verified": verified,
-            "role": role,
+            "role": "user",
             "created_at": datetime.now()
         }
         inserted_user = db["users"].insert_one(user_dict)
