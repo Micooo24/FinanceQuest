@@ -17,6 +17,7 @@ import SavingPage from "./components/Minigames/Saving/SavingPage";
 import InvestingPage from "./components/Minigames/Investing/InvestingPage";
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
+import Dashboard from "./components/Admin/Dashboard";
 
 
 function App() {
@@ -52,6 +53,14 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/saving" element={<SavingPage />} />
         <Route path="/investment" element={<InvestingPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
     </Router>

@@ -49,3 +49,18 @@ async def initialize_stats(current_user: dict = Depends(get_current_user)):
     stats_dict["user_id"] = ObjectId(user_id)
     db["stats"].insert_one(stats_dict)
     return stats_dict
+
+#pay rent
+@router.put("/decision/subtract_money")
+async def subtract_money(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    new_money = stats["money"] - 2500
+    if new_money < 0:
+        raise HTTPException(status_code=400, detail="Insufficient funds")
+    
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"money": new_money}})
+    return {"message": "Money subtracted successfully", "new_balance": new_money}
