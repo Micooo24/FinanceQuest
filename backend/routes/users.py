@@ -41,14 +41,17 @@ logger = logging.getLogger(__name__)
 # Initialize the serializer with the SECRET_KEY
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 
-def send_verification_email(email: str, token: str):
+import random
+def generate_otp():
+    return random.randint(100000, 999999)
+
+def send_verification_email(email: str, otp: int):
     subject = "Email Verification"
-    verification_url = f"http://localhost:8000/users/verify-email?token={token}"
     body = f"""
     <html>
         <body>
-            <p>Please click the following link to verify your email:</p>
-            <a href="{verification_url}">Verify Email</a>
+            <p>Please use the following OTP to verify your email:</p>
+            <h2>{otp}</h2>
         </body>
     </html>
     """
@@ -94,6 +97,8 @@ async def register(
         
         birthday_str = birthday.strftime("%Y-%m-%d")
         
+        otp = generate_otp()
+        
         user_dict = {
             "username": username,
             "email": email,
@@ -102,16 +107,16 @@ async def register(
             "img_path": img_url,
             "verified": verified,
             "role": Role.user,
-            "created_at": datetime.now()  # Add created_at field
+            "created_at": datetime.now().isoformat(),  # Add created_at field
+            "otp": otp  # Store OTP in the user's document
         }
         inserted_user = db["users"].insert_one(user_dict)
         user_dict["_id"] = str(inserted_user.inserted_id)
 
-        # Generate verification token
-        token = serializer.dumps(email, salt="email-verification")
-        send_verification_email(email, token)
+        # Send verification email with OTP
+        send_verification_email(email, otp)
         
-        return JSONResponse(content={"message": "User registered successfully. Please check your email to verify your account.", "user": user_dict})
+        return JSONResponse(content={"email": email, "otp": otp})
     
     except HTTPException as e:
         logger.error(f"HTTPException: {str(e)}")
@@ -120,15 +125,14 @@ async def register(
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-@router.get("/verify-email")
-async def verify_email(token: str):
+@router.post("/verify-email")
+async def verify_email(email: str = Body(...), otp: int = Body(...)):
     try:
-        email = serializer.loads(token, salt="email-verification", max_age=3600)
         user = db["users"].find_one({"email": email})
-        if not user:
-            raise HTTPException(status_code=400, detail="Invalid token or user does not exist")
+        if not user or user.get("otp") != otp:
+            raise HTTPException(status_code=400, detail="Invalid OTP or user does not exist")
 
-        db["users"].update_one({"email": email}, {"$set": {"verified": True}})
+        db["users"].update_one({"email": email}, {"$set": {"verified": True}, "$unset": {"otp": ""}})
         return JSONResponse(content={"message": "Email verified successfully"})
     except Exception as e:
         logger.error(f"Email verification failed: {str(e)}")
