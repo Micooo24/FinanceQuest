@@ -18,6 +18,7 @@ import InvestingPage from "./components/Minigames/Investing/InvestingPage";
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
 import Dashboard from "./components/Admin/Dashboard";
+import ProtectedRoute from "./components/Route/ProtectedRoute.jsx";
 
 
 function App() {
