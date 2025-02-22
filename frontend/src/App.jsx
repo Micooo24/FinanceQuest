@@ -12,6 +12,7 @@ import Blog from "./components/LandingPage/Blog";
 import Budgeting from "./components/LandingPage/Budgeting";
 import Explore from "./components/LandingPage/Explore";
 // import FinanceTracker from "./components/LandingPage/FinanceTracker";
+import MonthlyDashboard from "./components/LandingPage/MonthlyDashboard";
 
 import LoadingPage from "./components/Homepage/LoadingPage";
 import Startpage from "./components/Homepage/StartPage";
@@ -85,6 +86,7 @@ function App() {
           <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
           <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
           <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} />
+          <Route path="/monthlydashboard" element={<ProtectedRoute><MonthlyDashboard /></ProtectedRoute>} />
 
 
         {/* Minigame - Budgeting*/}
