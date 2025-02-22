@@ -1,9 +1,7 @@
-
-
-
 import React, { useState } from 'react';
 import { Box, Typography, Button, Modal, Fade, Backdrop, Grid, IconButton } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
+import { updatePlayerMoneyAfterGrocery } from '../../Utils/decisions';
 
 const storeItems = [
   { name: 'Rice (5kg)', type: 'Need', price: 300 },
@@ -12,7 +10,7 @@ const storeItems = [
   { name: 'Vegetables (per set)', type: 'Need', price: 150 },
   { name: 'Instant Noodles', type: 'Want', price: 25 },
   { name: 'Soft Drinks (1.5L)', type: 'Want', price: 80 },
-  { name: 'Chips (Large)', type: 'Want', price: 120 }
+  { name: 'Chips (Large)', type: 'Want', price: 120 },
 ];
 
 const Modal8GroceryGame = ({ onCheckout }) => {
@@ -31,12 +29,23 @@ const Modal8GroceryGame = ({ onCheckout }) => {
   };
 
   const totalSpent = Object.entries(cart).reduce((sum, [itemName, qty]) => {
-    const item = storeItems.find(i => i.name === itemName);
-    return sum + (item.price * qty);
+    const item = storeItems.find((i) => i.name === itemName);
+    return sum + item.price * qty;
   }, 0);
 
+  const handleCheckout = () => {
+    updatePlayerMoneyAfterGrocery(totalSpent, (newBalance) => {
+      onCheckout(newBalance); // Pass the new balance to the parent component
+    });
+  };
+
   return (
-    <Modal open={true} closeAfterTransition slots={{ backdrop: Backdrop }} slotProps={{ backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.5)' } } }}>
+    <Modal
+      open={true}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{ backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.5)' } } }}
+    >
       <Fade in={true}>
         <Box
           sx={{
@@ -50,38 +59,58 @@ const Modal8GroceryGame = ({ onCheckout }) => {
             borderRadius: 5,
             boxShadow: 24,
             p: 4,
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
-          <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 'bold', mb: 2 }}>🛒 Grocery Selection</Typography>
-          <Typography variant="body1" sx={{ fontFamily: 'Fraunces, serif', mb: 2 , color: '#000'}}>Choose your items wisely! Stay within your ₱2,000 budget.</Typography>
-          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 2 , color: '#000'}}>Remaining Budget: ₱{budget - totalSpent}</Typography>
-          
+          <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 'bold', mb: 2 }}>
+            🛒 Grocery Selection
+          </Typography>
+          <Typography variant="body1" sx={{ fontFamily: 'Fraunces, serif', mb: 2, color: '#000' }}>
+            Choose your items wisely! Stay within your ₱2,000 budget.
+          </Typography>
+          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 2, color: '#000' }}>
+            Remaining Budget: ₱{budget - totalSpent}
+          </Typography>
+
           <Grid container spacing={2} justifyContent="center">
             {storeItems.map((item) => (
               <Grid item xs={12} sm={6} key={item.name}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1, border: '1px solid black', borderRadius: 2 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' , color: '#000'}}>{item.name} - ₱{item.price}</Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    p: 1,
+                    border: '1px solid black',
+                    borderRadius: 2,
+                  }}
+                >
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#000' }}>
+                    {item.name} - ₱{item.price}
+                  </Typography>
                   <Box>
-                    <IconButton size="small" onClick={() => handleQuantityChange(item, -1)}><Remove /></IconButton>
-                    <Typography variant="body2" sx={{ display: 'inline', mx: 1 , color: '#000'}}>{cart[item.name] || 0}</Typography>
-                    <IconButton size="small" onClick={() => handleQuantityChange(item, 1)}><Add /></IconButton>
+                    <IconButton size="small" onClick={() => handleQuantityChange(item, -1)}>
+                      <Remove />
+                    </IconButton>
+                    <Typography variant="body2" sx={{ display: 'inline', mx: 1, color: '#000' }}>
+                      {cart[item.name] || 0}
+                    </Typography>
+                    <IconButton size="small" onClick={() => handleQuantityChange(item, 1)}>
+                      <Add />
+                    </IconButton>
                   </Box>
                 </Box>
               </Grid>
             ))}
           </Grid>
-          
-          <Button 
-              variant="contained" 
-              sx={{ mt: 3, backgroundColor: '#8c2fc7', color: '#fff', fontFamily: 'Cinzel, serif' }}
-              onClick={() => {
-                console.log('Checkout clicked, total spent:', totalSpent); // Debug log
-                onCheckout(totalSpent);
-              }}
-            >
-              Checkout
-        </Button>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 3, backgroundColor: '#8c2fc7', color: '#fff', fontFamily: 'Cinzel, serif' }}
+            onClick={handleCheckout}
+          >
+            Checkout
+          </Button>
         </Box>
       </Fade>
     </Modal>

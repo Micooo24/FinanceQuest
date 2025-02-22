@@ -70,12 +70,13 @@ const Modal1 = ({ onContinue }) => {
             Side Quest Task: 
           </Typography>
 
-          <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "18px" }}>
-            <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-              <li> Smart Grocery Shopping – Pick affordable and nutritious food without exceeding ₱2,000.</li>
-              
-            </ul>
-          </Typography>
+          <Box sx={{ textAlign: 'left', display: 'inline-block', mb: 2 }}>
+            <Typography variant="body1" sx={{ color: '#000', fontFamily: "'Fraunces', serif", fontSize: "18px" }}>
+              <ul>
+                <li> Smart Grocery Shopping – Pick affordable and nutritious food without exceeding ₱2,000.</li>
+              </ul>
+            </Typography>
+          </Box>
 
           <Typography variant="body2" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "16px" }}>
             📜 Instructions: Guide Liza to the convenience store and help her shop wisely.

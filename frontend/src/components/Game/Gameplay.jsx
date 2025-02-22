@@ -11,8 +11,6 @@ import StatsJS from 'stats.js';
 import Quest1 from '../Quest/Quest1/Quest1';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
 import Modal6RentDecision from '../Quest/Quest1/Modal6';
-import { updatePlayerMoney } from '../Utils/decisions';
-import { updatePlayerMoneyAfterGrocery } from '../Utils/decisions';
 import Modal8GroceryGame from '../Quest/SideQuest/Modal8';
 // import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
@@ -42,21 +40,21 @@ const Gameplay = () => {
   const buildingLayer = new THREE.Group();
   const vehicleLayer = new THREE.Group();
 
-  useEffect(() => {
-    const fetchPlayerStats = async () => {
-      const authToken = localStorage.getItem('authToken');
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/stats/get/player', {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-        setPlayerStats(response.data);
-      } catch (error) {
-        console.error('Error fetching player stats:', error);
-      }
-    };
+  const fetchPlayerStats = async () => {
+    const authToken = localStorage.getItem('authToken');
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/stats/get/player', {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setPlayerStats(response.data);
+    } catch (error) {
+      console.error('Error fetching player stats:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchPlayerStats();
   }, []);
 
@@ -135,20 +133,19 @@ const Gameplay = () => {
     setShowRentDecisionModal(false);
   };
 
-  const handleGroceryCheckout = (totalSpent) => {
-    console.log('Total spent:', totalSpent); // Debug log
-    updatePlayerMoneyAfterGrocery(totalSpent, (newBalance) => {
-      console.log('New balance from API:', newBalance); // Debug log
-      setPlayerStats((prevStats) => {
-        const updatedStats = {
-          ...prevStats,
-          money: newBalance,
-        };
-        console.log('Updated player stats:', updatedStats); // Debug log
-        return updatedStats;
-      });
-      setShowGroceryModal(false); // Hide the modal after checkout
-    });
+  const handleGroceryCheckout = async (newBalance) => {
+    console.log('New balance from API:', newBalance); // Debug log
+    setPlayerStats((prevStats) => ({
+      ...prevStats,
+      money: newBalance, // Update the player's money
+    }));
+    setShowGroceryModal(false); // Hide the modal after checkout
+    await fetchPlayerStats(); // Refetch player stats
+  };
+  
+  
+  const showGroceryGameModal = () => {
+    setShowGroceryModal(true);
   };
 
   // Cloud Animation Data
@@ -256,7 +253,7 @@ const Gameplay = () => {
           )}
           {/* Conditionally render Modal8GroceryGame */}
           {showGroceryModal && (
-            <Modal8GroceryGame onCheckout={handleGroceryCheckout} />
+           <Modal8GroceryGame onCheckout={handleGroceryCheckout} />
           )}
         </>
       )}
