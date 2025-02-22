@@ -7,6 +7,7 @@ const npc3Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/
 const npc4Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/Animated_Woman_eovuop.glb';
 const npc5Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077521/Man_qn0rsz.glb';
 const npc6Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1739077520/Casual_Character_fexykr.glb';
+const npc7Path = 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1740214218/Woman_Casual_qncdcb.glb';
 
 // Global debug mode variable
 const debugMode = false;
@@ -114,7 +115,7 @@ const loadNPC4 = (scene) => {
   gltfLoader.load(npc4Path, (gltf) => {
     const npc4 = gltf.scene;
     npc4.scale.set(0.4, 0.4, 0.4); // Adjust the scale if needed
-    npc4.position.set(-19.6094392563778, 0.2, 28.64377086354049); // Set the position to the specified coordinates
+    npc4.position.set(-12.01533346391676, 0.2, 28.505300981009736); // Set the position to the specified coordinates
     scene.add(npc4); // Add NPC to the scene
 
     // Log the NPC's initial position
@@ -204,4 +205,36 @@ const loadNPC6 = (scene) => {
   });
 };
 
-export { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6 };
+const loadNPC7 = (scene) => {
+  const gltfLoader = new GLTFLoader();
+
+  gltfLoader.load(npc7Path, (gltf) => {
+    const npc7 = gltf.scene;
+    npc7.scale.set(0.4, 0.4, 0.4); // Adjust the scale if needed
+    npc7.position.set(-5.354800136571938, 0.2, -21.006706558416944); // Set the position to the specified coordinates
+    scene.add(npc7); // Add NPC to the scene
+
+    // Log the NPC's initial position
+    if (debugMode) console.log('NPC7 initial position:', npc7.position);
+
+    // Set up animation mixer
+    const mixer = new THREE.AnimationMixer(npc7);
+    if (gltf.animations.length > 0) {
+      const action = mixer.clipAction(gltf.animations[3]);
+      action.play();
+    }
+
+    // Animation loop
+    const clock = new THREE.Clock();
+    const animate = () => {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      mixer.update(delta);
+    };
+    animate();
+  }, undefined, (error) => {
+    if (debugMode) console.error('An error occurred while loading the NPC7 model: ' + error.message);
+  });
+};
+
+export { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6, loadNPC7 };

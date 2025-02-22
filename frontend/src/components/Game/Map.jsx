@@ -6,7 +6,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { loadBuildings } from './Terrain/Building';
 import { loadCars } from './Terrain/Car';
 import { onPointerMove, onMouseClick, pointer } from './Interaction/helper';
-import { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6 } from './Terrain/NPC';
+import { loadNPC, loadNPC2, loadNPC3, loadNPC4, loadNPC5, loadNPC6, loadNPC7 } from './Terrain/NPC';
 import { loadTrees } from './Terrain/Extra';
 
 // Global debug mode variable
@@ -147,6 +147,7 @@ const Map = ({ scene, camera }) => {
     loadNPC4(scene);
     loadNPC5(scene);
     loadNPC6(scene);
+    loadNPC7(scene);
 
     // Load Trees
     loadTrees(scene, extraLayer);
