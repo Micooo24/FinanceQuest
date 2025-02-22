@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes import users, characters,stats
 import firebase_backend.firebaseconfig
 from Admin import UserdataTable
+from routes.trackers import router as trackers_router
 
 app = FastAPI()
 
@@ -24,5 +25,5 @@ app.include_router(users.router, prefix="/users")
 app.include_router(characters.router, prefix="/characters")
 app.include_router(stats.router, prefix="/stats")
 app.include_router(UserdataTable.router, prefix="/admin")
-
+app.include_router(trackers_router, prefix="/monthly_tracker", tags=["Monthly Tracker"])
  
