@@ -28,6 +28,9 @@ class Stats(BaseModel):
     class Config:
         arbitrary_types_allowed = True  # Allow arbitrary types like ObjectId
 
+class GrocerySelectionRequest(BaseModel):
+    total_spent: int
+
 @router.get("/get/player", response_model=Stats)
 async def read_current_user_stats(current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -64,3 +67,18 @@ async def subtract_money(current_user: dict = Depends(get_current_user)):
     
     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"money": new_money}})
     return {"message": "Money subtracted successfully", "new_balance": new_money}
+
+# Grocery selection
+@router.put("/decision/grocery_selection")
+async def grocery_selection(request: GrocerySelectionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    new_money = stats["money"] - request.total_spent
+    if new_money < 0:
+        raise HTTPException(status_code=400, detail="Insufficient funds")
+    
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"money": new_money}})
+    return {"message": "Grocery selection processed successfully", "new_balance": new_money}

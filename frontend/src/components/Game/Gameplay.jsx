@@ -12,6 +12,8 @@ import Quest1 from '../Quest/Quest1/Quest1';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
 import Modal6RentDecision from '../Quest/Quest1/Modal6';
 import { updatePlayerMoney } from '../Utils/decisions';
+import { updatePlayerMoneyAfterGrocery } from '../Utils/decisions';
+import Modal8GroceryGame from '../Quest/SideQuest/Modal8';
 // import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
 // MUI Imports
@@ -30,6 +32,7 @@ const Gameplay = () => {
   const [quest1Completed, setQuest1Completed] = useState(false);
   const [playerStats, setPlayerStats] = useState(null);
   const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
+  const [showGroceryModal, setShowGroceryModal] = useState(false); // New state variable
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -130,6 +133,22 @@ const Gameplay = () => {
 
   const handleRentDecision = (choice) => {
     setShowRentDecisionModal(false);
+  };
+
+  const handleGroceryCheckout = (totalSpent) => {
+    console.log('Total spent:', totalSpent); // Debug log
+    updatePlayerMoneyAfterGrocery(totalSpent, (newBalance) => {
+      console.log('New balance from API:', newBalance); // Debug log
+      setPlayerStats((prevStats) => {
+        const updatedStats = {
+          ...prevStats,
+          money: newBalance,
+        };
+        console.log('Updated player stats:', updatedStats); // Debug log
+        return updatedStats;
+      });
+      setShowGroceryModal(false); // Hide the modal after checkout
+    });
   };
 
   // Cloud Animation Data
@@ -234,6 +253,10 @@ const Gameplay = () => {
           
           {showRentDecisionModal && (
             <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
+          )}
+          {/* Conditionally render Modal8GroceryGame */}
+          {showGroceryModal && (
+            <Modal8GroceryGame onCheckout={handleGroceryCheckout} />
           )}
         </>
       )}

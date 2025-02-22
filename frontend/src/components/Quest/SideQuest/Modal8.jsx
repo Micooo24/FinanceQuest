@@ -73,12 +73,15 @@ const Modal8GroceryGame = ({ onCheckout }) => {
           </Grid>
           
           <Button 
-            variant="contained" 
-            sx={{ mt: 3, backgroundColor: '#8c2fc7', color: '#fff', fontFamily: 'Cinzel, serif' }}
-            onClick={() => onCheckout(totalSpent)}
-          >
-            Checkout
-          </Button>
+              variant="contained" 
+              sx={{ mt: 3, backgroundColor: '#8c2fc7', color: '#fff', fontFamily: 'Cinzel, serif' }}
+              onClick={() => {
+                console.log('Checkout clicked, total spent:', totalSpent); // Debug log
+                onCheckout(totalSpent);
+              }}
+            >
+              Checkout
+        </Button>
         </Box>
       </Fade>
     </Modal>
