@@ -135,13 +135,19 @@ const Gameplay = () => {
 
   const handleGroceryCheckout = async (newBalance) => {
     console.log('New balance from API:', newBalance); // Debug log
-    setPlayerStats((prevStats) => ({
-      ...prevStats,
-      money: newBalance, // Update the player's money
-    }));
+  
+    // Update the player's stats immediately
+    setPlayerStats((prevStats) => {
+      if (!prevStats) return null;
+      return {
+        ...prevStats,
+        money: newBalance, // Update only the money field
+      };
+    });
+  
     setShowGroceryModal(false); // Hide the modal after checkout
-    await fetchPlayerStats(); // Refetch player stats
   };
+  
   
   
   const showGroceryGameModal = () => {
@@ -258,7 +264,7 @@ const Gameplay = () => {
         </>
       )}
     </Box>
-  );
+  );  
 };
 
 export default Gameplay;

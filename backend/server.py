@@ -24,3 +24,5 @@ app.include_router(users.router, prefix="/users")
 app.include_router(characters.router, prefix="/characters")
 app.include_router(stats.router, prefix="/stats")
 app.include_router(UserdataTable.router, prefix="/admin")
+
+ 
