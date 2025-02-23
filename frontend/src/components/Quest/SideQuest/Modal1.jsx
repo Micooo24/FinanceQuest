@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
+import toast from 'react-hot-toast';
 
 const Modal1 = ({ onContinue }) => {
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
     setShowModal(false);
+    toast('Go to the grocery store located near bank', { icon: '🏪' });
     onContinue();
   };
 
