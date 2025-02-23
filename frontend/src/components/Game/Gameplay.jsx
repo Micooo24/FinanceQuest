@@ -31,6 +31,7 @@ const Gameplay = () => {
   const [playerStats, setPlayerStats] = useState(null);
   const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
   const [showGroceryModal, setShowGroceryModal] = useState(false); // New state variable
+  const [characterPosition, setCharacterPosition] = useState(new THREE.Vector3());
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -87,6 +88,7 @@ const Gameplay = () => {
         animationId = requestAnimationFrame(animate);
         if (mixer) mixer.update(0.01);
         if (character) {
+          setCharacterPosition(character.position);
           const offset = new THREE.Vector3(0, 2, -5);
           camera.position.lerp(offset.applyMatrix4(character.matrixWorld), 0.05);
           camera.lookAt(character.position);
@@ -147,8 +149,6 @@ const Gameplay = () => {
   
     setShowGroceryModal(false); // Hide the modal after checkout
   };
-  
-  
   
   const showGroceryGameModal = () => {
     setShowGroceryModal(true);
@@ -222,7 +222,7 @@ const Gameplay = () => {
 
       {gameStarted && playerStats && (
         <>
-          <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} />
+          <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
           {quest1Completed && <SideQuest1 />}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
