@@ -8,8 +8,7 @@ import Login from "./components/Auth/Login";
 import LandingPage from "./components/LandingPage/LandingPage";
 import GameFeatures from "./components/LandingPage/GameFeatures";
 import About from "./components/LandingPage/About";
-import Blog from "./components/LandingPage/Blog";
-import Budgeting from "./components/LandingPage/Budgeting";
+
 import Explore from "./components/LandingPage/Explore";
 // import FinanceTracker from "./components/LandingPage/FinanceTracker";
 import MonthlyDashboard from "./components/LandingPage/MonthlyDashboard";
@@ -27,14 +26,19 @@ import Investment from "./components/Minigames/Investing/InvestingPage";
 //Budgeting-Minigame
 // import BLevel1 from "./components/Minigames/Budget/BLevel1";
 
+// kay janna to
+import Blog from "./components/LandingPage/Blog";
+import Budgeting from "./components/LandingPage/Budgeting";
+import InvestingBlog from "./components/LandingPage/InvestingBlog";
+import SavingBlogs from "./components/LandingPage/savingBlog";
+
+
+
 import Gameplay from "./components/Game/Gameplay";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from "./components/Admin/Dashboard";
 
 import ProtectedRoute from "./components/Route/ProtectedRoute.jsx";
-
-
-
 
 
 function App() {
@@ -72,21 +76,24 @@ function App() {
         <Route path="/explore" element={<Explore />} />
 
 
-          <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
+        <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
 
-          <Route path="/blogs" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
-          <Route path="/budgeting" element={<ProtectedRoute><Budgeting /></ProtectedRoute>} />
+        <Route path="/blogs" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
+        <Route path="/budgeting" element={<ProtectedRoute><Budgeting /></ProtectedRoute>} />
+        <Route path="/investingBlog" element={<ProtectedRoute><InvestingBlog /></ProtectedRoute>} />
+        <Route path="/savingBlog" element={<ProtectedRoute><SavingBlogs /></ProtectedRoute>} /> 
 
-          <Route path="/loading" element={<ProtectedRoute><LoadingPage /></ProtectedRoute>} />
-          <Route path="/start" element={<ProtectedRoute><Startpage /></ProtectedRoute>} />
-          <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
-          <Route path="/minigame" element={<ProtectedRoute><Minigame /></ProtectedRoute>} />
-          <Route path="/howtoplay" element={<ProtectedRoute><Howtoplay /></ProtectedRoute>} />
+        <Route path="/loading" element={<ProtectedRoute><LoadingPage /></ProtectedRoute>} />
+        <Route path="/start" element={<ProtectedRoute><Startpage /></ProtectedRoute>} />
+        <Route path="/menu" element={<ProtectedRoute><Menu /></ProtectedRoute>} />
+        <Route path="/minigame" element={<ProtectedRoute><Minigame /></ProtectedRoute>} />
+        <Route path="/howtoplay" element={<ProtectedRoute><Howtoplay /></ProtectedRoute>} />
 
-          <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
-          <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
-          <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} />
-          <Route path="/monthlydashboard" element={<ProtectedRoute><MonthlyDashboard /></ProtectedRoute>} />
+        <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
+        <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
+        <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} />
+
+        <Route path="/monthlydashboard" element={<ProtectedRoute><MonthlyDashboard /></ProtectedRoute>} />
 
 
         {/* Minigame - Budgeting*/}

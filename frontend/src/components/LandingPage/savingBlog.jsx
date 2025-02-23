@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-// import { getTheEmailFromToken, getToken } from "../Utils/helpers"; // Import your helper functions
+
 
 import {
   FormControl,
@@ -35,17 +35,12 @@ import {
   Check,
   Close,
 } from "@mui/icons-material";
-
 import axios from "axios";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import toast  from "react-hot-toast";
 
-import toast from 'react-hot-toast'
-
-const BudgetingBlog = () => {
-  const blogId = "123"; // Declare blogId here
-  // const token = getToken();
-  const token = localStorage.getItem("authToken");
+const SavingBlog = () => {
+  const blogId = "1234"; // Declare blogId here
+  const token = localStorage.getItem("authToken"); // Get the token from local storage
   //create
   const [comment, setComment] = useState("");
   const [anonymous, setAnonymous] = useState(false);
@@ -59,7 +54,6 @@ const BudgetingBlog = () => {
   const [comments, setComments] = useState([]);
   const [loadingReplies, setLoadingReplies] = useState({});
   const [visibleReplies, setVisibleReplies] = useState({});
-  // const currentUserId = getTheEmailFromToken(); // Extract user_id from the token
 
   //reply-CRUD
   const [editModeReply, setEditModeReply] = useState(null); // Reply being edited (reply._id)
@@ -68,6 +62,7 @@ const BudgetingBlog = () => {
   const [anonymousEdit_reply, setAnonymousEdit_reply] = useState(false); // Tracks anonymous state
   const [visibleReplyBox, setVisibleReplyBox] = useState({});
   const [replyText, setReplyText] = useState("");
+  const [anonymousReply, setAnonymousReply] = useState(false);
 
   //handle delete comments
   const handleDelete = async (reviewId) => {
@@ -348,8 +343,22 @@ const BudgetingBlog = () => {
       alert(error.response?.data?.detail || "Failed to post reply");
     }
   };
+  const getTipContent = (index) => {
+    const tipsContent = [
+      "Set clear and measurable financial goals to guide your investment decisions.",
+      "Evaluate your risk tolerance to determine suitable investment options.",
+      "Spread your investments across different asset classes to minimize risk.",
+      "Invest in industries or areas you are familiar with for better understanding.",
+      "Choose low-cost investment options to maximize your returns.",
+      "Utilize accounts like 401(k) or IRAs for tax advantages.",
+      "Make regular contributions to your investment portfolio.",
+      "Avoid making impulsive decisions based on market fluctuations.",
+      "Focus on long-term growth rather than short-term gains.",
+      "Keep learning about market trends and investment strategies.",
+    ];
+    return tipsContent[index] || "";
+  };
 
-  //---
   return (
     <Box
       sx={{
@@ -434,8 +443,8 @@ const BudgetingBlog = () => {
         {/* Top Image */}
         <Box sx={{ width: "100%", textAlign: "center", mt: 2 }}>
           <img
-            src="/assets/moneyl.jpg"
-            alt="Budgeting Tips"
+            src="/assets/SavingPage.webp"
+            alt="Investment Tips"
             style={{
               width: "90%",
               height: "400px",
@@ -459,7 +468,7 @@ const BudgetingBlog = () => {
                 textAlign: "center",
               }}
             >
-              Top 10 Budgeting Tips for Beginners
+              Top 10 Investment Tips for Beginners
             </Typography>
             <Typography
               sx={{
@@ -470,25 +479,13 @@ const BudgetingBlog = () => {
                 color: "#000000",
               }}
             >
-              Budgeting is one of the most important skills when it comes to
-              managing money. Whether you're a student, a young professional, or
-              someone trying to improve your financial situation, learning how
-              to budget properly can help you avoid debt, save for the future,
-              and live a stress-free life.
+              Investing is a critical step towards building wealth and achieving
+              financial freedom. Whether you're new to investing or looking to
+              refine your strategy, these tips will help you make informed
+              decisions and grow your portfolio over time.
             </Typography>
-            {/* Budgeting Tips */}
-            {[
-              "Track Your Income and Expenses",
-              "Use the 50/30/20 Rule",
-              "Set a Monthly Budget and Stick to It",
-              "Identify Needs vs. Wants",
-              "Cook at Home and Reduce Takeouts",
-              "Look for Student Discounts and Promos",
-              "Avoid Impulse Buying",
-              "Build an Emergency Fund",
-              "Find Ways to Increase Your Income",
-              "Reward Yourself (Within Budget!)",
-            ].map((tip, index) => (
+            {/* Investment Tips */}
+            {[...Array(10)].map((_, index) => (
               <Box key={index} sx={{ mt: 3 }}>
                 <Typography
                   variant="h5"
@@ -498,17 +495,7 @@ const BudgetingBlog = () => {
                     color: "#351742",
                   }}
                 >
-                  {index + 1}. {tip}
-                </Typography>
-                <Typography
-                  sx={{
-                    fontSize: "1rem",
-                    fontFamily: "'Lilita One'",
-                    mt: 1,
-                    color: "#000000",
-                  }}
-                >
-                  {getTipContent(index)}
+                  {index + 1}. {getTipContent(index)}
                 </Typography>
               </Box>
             ))}
@@ -1088,7 +1075,6 @@ const BudgetingBlog = () => {
             </Box>
           </Box>
         </Box>
-
         {/* Other Articles Section */}
         <Box sx={{ width: "80%", margin: "40px auto" }}>
           <Typography
@@ -1120,11 +1106,11 @@ const BudgetingBlog = () => {
                     fontFamily: "'Lilita One'",
                   }}
                 >
-                  Smart Saving Strategies
+                  Budgeting Basics
                 </Typography>
                 <Button
                   component={Link}
-                  to="/savingBlog"
+                  to="/budgeting"
                   sx={{
                     mt: 1,
                     fontWeight: "bold",
@@ -1146,11 +1132,11 @@ const BudgetingBlog = () => {
                     fontFamily: "'Lilita One'",
                   }}
                 >
-                  Investing 101
+                  Saving Strategies
                 </Typography>
                 <Button
                   component={Link}
-                  to="/investingBlog"
+                  to="/savingBlog"
                   sx={{
                     mt: 1,
                     fontWeight: "bold",
@@ -1169,20 +1155,4 @@ const BudgetingBlog = () => {
   );
 };
 
-const getTipContent = (index) => {
-  const tips = [
-    "Before creating a budget, you need to know how much money is coming in and going out. List down all your sources of income and track your expenses.",
-    "A simple budgeting method is the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings or debt repayment.",
-    "After tracking your expenses, set a realistic budget based on your income and allocate specific amounts for each expense category.",
-    "Before making a purchase, ask yourself if it is a need or a want. Prioritizing essentials helps prevent unnecessary expenses.",
-    "Dining out frequently can drain your budget fast. Cooking at home helps you save money while maintaining a healthier lifestyle.",
-    "Take advantage of student discounts and promotions to lower expenses on transportation, food, and subscriptions.",
-    "Sales and online shopping temptations can lead to overspending. Try waiting 24 hours before making an impulsive purchase.",
-    "Unexpected expenses can arise at any time. Building an emergency fund ensures financial stability in tough situations.",
-    "If your budget is tight, explore side hustles or freelancing to increase your income.",
-    "Budgeting does not mean depriving yourself. Reward yourself occasionally but within a set budget to maintain motivation.",
-  ];
-  return tips[index];
-};
-
-export default BudgetingBlog;
+export default SavingBlog;

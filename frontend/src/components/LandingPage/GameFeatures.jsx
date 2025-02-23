@@ -1,14 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Box, Button, Typography, AppBar, Toolbar, IconButton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login, PlayArrow } from "@mui/icons-material";
 import SavingsIcon from "@mui/icons-material/Savings";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import SchoolIcon from "@mui/icons-material/School";
+import Navbar from "./Navbar"; // Import the Navbar component
 
 const features = [
   { title: "Real-Life Scenarios", icon: <AccountBalanceIcon fontSize="large" />, details: "Explore realistic financial situations and learn by making impactful decisions in a simulated environment." },
@@ -20,8 +19,6 @@ const features = [
 ];
 
 const GameFeatures = () => {
-  const authToken = localStorage.getItem("authToken");
-
   return (
     <Box
       sx={{
@@ -32,43 +29,11 @@ const GameFeatures = () => {
         height: "100vh",
         background: "linear-gradient(135deg, #5e3967, #351742)",
         color: "#fff",
-        overflow: "auto",
+    
         textAlign: "center",
       }}
     >
-      {/* Navigation Bar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          top: 15,
-          left: 60,
-          width: "90%",
-          backgroundColor: "#331540",
-          display: "flex",
-          justifyContent: "center",
-          padding: "10px 0",
-          borderRadius: "100px",
-          height: "10%",
-        }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "90%", margin: "0 auto" }}>
-          <Typography variant="h5" sx={{ fontFamily: "'Lilita One'", fontWeight: "bold", color: "#fff" }}>
-            Finance Quest
-          </Typography>
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <IconButton component={Link} to="/" sx={{ color: "#fff" }}><Home /></IconButton>
-            <IconButton component={Link} to="/gamefeatures" sx={{ color: "#fff" }}><SportsEsports /></IconButton>
-            <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
-            <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
-            <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            {authToken ? (
-              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
-            ) : (
-              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
+      <Navbar />
 
       {/* Page Title */}
       <motion.div
@@ -83,16 +48,30 @@ const GameFeatures = () => {
         </Box>
       </motion.div>
 
-      {/* Feature Cards */}
+      {/* Horizontally Scrollable Feature Cards */}
       <Box
         sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          display: "flex",
+          overflowX: "auto",
           gap: 4,
-          width: "90%",
+          width: "100%",
           maxWidth: "1200px",
           margin: "auto",
-          mb: 10
+          mb: 10,
+          mt: 5,
+          paddingBottom: "20px",
+          
+          // Custom scrollbar for the cards container
+          "&::-webkit-scrollbar": {
+            height: "10px", // Horizontal scrollbar height
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#5e3967", // Scrollbar track color
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#8c2fc7", // Scrollbar thumb color
+            borderRadius: "10px",
+          },
         }}
       >
         {features.map((feature, index) => (
@@ -100,24 +79,28 @@ const GameFeatures = () => {
             key={index}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: index * 0.2, duration: 0.5 }}
+            transition={{ delay: index * 0.2, duration: 0.3 }}
             whileHover={{ scale: 1.1, boxShadow: "0px 0px 15px rgba(184, 49, 243, 0.8)" }}
             style={{
               backgroundColor: "rgba(255,255,255,0.2)",
               color: "white",
-              padding: "1.5rem",
-              borderRadius: "15px",
+              padding: "1.9rem",
               textAlign: "center",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              position: "relative"
+              position: "relative",
+              minWidth: "350px",  // Ensure proper width for each card
+              height: "40vh",
+              marginTop: 20,
+              marginLeft: 20,
+              borderRadius: "15px"
             }}
           >
             {/* Spinning Coin Effect */}
             <motion.div
-              animate={{ rotateY: 360 }}
+              animate={{ rotateY: 180 }}
               transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
               style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
             >
@@ -128,9 +111,6 @@ const GameFeatures = () => {
               {feature.title}
             </Typography>
             <Typography sx={{ mt: 1, fontFamily: "'Lilita One'" }}>{feature.details}</Typography>
-
-            
-            
           </motion.div>
         ))}
       </Box>
