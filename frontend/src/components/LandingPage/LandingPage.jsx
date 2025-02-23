@@ -1,25 +1,76 @@
-import React from "react";
-import { AppBar, Toolbar, IconButton, Box, Typography, Button } from "@mui/material";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login, Savings, TrendingUp, AccountBalanceWallet, PlayArrow } from "@mui/icons-material";
-import { styled } from "@mui/system";
+import React, { useRef, useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import Navbar from './Navbar';
+import { styled } from "@mui/system";
+import Navbar from "./Navbar"; // Import the Navbar component
 
-const StyledButton = styled(Button)({
-  transition: "0.3s",
+// Styled Button
+const SpotlightButton = styled(motion.button)({
+  position: "relative",
+  overflow: "hidden",
+  border: "none",
+  borderRadius: "50px",
+  backgroundColor: "#331540",
+  color: "#fff",
+  width: "250px",
+  padding: "15px 20px",
+  fontFamily: "'Lilita One'",
   fontSize: "18px",
   fontWeight: "bold",
   cursor: "pointer",
+  transition: "transform 0.3s",
+  zIndex: 10,
   "&:hover": {
-    transform: "scale(1.1)",
-    backgroundColor: "#009797",
-    color: "#fff",
+    transform: "scale(1.05)",
   },
 });
 
 const LandingPage = () => {
-  const authToken = localStorage.getItem("authToken");  
+  const btnRef = useRef(null);
+  const spanRef = useRef(null);
+  const [clicked, setClicked] = useState(false); // To track click state
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const { left, width } = btnRef.current.getBoundingClientRect();
+      const offset = e.clientX - left;
+      const leftPos = `${(offset / width) * 100}%`;
+
+      spanRef.current.animate(
+        { left: leftPos },
+        { duration: 250, fill: "forwards" }
+      );
+    };
+
+    const handleMouseLeave = () => {
+      spanRef.current.animate(
+        { left: "50%" },
+        { duration: 100, fill: "forwards" }
+      );
+    };
+
+    if (btnRef.current) {
+      btnRef.current.addEventListener("mousemove", handleMouseMove);
+      btnRef.current.addEventListener("mouseleave", handleMouseLeave);
+    }
+
+    return () => {
+      if (btnRef.current) {
+        btnRef.current.removeEventListener("mousemove", handleMouseMove);
+        btnRef.current.removeEventListener("mouseleave", handleMouseLeave);
+      }
+    };
+  }, []);
+
+  const handleBuildingClick = () => {
+    setClicked(true);
+    // Reset click state after the flip animation duration
+    setTimeout(() => {
+      setClicked(false);
+    }, 1000); // Adjust duration as needed
+  };
+
   return (
     <Box
       sx={{
@@ -36,77 +87,200 @@ const LandingPage = () => {
       }}
     >
       <Navbar />
-    
-      {/* Main Content */}
-      <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "80px 50px 0 0px" }}>
-        {/* Left Section */}
-        <Box sx={{ width: "50%", textAlign: "center" }}>
-          <Typography variant="h2" sx={{ fontFamily: "'Gravitas One'", fontSize: "45px", fontWeight: "bold" }}>
-            MASTER YOUR FINANCES, ONE QUEST AT A TIME
-          </Typography>
-          <Typography variant="h6" sx={{ fontFamily: "'Lilita One'", fontSize: "16px", color: "#fff", mt: 1 }}>
-            Learn to budget, save, and invest through engaging real-life scenarios.
-          </Typography>
 
-          {/* Begin Adventure Button */}
-          <StyledButton
-            variant="contained"
-            component={Link}
-            to="/signup"
+      {/* Main Content */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "80px 50px 0 0px",
+          zIndex: 1,
+        }}
+      >
+        {/* Left Section */}
+        <Box sx={{ width: "50%", textAlign: "center", ml: 6 }}>
+          <Typography
+            variant="h2"
             sx={{
-              backgroundColor: "#fff",
-              color: "#331540",
-              borderRadius: "50px",
-              width: "250px",
-              fontFamily: "'Lilita One'",
-              fontSize: "15px",
+              fontFamily: "'Gravitas One'",
+              fontSize: "55px",
               fontWeight: "bold",
-              mt: 3,
             }}
           >
-            Begin Adventure
-          </StyledButton>
-        </Box>
+            MASTER YOUR FINANCES, ONE QUEST AT A TIME
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontFamily: "'Lilita One'",
+              fontSize: "20px",
+              color: "#fff",
+              mt: 2,
+              mb: 2,
+            }}
+          >
+            Learn to budget, save, and invest through engaging real-life
+            scenarios.
+          </Typography>
 
-        {/* Right Section: Interactive UI */}
-        <Box sx={{ width: "50%", textAlign: "center" }}>
-          {/* Interactive Quest Selection */}
-          <Box sx={{ padding: 2, borderRadius: "10px", backgroundColor: "rgba(255,255,255,0.2)" }}>
-            <Typography variant="h6" sx={{ fontFamily: "'Lilita One'", fontSize: "18px" }}>
-              "Choose Your Path to Financial Freedom!"
-            </Typography>
-            <Box sx={{ display: "flex", gap: 19 , mt: 2 , ml:9}}>
-              {[Savings, TrendingUp, AccountBalanceWallet].map((Icon, index) => (
-                <motion.div key={index} animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 5 }}>
-                  <Icon sx={{ fontSize: 50, color: "#00cac9" }} />
-                </motion.div>
-              ))}
-            </Box>
-            <Box sx={{ display: "flex", gap: 2, mt: 2 , borderRadius: "10px", }}>
-          <StyledButton sx={{  color: "#fff" ,  borderRadius: "80px",  fontFamily: "'Lilita One'"}} >Budgeting Wizard</StyledButton>
-          <StyledButton sx={{  color: "#fff" ,  borderRadius: "80px",  fontFamily: "'Lilita One'"}} >Investment Hero</StyledButton>
-          <StyledButton sx={{  color: "#fff" ,  borderRadius: "80px",  fontFamily: "'Lilita One'"}} >Savings Master</StyledButton>
-          </Box>
-          </Box>
-
-          {/* Live Stats */}
-          <Box sx={{ padding: 2, borderRadius: "10px", backgroundColor: "rgba(255,255,255,0.2)", mt: 4 }}>
-            <Typography variant="h6" sx={{ fontFamily: "'Lilita One'", fontSize: "18px" }}>
-              "Over *,*** players are on their Finance Quest!"
-            </Typography>
-            <Box sx={{ width: "200px", height: "8px", backgroundColor: "#fff", borderRadius: "4px", mt: 1, position: "relative", margin: "0 auto" }}>
-              <motion.div
-                style={{ height: "8px", backgroundColor: "#00cac9", borderRadius: "4px", position: "absolute" }}
-                initial={{ width: "0%" }}
-                animate={{ width: "80%" }}
-                transition={{ duration: 2 }}
+          <Link to="/signup" style={{ textDecoration: "none" }}>
+            <SpotlightButton whileTap={{ scale: 0.98 }} ref={btnRef}>
+              SIGNUP
+              <span
+                ref={spanRef}
+                style={{
+                  pointerEvents: "none",
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  height: "120px",
+                  width: "120px",
+                  transform: "translate(-50%, -50%)",
+                  borderRadius: "100% ",
+                  background: "#8c2fc7",
+                  transition: "left 0.25s ease",
+                  zIndex: -1,
+                }}
               />
-            </Box>
-            <Typography variant="body2" sx={{ fontFamily: "'Lilita One'", fontSize: "14px", mt: 1 }}>
-              "Can you reach the top?"
-            </Typography>
-          </Box>
+            </SpotlightButton>
+          </Link>
         </Box>
+
+        {/* Right Section: Animated PNGs */}
+        <Box
+          sx={{
+            width: "50%",
+            textAlign: "center",
+            position: "relative",
+          }}
+        >
+          {/* Pulsing & Flipping Building */}
+          <motion.img
+            src="/assets/building.png"
+            alt="Building"
+            style={{
+              width: "450px",
+              transform: "translate(-50%, -50%)",
+            }}
+            animate={{
+              scale: [1, 1.05, 1],
+              rotateY: clicked ? 180 : 0, // Apply flip effect when clicked
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: clicked ? 1 : 2, // Flip duration
+              ease: "easeInOut",
+            }}
+            onClick={handleBuildingClick}
+          />
+
+          {/* Swirling Sand */}
+          <motion.img
+            src="/assets/sand.png"
+            alt="Sand"
+            style={{
+              width: "150px",
+              position: "absolute",
+              top: "30%",
+              left: "40%",
+              transform: "translate(-10%, -50%)",
+              cursor: "grab",
+            }}
+            drag
+            dragElastic={0.5}
+            animate={{
+              y: ["0%", "-150%", "0%", "-150%", "0%"],
+              x: ["0%", "100%", "0%", "-100%", "0%"],
+              scale: [1, 1.1, 1], // Ensuring scaling animation is continuous
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 6,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Floating Cash */}
+          <motion.img
+            src="/assets/cash.png"
+            alt="Cash"
+            style={{
+              width: "150px",
+              position: "absolute",
+              top: "30%",
+              left: "40%",
+              transform: "translate(-50%, -50%)",
+              cursor: "grab",
+            }}
+            drag
+            dragElastic={0.5}
+            animate={{
+              y: ["0%", "150%", "0%", "150%", "0%"],
+              x: ["0%", "-150%", "0%", "150%", "0%"],
+              scale: [1, 1.1, 1], // Ensuring scaling animation is continuous
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 6,
+              ease: "easeInOut",
+            }}
+          />
+
+          {/* Floating Piggy Bank */}
+          <motion.img
+            src="/assets/piggybank.png"
+            alt="Piggy Bank"
+            style={{
+              width: "150px",
+              position: "absolute",
+              top: "30%",
+              left: "40%",
+              transform: "translate(-50%, -50%)",
+              cursor: "grab",
+            }}
+            drag
+            dragElastic={0.5}
+            animate={{
+              y: ["0%", "180%", "0%", "180%", "0%"],
+              x: ["0%", "150%", "0%", "-150%", "0%"],
+              scale: [1, 1.1, 1], // Ensuring scaling animation is continuous
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 6,
+              ease: "easeInOut",
+            }}
+          />
+        </Box>
+
+        {/* Neon Purple Light Sprinkles Effect */}
+        {[...Array(30)].map((_, index) => (
+          <motion.div
+            key={index}
+            style={{
+              position: "absolute",
+              bottom: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: "5px",
+              height: "5px",
+              borderRadius: "50%",
+              backgroundColor: "#8c2fc7",
+              animation: "sprinkleAnimation 2s infinite",
+            }}
+            animate={{
+              opacity: [0.7, 1, 0.7],
+              scale: [0.5, 1, 0.5],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: Math.random() * 2 + 1,
+              delay: Math.random(),
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </Box>
     </Box>
   );
