@@ -9,6 +9,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import HelpIcon from "@mui/icons-material/Help";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import SchoolIcon from "@mui/icons-material/School";
+import Navbar from './Navbar';
 
 const aboutSections = [
   { title: "About Finance Quest", icon: <SportsEsportsIcon fontSize="large" />, details: "Finance Quest is a game where players level up by making smart financial decisions. Built with Python and Three.js, it offers immersive gameplay, strategic missions, and real-world financial learning.", bgColor: "#fff" },
@@ -22,39 +23,7 @@ const About = () => {
   const authToken = localStorage.getItem("authToken");
   return (
     <Box>
-      {/* Navigation Bar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          top: 15,
-          left: 60,
-          width: "90%",
-          backgroundColor: "#331540",
-          display: "flex",
-          justifyContent: "center",
-          padding: "10px 0",
-          borderRadius: "100px",
-          height: "10%",
-        }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "90%", margin: "0 auto" }}>
-          <Typography variant="h5" sx={{ fontFamily: "'Lilita One'", fontWeight: "bold", color: "#fff" }}>
-            Finance Quest
-          </Typography>
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <IconButton component={Link} to="/" sx={{ color: "#fff" }}><Home /></IconButton>
-            <IconButton component={Link} to="/gamefeatures" sx={{ color: "#fff" }}><SportsEsports /></IconButton>
-            <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
-            <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
-            <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            {authToken ? (
-              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
-            ) : (
-              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
+      <Navbar />
 
       {/* Scrollable Sections */}
       {aboutSections.map((section, index) => (

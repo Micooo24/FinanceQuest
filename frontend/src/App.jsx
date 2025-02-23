@@ -89,9 +89,10 @@ function App() {
         <Route path="/minigame" element={<ProtectedRoute><Minigame /></ProtectedRoute>} />
         <Route path="/howtoplay" element={<ProtectedRoute><Howtoplay /></ProtectedRoute>} />
 
-        <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
+        {/* PREVIOUS MINI GAME */}
+        {/* <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
         <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
-        <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} />
+        <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} /> */}
 
         <Route path="/monthlydashboard" element={<ProtectedRoute><MonthlyDashboard /></ProtectedRoute>} />
 

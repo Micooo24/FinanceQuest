@@ -4,6 +4,7 @@ import { Home, SportsEsports, Article, TravelExplore, Info, Login, Savings, Tren
 import { styled } from "@mui/system";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import Navbar from './Navbar';
 
 const StyledButton = styled(Button)({
   transition: "0.3s",
@@ -34,43 +35,8 @@ const LandingPage = () => {
         overflow: "hidden",
       }}
     >
-      {/* Top Navigation Bar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          top: 15,
-          left: 60,
-          width: "90%",
-          backgroundColor: "#331540",
-          display: "flex",
-          justifyContent: "center",
-          padding: "10px 0",
-          borderRadius: "100px",
-          height: "10%",
-        }}
-      >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "90%", margin: "0 auto" }}>
-          {/* Logo */}
-          <Typography variant="h5" sx={{ fontFamily: "'Lilita One'", fontWeight: "bold", color: "#fff" }}>
-            Finance Quest
-          </Typography>
-
-          {/* Navigation Links */}
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <IconButton component={Link} to="/" sx={{ color: "#fff" }}><Home /></IconButton>
-            <IconButton component={Link} to="/gamefeatures" sx={{ color: "#fff" }}><SportsEsports /></IconButton>
-            <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}><Article /></IconButton>
-            <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}><TravelExplore /></IconButton>
-            <IconButton component={Link} to="/about" sx={{ color: "#fff" }}><Info /></IconButton>
-            {authToken ? (
-              <IconButton component={Link} to="/start" sx={{ color: "#fff" }}><PlayArrow /></IconButton>
-            ) : (
-              <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}><Login /></IconButton>
-            )}
-          </Box>
-        </Toolbar>
-      </AppBar>
-
+      <Navbar />
+    
       {/* Main Content */}
       <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "80px 50px 0 0px" }}>
         {/* Left Section */}

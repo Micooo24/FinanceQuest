@@ -19,7 +19,7 @@ import axios from "axios";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -121,7 +121,6 @@ const Signup = () => {
         padding: 0,
       }}
     >
-      <Toaster />
       <Grid
         container
         sx={{
