@@ -4,19 +4,19 @@ import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 
 // Importing images for each section
-import piggybank from "/assets/piggybank.png";
-import building from "/assets/building.png";
-import cash from "/assets/cash.png";
-import people from "/assets/people.png";
-import sand from "/assets/sand.png";
-import teamMember1 from "/assets/jane.jpg"; 
-import teamMember2 from "/assets/jana.jpg";
-import teamMember3 from "/assets/lei.jpg";
-import teamMember4 from "/assets/mico.jpg";
-import financeQuestImage1 from "/assets/sand.png";  
-import financeQuestImage2 from "/assets/sand.png";  
-import learningResourcesImage1 from "/assets/sand.png";  
-import learningResourcesImage2 from "/assets/sand.png";  
+import piggybank from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/piggybank_kk1hm0.png";
+import building from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388622/building_uxfesp.png";
+import cash from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388623/cash_m9b6s9.png";
+import people from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388623/people_pla7zy.png";
+import sand from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/sand_go9eom.png";
+import teamMember1 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388627/jane_dpkych.jpg"; 
+import teamMember2 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388622/jana_skw5r0.jpg";
+import teamMember3 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388622/lei_zjpxsq.jpg";
+import teamMember4 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388623/mico_bixxmy.jpg";
+import financeQuestImage1 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/sand_go9eom.png";  
+import financeQuestImage2 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/sand_go9eom.png";  
+import learningResourcesImage1 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/sand_go9eom.png";  
+import learningResourcesImage2 from "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388624/sand_go9eom.png";  
 
 // Data for the About sections
 const aboutSections = [

@@ -267,7 +267,7 @@ const MenuPage = () => {
     <>
       <GlobalStyle />
       <MenuPageWrapper>
-        <BackgroundImage src="/assets/bg.jpg" alt="Menu Background" />
+        <BackgroundImage src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg" alt="Menu Background" />
         <audio ref={audioRef} loop>
           <source src="/assets/quiet.mp3" type="audio/mp3" />
           Your browser does not support the audio element.

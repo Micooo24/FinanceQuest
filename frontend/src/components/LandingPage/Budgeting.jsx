@@ -377,7 +377,7 @@ const BudgetingBlog = () => {
         {/* Top Image */}
         <Box sx={{ width: "100%", textAlign: "center", mt: 2 }}>
           <img
-            src="/assets/moneyl.jpg"
+            src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740389066/moneyl_rqizny.jpg"
             alt="Budgeting Tips"
             style={{
               width: "90%",

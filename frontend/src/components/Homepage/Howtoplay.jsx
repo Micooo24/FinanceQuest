@@ -146,7 +146,7 @@ const HowToPlay = () => {
     <>
       <GlobalStyle />
       <HowToPlayWrapper>
-        <BackgroundImage src="/assets/bg.jpg" alt="Game Background" />
+        <BackgroundImage src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg" alt="Game Background" />
         <Carousel>
           <CloseButton onClick={() => navigate("/start")}> <FaTimes /> </CloseButton>
           <Slide>
