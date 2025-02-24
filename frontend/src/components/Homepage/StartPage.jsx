@@ -206,7 +206,7 @@ const StartPage = () => {
     <>
       <GlobalStyle />
       <StartPageWrapper>
-        <BackgroundImage src="/assets/bg.jpg" alt="Game Background" />
+        <BackgroundImage src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg" alt="Game Background" />
 
         <audio ref={audioRef} loop>
           <source src="/assets/quiet.mp3" type="audio/mp3" />
@@ -232,7 +232,7 @@ const StartPage = () => {
 
         <MusicIconWrapper onClick={handleMuteToggle}>
           <MusicIcon
-            src={isMuted ? "/assets/mute.jpg" : "/assets/music.jpg"}
+            src={isMuted ? "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/mute_hzttoc.jpg" : "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/music_hf9tay.jpg"}
             alt={isMuted ? "Mute Icon" : "Unmute Icon"}
           />
         </MusicIconWrapper>

@@ -686,7 +686,7 @@ const FinanceTracker = () => {
         >
           <Box
             component="img"
-            src="/assets/catmoney.png"
+            src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740389130/catmoney_olnul4.png"
             alt="Finance Planner Preview"
             sx={{
               width: "100%",
