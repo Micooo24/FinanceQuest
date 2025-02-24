@@ -30,6 +30,7 @@ const LandingPage = () => {
   const btnRef = useRef(null);
   const spanRef = useRef(null);
   const [clicked, setClicked] = useState(false); // To track click state
+  const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -125,27 +126,29 @@ const LandingPage = () => {
             scenarios.
           </Typography>
 
-          <Link to="/signup" style={{ textDecoration: "none" }}>
-            <SpotlightButton whileTap={{ scale: 0.98 }} ref={btnRef}>
-              SIGNUP
-              <span
-                ref={spanRef}
-                style={{
-                  pointerEvents: "none",
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  height: "120px",
-                  width: "120px",
-                  transform: "translate(-50%, -50%)",
-                  borderRadius: "100% ",
-                  background: "#8c2fc7",
-                  transition: "left 0.25s ease",
-                  zIndex: -1,
-                }}
-              />
-            </SpotlightButton>
-          </Link>
+          {!authToken && (
+            <Link to="/signup" style={{ textDecoration: "none" }}>
+              <SpotlightButton whileTap={{ scale: 0.98 }} ref={btnRef}>
+                SIGNUP
+                <span
+                  ref={spanRef}
+                  style={{
+                    pointerEvents: "none",
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    height: "120px",
+                    width: "120px",
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: "100% ",
+                    background: "#8c2fc7",
+                    transition: "left 0.25s ease",
+                    zIndex: -1,
+                  }}
+                />
+              </SpotlightButton>
+            </Link>
+          )}
         </Box>
 
         {/* Right Section: Animated PNGs */}

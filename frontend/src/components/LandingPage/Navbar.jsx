@@ -129,7 +129,7 @@ const Navbar = () => {
                 <Info />
               </IconButton>
             </motion.div>
-
+            {authToken && (
             <motion.div
               whileHover={iconHoverEffect}
               whileTap={iconTapEffect}
@@ -140,6 +140,7 @@ const Navbar = () => {
                 <PlayArrow />
               </IconButton>
             </motion.div>
+          )}
 
             {!authToken && (
               <motion.div

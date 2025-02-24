@@ -14,10 +14,10 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Email, Lock, AccountCircle, Cake, Close } from "@mui/icons-material";
-import { Google as GoogleIcon, Facebook as FacebookIcon } from "@mui/icons-material";
+import { Google as GoogleIcon} from "@mui/icons-material";
 import axios from "axios";
 import { auth } from "../firebase/firebase";
-import { GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider,  signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
 import toast from 'react-hot-toast';
 
@@ -76,18 +76,6 @@ const Signup = () => {
     }
   };
 
-  const handleFacebookSignup = async () => {
-    const provider = new FacebookAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const token = await result.user.getIdToken();
-      await axios.post("http://127.0.0.1:8000/users/facebook-signup", { token });
-      toast.success("Facebook signup successful!");
-      navigate("/login");
-    } catch (error) {
-      toast.error("Facebook signup failed");
-    }
-  };
 
   const handleOtpSubmit = async () => {
     try {
@@ -268,19 +256,6 @@ const Signup = () => {
                 }}
               >
                 <GoogleIcon />
-              </IconButton>
-              <IconButton
-                onClick={handleFacebookSignup}
-                sx={{
-                  backgroundColor: "#1877F2",
-                  color: "white",
-                  width: 50,
-                  height: 50,
-                  transition: "0.3s",
-                  "&:hover": { backgroundColor: "#0F65D4" },
-                }}
-              >
-                <FacebookIcon />
               </IconButton>
             </Box>
 
