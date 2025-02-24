@@ -1,5 +1,5 @@
 venv/
-backend/firebase_backend/
+firebase_backend/
 __pycache__/
 routes/__pycache__/
 models/__pycache__/
