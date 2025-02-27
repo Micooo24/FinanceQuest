@@ -14,7 +14,7 @@ import Modal8B_LandlordResponse from './Modal8B';
 import ChecklistModal from '../Checklist/ChecklistModal';
 import { Button } from '@mui/material';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import { checkProximityToNPC4 } from '../../Game/Character';
+import { checkProximityToNPC4 } from '../../Utils/proximity';
 
 const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
   const [currentModal, setCurrentModal] = useState(1);

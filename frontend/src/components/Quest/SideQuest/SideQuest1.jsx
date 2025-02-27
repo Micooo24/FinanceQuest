@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal1 from './Modal1';
 import Modal2 from './Modal2';
 import Modal3 from './Modal3';
@@ -11,11 +11,24 @@ import Modal9 from './Modal9';
 import Modal10 from './Modal10';
 import Modal11 from './Modal11';
 import LessonUnlockedModal from './LessonUnlockedModal';
+import { checkProximityToNPC7 } from '../../Utils/proximity';
+import { Button } from '@mui/material';
 
-const SideQuest1 = () => {
+const SideQuest1 = ({ setPlayerStats, characterPosition }) => {
   const [currentModal, setCurrentModal] = useState(1);
   const [budgetOutcome, setBudgetOutcome] = useState(null);
   const [showLessonUnlocked, setShowLessonUnlocked] = useState(false);
+  const [showSupermarketButton, setShowSupermarketButton] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
+
+  useEffect(() => {
+    if (characterPosition) {
+      console.log('Character position updated:', characterPosition); // Debug log
+      const isCloseToNPC7 = checkProximityToNPC7(characterPosition);
+      console.log('Is close to NPC7:', isCloseToNPC7); // Debug log
+      setShowSupermarketButton(isCloseToNPC7);
+    }
+  }, [characterPosition]);
 
   const handleNextModal = () => {
     setCurrentModal((prev) => prev + 1);
@@ -39,18 +52,22 @@ const SideQuest1 = () => {
     setShowLessonUnlocked(false);
     // No reset to start - continue the flow
   };
-  
+
+  const handleGoToSupermarket = () => {
+    setShowModal2(true);
+    setCurrentModal(2); // Move to Modal 2 when button is clicked
+  };
 
   return (
     <>
       {currentModal === 1 && <Modal1 onContinue={handleNextModal} />}
-      {currentModal === 2 && <Modal2 onContinue={handleNextModal} />}
+      {showModal2 && currentModal === 2 && <Modal2 onContinue={handleNextModal} />}
       {currentModal === 3 && <Modal3 onContinue={handleNextModal} />}
       {currentModal === 4 && <Modal4 onContinue={handleNextModal} />}
       {currentModal === 5 && <Modal5 onContinue={handleNextModal} />}
       {currentModal === 6 && <Modal6 onContinue={handleNextModal} />}
       {currentModal === 7 && <Modal7 onContinue={handleNextModal} />}
-      {currentModal === 8 && <Modal8 onCheckout={handleBudgetDecision} />}
+      {currentModal === 8 && <Modal8 onCheckout={handleBudgetDecision} setPlayerStats={setPlayerStats} />}
 
       {/* Overspent Path */}
       {budgetOutcome === 'overspent' && currentModal === 9 && (
@@ -68,6 +85,26 @@ const SideQuest1 = () => {
       {/* Final Lesson Unlocked Modal */}
       {showLessonUnlocked && (
         <LessonUnlockedModal open={showLessonUnlocked} onClose={handleCloseLesson} />
+      )}
+
+      {/* Go to Supermarket Button */}
+      {showSupermarketButton && (
+        <Button 
+          onClick={handleGoToSupermarket}
+          sx={{ 
+            position: 'fixed', 
+            bottom: 100, 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+            minWidth: 'auto', 
+            padding: '8px',
+            color: '#fff',
+            backgroundColor: '#1976d2',
+          }}
+        >
+          Go to Supermarket
+        </Button>
       )}
     </>
   );

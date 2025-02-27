@@ -3,6 +3,7 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
 import { initializeBankInteraction, updateBankInteractionButton, handleBankInteractionClick } from './Interaction/BankInteraction';
 import { initializeNPCInteraction, updateNPCInteractionButton, handleNPCInteractionClick, createInteractionButton } from './Interaction/NPCInteraction';
+// import {checkProximityToNPC4} from './Utils/proximity';
 
 const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
 const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739094607/Walking_c7lfpe.fbx';
@@ -11,7 +12,6 @@ const jumpPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077533/Ju
 // Global debug mode variable
 const debugMode = true;
 
-const npc4Position = new THREE.Vector3(-12.01533346391676, 0.2, 28.505300981009736);
 
 const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPositionUpdate) => {
   const fbxLoader = new FBXLoader();
@@ -146,7 +146,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
         default:
           break;
       }
-      //if (debugMode) console.log(`Character position: x:${character.position.x}, y:${character.position.y}, z:${character.position.z}`);
+      if (debugMode) console.log(`Character position: x:${character.position.x}, y:${character.position.y}, z:${character.position.z}`);
     };
 
     // Handle key up events
@@ -226,9 +226,6 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
   });
 };
 
-const checkProximityToNPC4 = (characterPosition) => {
-  const distanceToNPC4 = characterPosition.distanceTo(npc4Position);
-  return distanceToNPC4 < 5; // Adjust the distance threshold as needed
-};
 
-export { loadCharacter, checkProximityToNPC4 };
+
+export { loadCharacter };

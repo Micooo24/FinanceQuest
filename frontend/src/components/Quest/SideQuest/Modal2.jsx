@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
 
-const Modal2 = ({ onContinue }) => {
+const Modal2 = ({ onContinue}) => {
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
