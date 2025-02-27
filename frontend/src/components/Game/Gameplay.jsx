@@ -30,7 +30,6 @@ const Gameplay = () => {
   const [quest1Completed, setQuest1Completed] = useState(false);
   const [playerStats, setPlayerStats] = useState(null);
   const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
-  const [showGroceryModal, setShowGroceryModal] = useState(false); // New state variable
   const [characterPosition, setCharacterPosition] = useState(new THREE.Vector3());
 
   const scene = new THREE.Scene();
@@ -135,24 +134,28 @@ const Gameplay = () => {
     setShowRentDecisionModal(false);
   };
 
-  const handleGroceryCheckout = async (newBalance) => {
-    console.log('New balance from API:', newBalance); // Debug log
+
+  //   console.log('New balance from API:', newBalance); // Debug log
   
-    // Update the player's stats immediately
-    setPlayerStats((prevStats) => {
-      if (!prevStats) return null;
-      return {
-        ...prevStats,
-        money: newBalance, // Update only the money field
-      };
-    });
+  //   // Update the player's stats immediately
+  //   setPlayerStats((prevStats) => {
+  //     if (!prevStats) return null;
+  //     return {
+  //       ...prevStats,
+  //       money: newBalance, // Update only the money field
+  //     };
+  //   });
   
-    setShowGroceryModal(false); // Hide the modal after checkout
-  };
+  //   setShowGroceryModal(false); // Hide the modal after checkout
+
+  //   // Fetch the updated player stats
+  //   await fetchPlayerStats();
   
-  const showGroceryGameModal = () => {
-    setShowGroceryModal(true);
-  };
+  // };
+  
+  // const showGroceryGameModal = () => {
+  //   setShowGroceryModal(true);
+  // };
 
   // Cloud Animation Data
   const clouds = [
@@ -223,7 +226,7 @@ const Gameplay = () => {
       {gameStarted && playerStats && (
         <>
           <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
-          {quest1Completed && <SideQuest1 />}
+          {quest1Completed && <SideQuest1 setPlayerStats={setPlayerStats} characterPosition={characterPosition}  />}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats health={playerStats.health} exp={playerStats.experience} level={playerStats.level} money={playerStats.money} />
@@ -256,10 +259,6 @@ const Gameplay = () => {
           
           {showRentDecisionModal && (
             <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
-          )}
-          {/* Conditionally render Modal8GroceryGame */}
-          {showGroceryModal && (
-           <Modal8GroceryGame onCheckout={handleGroceryCheckout} />
           )}
         </>
       )}

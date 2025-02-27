@@ -13,7 +13,7 @@ const storeItems = [
   { name: 'Chips (Large)', type: 'Want', price: 120 },
 ];
 
-const Modal8GroceryGame = ({ onCheckout }) => {
+const Modal8GroceryGame = ({ onCheckout, setPlayerStats  }) => {
   const [cart, setCart] = useState({});
   const budget = 2000;
 
@@ -36,6 +36,10 @@ const Modal8GroceryGame = ({ onCheckout }) => {
   const handleCheckout = () => {
     updatePlayerMoneyAfterGrocery(totalSpent, (newBalance) => {
       onCheckout(newBalance); // Pass the new balance to the parent component
+      setPlayerStats((prevStats) => ({
+        ...prevStats,
+        money: newBalance,
+      }));
     });
   };
 

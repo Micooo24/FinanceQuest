@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile, Form, Request
+from fastapi import APIRouter, HTTPException, File, UploadFile, Form, Request, Depends
 from fastapi.responses import JSONResponse
 
 # MongoDB and Secret Key
@@ -14,7 +14,7 @@ import logging
 from itsdangerous import URLSafeTimedSerializer
 from bson import ObjectId
 import bcrypt
-from utils.utils import create_access_token
+from utils.utils import create_access_token, get_current_user
 from datetime import timedelta, datetime, date  
 from models.users import Role
 from fastapi import Body
@@ -179,8 +179,6 @@ async def login(
         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-  
-   
 
 @router.post("/google-signup")
 async def google_signup(request: Request):
@@ -327,3 +325,41 @@ async def google_login(request: Request):
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
     
+
+@router.put("/update-profile/{user_id}")
+async def update_profile(
+    current_user: dict = Depends(get_current_user),
+    username: str = Body(None),
+    birthday: date = Body(None),
+    img: UploadFile = File(None)
+):
+    user_id = current_user["_id"]
+    try:
+        user = db["users"].find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        update_dict = {}
+        if username:
+            update_dict["username"] = username
+
+        if birthday:
+            update_dict["birthday"] = birthday.strftime("%Y-%m-%d")
+        if img:
+            try:
+                # Ensure the "users" folder exists in Cloudinary
+                result = cloudinary.uploader.upload(img.file, folder="users")
+                img_url = result.get("secure_url")
+                update_dict["img_path"] = img_url
+            except Exception as e:
+                logger.error(f"Image upload failed: {str(e)}")
+                raise HTTPException(status_code=500, detail=f"Image upload failed: {str(e)}")
+        
+        db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": update_dict})
+        return JSONResponse(content={"message": "Profile updated successfully"})
+    except HTTPException as e:
+        logger.error(f"HTTPException: {str(e)}")
+        raise e
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
