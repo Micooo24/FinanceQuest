@@ -96,7 +96,7 @@ const Navbar = () => {
                 <SportsEsports />
               </IconButton>
             </motion.div>
-
+            
             <motion.div
               whileHover={iconHoverEffect}
               whileTap={iconTapEffect}
@@ -107,6 +107,7 @@ const Navbar = () => {
                 <Article />
               </IconButton>
             </motion.div>
+            
 
             <motion.div
               whileHover={iconHoverEffect}

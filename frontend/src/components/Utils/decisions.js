@@ -1,20 +1,20 @@
 import axios from 'axios';
 
-export const updatePlayerMoney = async (amount, updateMoneyCallback) => {
+export const quest1Decision = async (decision, updateStatsCallback) => {
   const authToken = localStorage.getItem('authToken');
   try {
     const response = await axios.put(
-      'http://127.0.0.1:8000/stats/decision/subtract_money',
-      { amount },
+      'http://127.0.0.1:8000/stats/decision/q1',
+      { decision },
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       }
     );
-    updateMoneyCallback(response.data.new_balance);
+    updateStatsCallback(response.data.updatedStats);
   } catch (error) {
-    console.error('Error subtracting money:', error);
+    console.error('Error processing Q1 decision:', error);
   }
 };
 
