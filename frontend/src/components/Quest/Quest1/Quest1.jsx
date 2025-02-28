@@ -28,12 +28,12 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
   useEffect(() => {
     if (characterPosition) {
       const isCloseToNPC4 = checkProximityToNPC4(characterPosition);
-      console.log('Character position:', characterPosition);
-      console.log('Is close to NPC4:', isCloseToNPC4);
+      // console.log('Character position:', characterPosition);
+      // console.log('Is close to NPC4:', isCloseToNPC4);
       setShowMeetingLandlordModal(isCloseToNPC4);
       setShowTalkToLandlordButton(!isCloseToNPC4);
       if (isCloseToNPC4 && currentModal === 4) {
-        console.log('Automatically moving to Modal 5');
+        // console.log('Automatically moving to Modal 5');
         setCurrentModal(5); // Automatically move to the next modal when close to NPC4
       }
     }

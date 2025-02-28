@@ -3,14 +3,14 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
 import { initializeBankInteraction, updateBankInteractionButton, handleBankInteractionClick } from './Interaction/BankInteraction';
 import { initializeNPCInteraction, updateNPCInteractionButton, handleNPCInteractionClick, createInteractionButton } from './Interaction/NPCInteraction';
-// import {checkProximityToNPC4} from './Utils/proximity';
+
 
 const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
 const walkPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739094607/Walking_c7lfpe.fbx';
 const jumpPath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077533/Jumping_hxqlkv.fbx';
 
 // Global debug mode variable
-const debugMode = true;
+const debugMode = false;
 
 
 const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPositionUpdate) => {

@@ -79,7 +79,7 @@ const loadCars = (scene, vehicleLayer) => {
       });
 
       vehicleLayer.add(object);
-      console.log(`${path} loaded and added to the scene`);
+      // console.log(`${path} loaded and added to the scene`);
     }, undefined, (error) => {
       console.error(`An error occurred while loading ${path}: ${error.message}`);
     });

@@ -223,6 +223,7 @@ const Gameplay = () => {
         </Box>
       )}
 
+
       {gameStarted && playerStats && (
         <>
           <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
