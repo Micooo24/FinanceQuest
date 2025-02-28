@@ -11,7 +11,6 @@ import StatsJS from 'stats.js';
 import Quest1 from '../Quest/Quest1/Quest1';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
 import Modal6RentDecision from '../Quest/Quest1/Modal6';
-import Modal8GroceryGame from '../Quest/SideQuest/Modal8';
 // import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
 // MUI Imports
