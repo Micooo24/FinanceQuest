@@ -70,9 +70,50 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
     if new_money < 0:
         raise HTTPException(status_code=400, detail="Insufficient funds")
     
-    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"money": new_money}})
-    return {"message": "Grocery selection processed successfully", "new_balance": new_money}
-
+    if request.total_spent <= 2000:
+        new_points = stats["points"] + 10
+        rewards = [
+            "Maintains financial stability",
+            "Earns +10 Smart Decision Points",
+            "Saves money for future needs"
+        ]
+        consequences = [
+            "Fewer grocery items purchased",
+            "Limited access to premium or extra goods"
+        ]
+    else:
+        new_points = stats["points"] + 8
+        rewards = [
+            "More groceries stocked",
+            "Access to higher-quality or premium items",
+            "Possible discounts or promotions"
+        ]
+        consequences = [
+            "Less cash on hand for other expenses",
+            "Increased risk of financial instability",
+            "Potential debt if using credit"
+        ]
+    
+    sq1_outcome = {
+        "rewards": rewards,
+        "consequences": consequences
+    }
+    
+    db["stats"].update_one(
+        {"user_id": ObjectId(user_id)},
+        {"$set": {
+            "money": new_money,
+            "points": new_points,
+            "sq1_done": True,
+            "sq1_outcome": sq1_outcome
+        }}
+    )
+    return {
+        "message": "Grocery selection processed successfully",
+        "new_balance": new_money,
+        "new_points": new_points,
+        "sq1_outcome": sq1_outcome
+    }
 # Combined endpoint for Q1 decision and subtract money
 @router.put("/decision/q1")
 async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(get_current_user)):
@@ -98,13 +139,13 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
         update_fields["money"] = new_money
         update_fields["points"] = stats["points"] + 10
         rewards = [
-            " Ensures financial stability.",
-            " Maintains a good relationship with the landlord.",
-            " Peace of mind."
+            "Ensures financial stability.",
+            "Maintains a good relationship with the landlord.",
+            "Peace of mind."
         ]
         consequences = [
-            " Reduces cash on hand.",
-            " Limits flexibility in spending for other business needs."
+            "Reduces cash on hand.",
+            "Limits flexibility in spending for other business needs."
         ]
     elif request.decision == "delay":
         # Consequence for delaying rent
@@ -114,21 +155,27 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
         update_fields["money"] = new_money
         update_fields["points"] = stats["points"] + 5
         rewards = [
-            " Keeps extra cash on hand for other expenses",
-            " Allows investment in inventory or business growth before paying rent."
+            "Keeps extra cash on hand for other expenses",
+            "Allows investment in inventory or business growth before paying rent."
         ]
         consequences = [
-            " Risk of late fees.",
-            " Landlord’s trust may decrease.",
-            " Possible stress or uncertainty about meeting the deadline."
+            "Risk of late fees.",
+            "Landlord’s trust may decrease.",
+            "Possible stress or uncertainty about meeting the deadline."
         ]
+        
+    q1_outcome = {
+        "rewards": rewards,
+        "consequences": consequences
+    }
+    update_fields["q1_outcome"] = q1_outcome
 
     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
     updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
     updated_stats["_id"] = str(updated_stats["_id"])
+
     return {
         "message": "Q1 decision processed successfully",
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
-        "rewards": rewards,
-        "consequences": consequences
+        "q1_outcome": q1_outcome
     }

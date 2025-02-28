@@ -254,7 +254,6 @@ async def google_signup(request: Request):
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}") 
 
-
 @router.post("/google-login")
 async def google_login(request: Request):
     try:
