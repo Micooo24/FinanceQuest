@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile, Form, Request, Depends   
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 
 # MongoDB 
 from config.db import db  
-# from utils.utils import SECRET_KEY
 from utils.utils import get_current_user 
 
 # Pydantic
@@ -24,12 +23,18 @@ class Stats(BaseModel):
     money: int = 5000
     experience: int = 0
     location: Coordinates = Coordinates(x=0.0, y=0.0, z=0.0)
+    q1_decision: Optional[str] = None
+    q1_done: bool = False
+    sq1_done: bool = False
 
     class Config:
         arbitrary_types_allowed = True  # Allow arbitrary types like ObjectId
 
 class GrocerySelectionRequest(BaseModel):
     total_spent: int
+
+class Q1DecisionRequest(BaseModel):
+    decision: str
 
 @router.get("/get/player", response_model=Stats)
 async def read_current_user_stats(current_user: dict = Depends(get_current_user)):
@@ -82,3 +87,23 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
     
     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"money": new_money}})
     return {"message": "Grocery selection processed successfully", "new_balance": new_money}
+
+# New endpoint for Q1 decision
+@router.put("/decision/q1")
+async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    if request.decision not in ["pay", "delay"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'pay' or 'delay'.")
+
+    update_fields = {
+        "q1_decision": request.decision,
+        "q1_done": True,
+        "sq1_done": False
+    }
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    return {"message": "Q1 decision processed successfully", "q1_decision": request.decision, "q1_done": True}

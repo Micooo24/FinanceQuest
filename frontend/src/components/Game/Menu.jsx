@@ -1,7 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Menu.css';
 
 const Menu = ({ menuOpen, toggleMenu }) => {
+  const navigate = useNavigate();
+
+  const handleQuit = () => {
+    navigate('/start');
+  };
+
+  const handleUserProfile = () => {
+    navigate('/user-profile');
+  };
+
   return (
     <>
       <div className="burger-menu" onClick={toggleMenu}>
@@ -14,7 +25,7 @@ const Menu = ({ menuOpen, toggleMenu }) => {
         <button className="close-button" onClick={toggleMenu}>×</button>
         <div className="menu-content">
           <div className="menu-item">
-            <button className="menu-button">USER PROFILE</button>
+            <button className="menu-button" onClick={handleUserProfile}>USER PROFILE</button>
           </div>
           <div className="menu-item">
             <button className="menu-button">MINI GAME</button>
@@ -23,7 +34,7 @@ const Menu = ({ menuOpen, toggleMenu }) => {
             <button className="menu-button">MUSIC</button>
           </div>
           <div className="menu-item">
-            <button className="menu-button">QUIT</button>
+            <button className="menu-button" onClick={handleQuit}>QUIT</button>
           </div>
         </div>
       </div>

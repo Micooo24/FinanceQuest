@@ -27,7 +27,7 @@ const Gameplay = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
-  const [quest1Completed, setQuest1Completed] = useState(false);
+  // const [quest1Completed, setQuest1Completed] = useState(false); // Commented out
   const [playerStats, setPlayerStats] = useState(null);
   const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
   const [characterPosition, setCharacterPosition] = useState(new THREE.Vector3());
@@ -134,29 +134,6 @@ const Gameplay = () => {
     setShowRentDecisionModal(false);
   };
 
-
-  //   console.log('New balance from API:', newBalance); // Debug log
-  
-  //   // Update the player's stats immediately
-  //   setPlayerStats((prevStats) => {
-  //     if (!prevStats) return null;
-  //     return {
-  //       ...prevStats,
-  //       money: newBalance, // Update only the money field
-  //     };
-  //   });
-  
-  //   setShowGroceryModal(false); // Hide the modal after checkout
-
-  //   // Fetch the updated player stats
-  //   await fetchPlayerStats();
-  
-  // };
-  
-  // const showGroceryGameModal = () => {
-  //   setShowGroceryModal(true);
-  // };
-
   // Cloud Animation Data
   const clouds = [
     { id: 1, speed: 15, size: '10vw', top: '1%' },
@@ -223,11 +200,19 @@ const Gameplay = () => {
         </Box>
       )}
 
-
       {gameStarted && playerStats && (
         <>
-          <Quest1 onComplete={() => setQuest1Completed(true)} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
-          {quest1Completed && <SideQuest1 setPlayerStats={setPlayerStats} characterPosition={characterPosition}  />}
+          {!playerStats.q1_done && (
+            <>
+              <Quest1 onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q1_done: true }))} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
+              {showRentDecisionModal && (
+                <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
+              )}
+            </>
+          )}
+          {playerStats.q1_done && !playerStats.sq1_done && (
+            <SideQuest1 setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
+          )}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats health={playerStats.health} exp={playerStats.experience} level={playerStats.level} money={playerStats.money} />
@@ -256,10 +241,6 @@ const Gameplay = () => {
               <Typography variant="h5">{popupContent}</Typography>
               <Button onClick={() => setPopupContent(null)}>Close</Button>
             </Box>
-          )}
-          
-          {showRentDecisionModal && (
-            <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
           )}
         </>
       )}
