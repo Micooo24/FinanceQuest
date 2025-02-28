@@ -308,7 +308,7 @@ const Gameplay = () => {
   useEffect(() => {
     fetchPlayerStats(); // Initial fetch
 
-    const intervalId = setInterval(fetchPlayerStats, 10000); // Refresh every 10 seconds
+    const intervalId = setInterval(fetchPlayerStats, 60000); // Refresh every 1 minute
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);

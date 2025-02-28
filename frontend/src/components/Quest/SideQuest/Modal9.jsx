@@ -56,11 +56,11 @@ const Modal9 = ({ onContinue }) => {
               border: '2px solid rgba(0, 0, 0, 0.8)',
             }}
           >
-            ⚠ New Problem: Not enough money left for university expenses!
+            ⚠ New Problem: Not enough money left for personal expenses!
           </Typography>
 
           <Typography variant="body1" sx={{ color: '#000', mt: 4, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>
-            "Oh no… I spent too much on food. How will I afford my school expenses now?"
+            "Oh no… I spent too much on food. How will I handle my personal expenses now?"
           </Typography>
 
           <Button
