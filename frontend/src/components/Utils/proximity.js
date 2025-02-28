@@ -12,7 +12,7 @@ const checkProximityToNPC4 = (characterPosition) => {
 };
 
 const checkProximityToNPC7 = (characterPosition) => {
-    const distanceToNPC7 = characterPosition.distanceTo(npc7Position);
+    const distanceToNPC7 = characterPosition.distanceTo(npc7Position);  
     return distanceToNPC7 < 5; // Adjust the distance threshold as needed
     }
     
