@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
+import axios from 'axios';
 import { updatePlayerMoney } from '../../Utils/decisions';
 
 const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
@@ -12,7 +13,24 @@ const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
         setPlayerStats((prevStats) => ({ ...prevStats, money: newBalance }));
       });
     }
+    await sendQ1Decision(choice);
     onSelectChoice(choice); // Pass the player's decision to the next step
+  };
+
+  const sendQ1Decision = async (decision) => {
+    try {
+      const response = await axios.put('http://127.0.0.1:8000/stats/decision/q1', {
+        decision: decision
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Assuming you store the auth token in localStorage
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error('Error sending Q1 decision:', error);
+    }
   };
 
   useEffect(() => {

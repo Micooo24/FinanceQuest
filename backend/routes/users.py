@@ -363,3 +363,19 @@ async def update_profile(
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+@router.get("/profile")
+async def get_profile(current_user: dict = Depends(get_current_user)):
+    try:
+        user_id = current_user["_id"]
+        user = db["users"].find_one(
+            {"_id": ObjectId(user_id)},
+            {"username": 1, "email": 1, "birthday": 1, "img_path": 1}
+        )
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        user["_id"] = str(user["_id"])  # Convert ObjectId to string
+        return JSONResponse(content={"user": user})
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

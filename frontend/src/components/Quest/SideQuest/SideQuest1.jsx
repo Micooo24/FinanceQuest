@@ -212,11 +212,11 @@ const SideQuest1 = ({ setPlayerStats, characterPosition }) => {
     const isCloseToNPC7 = checkProximityToNPC7(characterPosition);
     
     if (isCloseToNPC7) {
-      toast('You are close to Supermarket!');
+      toast('You are at Supermarket!');
       setShowModal2(true);
       setShowSupermarketButton(false);
     } else {
-      toast('You are not close to NPC7.');
+      toast('You are not close to Supermarket.');
     }
   };
 
