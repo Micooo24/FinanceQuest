@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Button, Modal, Fade, Backdrop, Grid, IconButton } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 import { updatePlayerMoneyAfterGrocery } from '../../Utils/decisions';
+import toast from 'react-hot-toast';
 
 const storeItems = [
   { name: 'Rice (5kg)', type: 'Need', price: 300 },
@@ -13,7 +14,7 @@ const storeItems = [
   { name: 'Chips (Large)', type: 'Want', price: 120 },
 ];
 
-const Modal8GroceryGame = ({ onCheckout, setPlayerStats  }) => {
+const Modal8GroceryGame = ({ onCheckout, setPlayerStats }) => {
   const [cart, setCart] = useState({});
   const budget = 2000;
 
@@ -40,6 +41,7 @@ const Modal8GroceryGame = ({ onCheckout, setPlayerStats  }) => {
         ...prevStats,
         money: newBalance,
       }));
+      toast.success(`Transaction successful! You spent ₱${totalSpent}.`);
     });
   };
 
