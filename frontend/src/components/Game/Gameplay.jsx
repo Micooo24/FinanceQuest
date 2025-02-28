@@ -204,9 +204,8 @@ const Gameplay = () => {
       {gameStarted && playerStats && (
         <>
           {!playerStats.q1_done && (
-            <>
-              <Quest1 
-                  onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q1_done: true }))} 
+            <>  
+              <Quest1 onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q1_done: true }))} 
                 setPlayerStats={setPlayerStats} 
                 characterPosition={characterPosition} 
               />
