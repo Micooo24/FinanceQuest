@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import  toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Welcome from './Welcome';
 import Modal1Introduction from './Modal1Introduction';
 import Modal2InnerThoughts from './Modal2';
@@ -28,19 +28,16 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
   useEffect(() => {
     if (characterPosition) {
       const isCloseToNPC4 = checkProximityToNPC4(characterPosition);
-      // console.log('Character position:', characterPosition);
-      // console.log('Is close to NPC4:', isCloseToNPC4);
       setShowMeetingLandlordModal(isCloseToNPC4);
       setShowTalkToLandlordButton(!isCloseToNPC4);
       if (isCloseToNPC4 && currentModal === 4) {
-        // console.log('Automatically moving to Modal 5');
         setCurrentModal(5); // Automatically move to the next modal when close to NPC4
       }
     }
   }, [characterPosition, currentModal]);
 
   const handleNextModal = () => {
-    console.log('Current modal:', currentModal);
+    console.log(`handleNextModal called. Current modal: ${currentModal}, Rent decision: ${rentDecision}`);
     if ((rentDecision === 'pay' && currentModal === 9) || 
         (rentDecision === 'delay' && currentModal === 11)) {
       setIsQuest1Completed(true); 
@@ -52,17 +49,19 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
       }
       setCurrentModal((prev) => prev + 1);
     }
+    console.log(`Next modal set to: ${currentModal + 1}`);
   };
 
   const handleRentDecision = (choice) => {
-    console.log('Rent decision:', choice);
+    console.log(`handleRentDecision called. Choice: ${choice}`);
     setRentDecision(choice);
     setCurrentModal(choice === 'pay' ? 8 : 10);
+    console.log(`Rent decision set to: ${choice}, Current modal set to: ${choice === 'pay' ? 8 : 10}`);
   };
 
   const handleTalkToLandlord = () => {
     const isCloseToNPC4 = checkProximityToNPC4(characterPosition);
-    console.log('Is close to NPC4:', isCloseToNPC4);
+    console.log(`handleTalkToLandlord called. Is close to NPC4: ${isCloseToNPC4}`);
     if (isCloseToNPC4) {
       toast.success('You are now talking to the landlord.');
       setCurrentModal(5);

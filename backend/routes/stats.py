@@ -35,6 +35,18 @@ class GrocerySelectionRequest(BaseModel):
 
 class Q1DecisionRequest(BaseModel):
     decision: str
+    
+class MedalPurchaseRequest(BaseModel):
+    medal: str
+
+medals = {
+    "bronze_planner": 20,
+    "silver_analyst": 25,
+    "gold_strategist": 30,
+    "platinum_investor": 40,
+    "diamond_visionary": 50
+}
+
 
 @router.get("/get/player", response_model=Stats)
 async def read_current_user_stats(current_user: dict = Depends(get_current_user)):
@@ -114,6 +126,7 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
         "new_points": new_points,
         "sq1_outcome": sq1_outcome
     }
+
 # Combined endpoint for Q1 decision and subtract money
 @router.put("/decision/q1")
 async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(get_current_user)):
@@ -178,4 +191,36 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
         "message": "Q1 decision processed successfully",
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q1_outcome": q1_outcome
+    }
+    
+@router.put("/purchase/medal")
+async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    medal_cost = medals.get(request.medal)
+    if medal_cost is None:
+        raise HTTPException(status_code=400, detail="Invalid medal type")
+    
+    if stats["points"] < medal_cost:
+        raise HTTPException(status_code=400, detail="Insufficient points to purchase this medal")
+    
+    new_points = stats["points"] - medal_cost
+    medals_owned = stats.get("medals", [])
+    medals_owned.append(request.medal)
+    
+    db["stats"].update_one(
+        {"user_id": ObjectId(user_id)},
+        {"$set": {
+            "points": new_points,
+            "medals": medals_owned
+        }}
+    )
+    
+    return {
+        "message": f"{request.medal.replace('_', ' ').title()} purchased successfully",
+        "new_points": new_points,
+        "medals": medals_owned
     }
