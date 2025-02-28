@@ -167,11 +167,11 @@ async def login(
                 "health": 100,
                 "level": 1,
                 "money": 5000,
-                "experience": 0,
+                "points": 0,
                 "location": {
                     "x": -8.389501036635487,
-                    "z": 0.5,
-                    "y": 33.26385975348472
+                    "y": 0.5,
+                    "z": 33.26385975348472
                 }
             }
             db["stats"].insert_one(new_stats)
@@ -235,7 +235,7 @@ async def google_signup(request: Request):
                 "birthday": birthday,
                 "img_path": img_path,
                 "firebase_uid": user_record.uid,
-                "role": "admin",  # Set role to admin
+                "role": "user",  # Set role to admin
                 "created_at": datetime.now().isoformat()  # Add created_at field
             }
             inserted_user = db["users"].insert_one(user_dict)

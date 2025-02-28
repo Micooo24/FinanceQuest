@@ -80,10 +80,10 @@ function App() {
         <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
         <Route path="/user-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
-        <Route path="/blogs" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
-        <Route path="/budgeting" element={<ProtectedRoute><Budgeting /></ProtectedRoute>} />
-        <Route path="/investingBlog" element={<ProtectedRoute><InvestingBlog /></ProtectedRoute>} />
-        <Route path="/savingBlog" element={<ProtectedRoute><SavingBlogs /></ProtectedRoute>} /> 
+        <Route path="/blogs" element={<Blog />} />
+        <Route path="/budgeting" element={<Budgeting />} />
+        <Route path="/investingBlog" element={<InvestingBlog />} />
+        <Route path="/savingBlog" element={<SavingBlogs />} /> 
 
         <Route path="/loading" element={<ProtectedRoute><LoadingPage /></ProtectedRoute>} />
         <Route path="/start" element={<ProtectedRoute><Startpage /></ProtectedRoute>} />

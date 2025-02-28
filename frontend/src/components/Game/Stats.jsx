@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaHeart, FaCoins, FaStar, FaLevelUpAlt } from 'react-icons/fa';
 
-const Stats = ({ health, exp, level, money }) => {
+const Stats = ({ health, pts, level, money }) => {
   return (
     <div style={styles.statsContainer}>
       <div style={styles.statItem}>
@@ -21,10 +21,8 @@ const Stats = ({ health, exp, level, money }) => {
       </div>
       <div style={styles.statItem}>
         <FaStar style={styles.statIcon} />
-        <span style={styles.statLabel}>EXP:</span>
-        <div style={styles.progressBar}>
-          <div style={{ ...styles.progress, width: `${exp}%` }}></div>
-        </div>
+        <span style={styles.statLabel}>Points:</span>
+        <span style={styles.statValue}>{pts}</span>
       </div>
     </div>
   );
@@ -52,8 +50,6 @@ const styles = {
     fontSize: '14px',
     background: '#243342',
     padding: '8px',
-    // clipPath: 'polygon(95% 0, 100% 25%, 100% 75%, 95% 100%, 5% 100%, 0 75%, 0 25%, 5% 0)',
-    // transform: 'skew(-5deg)',
   },
   statIcon: {
     marginRight: '8px',
@@ -73,20 +69,6 @@ const styles = {
     fontWeight: 'bold',
     textShadow: '2px 2px 0px rgba(0,0,0,0.2)',
   },
-  progressBar: {
-    flex: 1,
-    background: '#243342',
-    clipPath: 'polygon(2% 0, 98% 0, 100% 50%, 98% 100%, 2% 100%, 0 50%)',
-    overflow: 'hidden',
-    height: '12px',
-    marginLeft: '8px',
-  },
-  progress: {
-    background: 'linear-gradient(90deg, #27ae60 0%, #2ecc71 100%)',
-    height: '100%',
-    transition: 'width 0.3s',
-    clipPath: 'polygon(0 0, 100% 0, 98% 100%, 2% 100%)',
-  }
 };
 
 export default Stats;
