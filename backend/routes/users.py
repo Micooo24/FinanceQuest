@@ -309,6 +309,24 @@ async def google_login(request: Request):
             user_dict = user
             user_dict["_id"] = str(user_dict["_id"])  # Convert ObjectId to string
 
+        # Initialize stats for the user if they don't already exist
+        user_id = user_dict["_id"]
+        existing_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+        if not existing_stats:
+            new_stats = {
+                "user_id": ObjectId(user_id),
+                "health": 100,
+                "level": 1,
+                "money": 5000,
+                "points": 0,
+                "location": {
+                    "x": -8.389501036635487,
+                    "y": 0.5,
+                    "z": 33.26385975348472
+                }
+            }
+            db["stats"].insert_one(new_stats)
+
         # Generate access token
         access_token_expires = timedelta(minutes=30)
         access_token = create_access_token(data={"sub": user_dict["email"]}, expires_delta=access_token_expires)
@@ -323,8 +341,7 @@ async def google_login(request: Request):
         raise e
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}") 
 
 @router.put("/update-profile/{user_id}")
 async def update_profile(
