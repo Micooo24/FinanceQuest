@@ -51,13 +51,13 @@ const Gameplay = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPlayerStats(); // Initial fetch
+  // useEffect(() => {
+  //   fetchPlayerStats(); // Initial fetch
 
-    const intervalId = setInterval(fetchPlayerStats, 60000); // Refresh every 1 minute
+  //   const intervalId = setInterval(fetchPlayerStats, 60000); // Refresh every 1 minute
 
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, []);
+  //   return () => clearInterval(intervalId); // Cleanup interval on unmount
+  // }, []);
 
   const initializeScene = () => {
     if (!mountRef.current || rendererRef.current) return;

@@ -131,7 +131,7 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
           mt: 8,
         }}
       >
-        <Box sx={{ textAlign: "center", pb: 2 }}>
+        <Box sx={{ textAlign: "center", pb: 2, marginLeft: -5 }}>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>FinanceQuest</Typography>
         </Box>
         <Divider sx={{ backgroundColor: "white" }} />

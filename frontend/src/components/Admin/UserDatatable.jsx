@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import axios from "axios";
 
 const UserDataTable = () => {
   const [users, setUsers] = useState([]);
@@ -25,47 +26,44 @@ const UserDataTable = () => {
     username: "",
     email: "",
     birthday: "",
-    role: "User",
+    role: "user",
     password: "",
     verified: false,
   });
   const [selectedImage, setSelectedImage] = useState(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/admin/get-users");
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-        const data = await response.json();
+  // Fetch users using axios
+  const fetchUsers = useCallback(async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/admin/get-users");
+      const data = response.data;
 
-        if (!data.users || !Array.isArray(data.users)) {
-          throw new Error("Invalid response format");
-        }
-
-        
-        const formattedUsers = data.users.map((user, index) => ({
-          id: user._id ? user._id.toString() : index, 
-          username: user.username,
-          email: user.email,
-          birthday: user.birthday || "N/A",
-          img_path: user.img_path || "No Image",
-          role: user.role || "User",
-          deleted: user.deleted || false,
-        }));
-
-        setUsers(formattedUsers);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        setError("Failed to load users. Please check your connection.");
-      } finally {
-        setLoading(false);
+      if (!data.users || !Array.isArray(data.users)) {
+        throw new Error("Invalid response format");
       }
-    };
 
-    fetchUsers();
+      const formattedUsers = data.users.map((user, index) => ({
+        id: user._id ? user._id.toString() : index,
+        username: user.username,
+        email: user.email,
+        birthday: user.birthday || "N/A",
+        img_path: user.img_path || "No Image",
+        role: user.role || "User",
+        deleted: user.deleted || false,
+      }));
+
+      setUsers(formattedUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setError("Failed to load users. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleEdit = (user) => {
     setSelectedUser(user);
@@ -75,14 +73,7 @@ const UserDataTable = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        const response = await fetch(`http://localhost:8000/admin/delete-user/${id}`, {
-          method: "DELETE",
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
-
+        await axios.delete(`http://localhost:8000/admin/delete-user/${id}`);
         setUsers((prev) => prev.filter((user) => user.id !== id));
       } catch (error) {
         console.error("Error deleting user:", error);
@@ -121,19 +112,21 @@ const UserDataTable = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/admin/update-user/${selectedUser.id}`, {
-          method: "PUT",
-          body: formData,
-        });
+        const response = await axios.put(
+          `http://localhost:8000/admin/update-user/${selectedUser.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status} ${response.statusText}`);
-        }
+        console.log("User updated successfully:", response.data);
 
-        const data = await response.json();
-        console.log("User updated successfully:", data);
-
-        setUsers((prev) => prev.map((user) => (user.id === selectedUser.id ? selectedUser : user)));
+        setUsers((prev) =>
+          prev.map((user) => (user.id === selectedUser.id ? selectedUser : user))
+        );
         handleClose();
       } catch (error) {
         console.error("Error updating user:", error);
@@ -152,27 +145,26 @@ const UserDataTable = () => {
     if (selectedImage) {
       formData.append("img_file", selectedImage);
     }
-
+  
     try {
-      const response = await fetch("http://localhost:8000/admin/create-user", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("User created successfully:", data);
-
-      setUsers((prev) => [...prev, data.user]);
-      handleCreateClose();
+      const response = await axios.post(
+        "http://localhost:8000/admin/create-user",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      console.log("User created successfully:", response.data);
+  
+      // Refresh the page after creating a new user
+      window.location.reload();
     } catch (error) {
       console.error("Error creating user:", error);
     }
   };
-
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -196,14 +188,14 @@ const UserDataTable = () => {
     { field: "birthday", headerName: "Birthday", width: 120 },
     { field: "role", headerName: "Role", width: 100 },
     {
-      field: 'img_path',
-      headerName: 'Profile Image',
+      field: "img_path",
+      headerName: "Profile Image",
       width: 150,
       renderCell: (params) => (
         <img
           src={params.value}
           alt="Profile"
-          style={{ width: 50, height: 50, borderRadius: '10%' }}
+          style={{ width: 50, height: 50, borderRadius: "10%" }}
         />
       ),
     },
@@ -237,7 +229,17 @@ const UserDataTable = () => {
   ];
 
   return (
-    <Box sx={{ padding: "30px", backgroundColor: "rgba(0, 0, 0, 0.3)", borderRadius: "12px", backdropFilter: "blur(10px)" }}>
+    <Box
+      sx={{
+        padding: "30px",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        borderRadius: "12px",
+        width: "fit-content",
+        backdropFilter: "blur(10px)",
+        marginLeft: 0,
+        marginRight: 0,
+      }}
+    >
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: "bold", color: "white" }}>
           User DataTable
@@ -263,7 +265,7 @@ const UserDataTable = () => {
       ) : (
         <Box sx={{ height: 400, width: "100%", mt: 2 }}>
           <DataGrid
-            rows={users.filter(user => !user.deleted)}
+            rows={users.filter((user) => !user.deleted)}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
@@ -274,17 +276,18 @@ const UserDataTable = () => {
               ".MuiDataGrid-cell": { backgroundColor: "transparent", borderBottom: "1px solid #3f51b5" },
               "& .MuiDataGrid-cell:focus": { outline: "none" },
               "& .MuiDataGrid-row:hover": { backgroundColor: "#00cac9" },
+              width: "fit-content",
+              marginLeft: 0,
             }}
           />
         </Box>
       )}
 
-      {/* Edit Dialog */}
-      <Dialog open={open} onClose={handleClose} sx={{ "& .MuiDialog-paper": { maxWidth: "600px", width: "100%", overflow: "hidden" } }}>
+  {/* Edit Dialog */}
+  <Dialog open={open} onClose={handleClose} sx={{ "& .MuiDialog-paper": { maxWidth: "600px", width: "100%", overflow: "hidden" } }}>
         <DialogTitle sx={{ backgroundColor: "#1e1e2f", color: "white", textAlign: "center" }}>
-          Edit User
         </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#1e1e2f", color: "white", paddingBottom: 2, overflow: "hidden" }}>
+       <DialogContent sx={{ backgroundColor: "#1e1e2f", color: "white", paddingBottom: 2, overflow: "hidden" }}>
           {selectedUser && (
             <>
               <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
@@ -531,7 +534,6 @@ const UserDataTable = () => {
         </DialogActions>
       </Dialog>
     </Box>
-    
   );
 };
 
