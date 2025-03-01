@@ -226,7 +226,7 @@
 // export default AdminNavbar;
 
 
-import React, { useState } from "react";
+import React, { useState,  } from "react";
 import {
   AppBar,
   Toolbar,
@@ -260,10 +260,13 @@ import {
   ExpandMore,
 } from "@mui/icons-material";
 
+import {useNavigate} from "react-router-dom";
+
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
   const [anchorEl, setAnchorEl] = useState(null); 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); 
   const [miniGamesOpen, setMiniGamesOpen] = useState(false); 
+  const navigate = useNavigate();
 
   const userName = "User 1";
 
@@ -296,6 +299,8 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
   };
 
   const handleLogoutConfirm = () => {
+    localStorage.clear(); 
+    navigate("/");
     console.log("Logged out");
     setLogoutDialogOpen(false);
   };
