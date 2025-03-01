@@ -1,11 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
+import { sq2Decision } from '../../Utils/decisions';
+import { toast } from 'react-hot-toast';
 
-const Modal25 = ({ onChoose }) => {
+const Modal25 = ({ onChoose, updateStatsCallback }) => {
   const [showModal, setShowModal] = useState(true);
 
-  const handleChoice = (choice) => {
+  const handleChoice = async (choice) => {
     setShowModal(false);
+
+    // Call sq2Decision with the choice
+    const response = await sq2Decision(choice, updateStatsCallback);
+
+    // Toast notifications based on the choice
+    if (choice === 'withdraw') {
+      toast('You chose to withdraw it');
+      toast('-5 points');
+    } else if (choice === 'deposit') {
+      toast('You chose to deposit it');
+      toast('+15 points');
+    }
+
     onChoose(choice);
   };
 
@@ -57,8 +72,6 @@ const Modal25 = ({ onChoose }) => {
             🎮 Choose What to Do Next
           </Typography>
 
-          
-
           <Button
             variant="contained"
             sx={{
@@ -72,7 +85,7 @@ const Modal25 = ({ onChoose }) => {
             }}
             onClick={() => handleChoice("deposit")}
           >
-            🏦 Deposit ₱500 for Future Expenses
+            🏦 Deposit for Future Expenses
           </Button>
 
           <Button
@@ -88,7 +101,7 @@ const Modal25 = ({ onChoose }) => {
             }}
             onClick={() => handleChoice("withdraw")}
           >
-            🛍 Withdraw ₱500 for Unplanned Spending
+            🛍 Withdraw for Unplanned Spending
           </Button>
         </Box>
       </Fade>

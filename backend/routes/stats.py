@@ -294,6 +294,7 @@ async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(g
         "rewards": rewards,
         "consequences": consequences
     }
+    update_fields["q2_outcome"] = q2_outcome
 
     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
     updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
@@ -322,9 +323,7 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
     }
 
     if request.decision == "deposit":
-        new_money = stats["money"] + 500
-        update_fields["money"] = new_money
-        update_fields["points"] = stats["points"] + 10
+        update_fields["points"] = stats["points"] + 15
         rewards = [
             "Builds financial discipline",
             "Ensures money is safe & accessible",
@@ -332,10 +331,7 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         ]
         consequences = []
     elif request.decision == "withdraw":
-        new_money = stats["money"] - 500
-        if new_money < 0:
-            raise HTTPException(status_code=400, detail="Insufficient funds to withdraw")
-        update_fields["money"] = new_money
+        new_money = stats["money"] + 200
         update_fields["points"] = stats["points"] - 5
         rewards = [
             "Enjoyment from the purchase"
