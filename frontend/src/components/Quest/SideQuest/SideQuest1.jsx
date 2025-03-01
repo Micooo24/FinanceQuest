@@ -172,6 +172,7 @@ const SideQuest1 = ({ setPlayerStats, characterPosition }) => {
   const [showLessonUnlocked, setShowLessonUnlocked] = useState(false);
   const [showSupermarketButton, setShowSupermarketButton] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [sideQuestCompleted, setSideQuestCompleted] = useState(false);
 
   useEffect(() => {
     if (characterPosition) {
@@ -205,7 +206,7 @@ const SideQuest1 = ({ setPlayerStats, characterPosition }) => {
 
   const handleCloseLesson = () => {
     setShowLessonUnlocked(false);
-    // No reset to start - continue the flow
+    setSideQuestCompleted(true); 
   };
 
   const handleGoToSupermarket = () => {

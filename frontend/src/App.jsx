@@ -46,16 +46,20 @@ function App() {
   return (
     <>
     <Toaster
-        position="top-center"
-        reverseOrder={false}
-        toastOptions={{
-          style: {
-            fontSize: '25px', // Increase font size
-            padding: '25px', // Increase padding
-            borderRadius: '50px', // Add rounded edges
-          },
-        }}
-      />
+      position="top-center"
+      reverseOrder={false}
+      toastOptions={{
+        style: {
+          fontSize: '18px', 
+          padding: '20px', 
+          borderRadius: '12px', 
+          backgroundColor: '#333', 
+          color: '#fff', 
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
+        },
+      }}
+    />
+
     <Router>
       <Routes>
         {/* Route for Landing Page */}

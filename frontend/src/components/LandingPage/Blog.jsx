@@ -1,25 +1,16 @@
-
-
-
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Box,
   Typography,
-  AppBar,
-  Toolbar,
   IconButton,
   Card,
   CardContent,
 } from "@mui/material";
 import {
-  Home,
-  SportsEsports,
-  Article,
-  TravelExplore,
-  Info,
-  Login,
   ArrowUpward,
+  ViewList,
+  ViewModule,
 } from "@mui/icons-material";
 import Navbar from './Navbar';
 
@@ -48,6 +39,12 @@ const blogPosts = [
 ];
 
 const Blog = () => {
+  const [isGridView, setIsGridView] = useState(false);
+
+  const toggleView = () => {
+    setIsGridView((prev) => !prev);
+  };
+
   return (
     <Box
       sx={{
@@ -62,6 +59,7 @@ const Blog = () => {
     >
       {/* Navbar */}
       <Navbar />
+
       {/* Blog Page */}
       <Box
         sx={{
@@ -89,12 +87,20 @@ const Blog = () => {
           Stay updated with the latest financial tips and insights.
         </Typography>
 
+        {/* Toggle View Icon */}
+        <IconButton
+          onClick={toggleView}
+          sx={{ color: "#00cac9", mb: 2 }}
+        >
+          {isGridView ? <ViewList /> : <ViewModule />}
+        </IconButton>
+
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            mt: 4,
+            flexDirection: isGridView ? "row" : "column",
+            flexWrap: isGridView ? "wrap" : "nowrap",
+            justifyContent: "center",
             gap: 3,
             mb: 5,
           }}
@@ -103,14 +109,14 @@ const Blog = () => {
             <Card
               key={index}
               sx={{
-                width: "80%",
+                width: isGridView ? "300px" : "80%",
                 backgroundColor: "#f5f5f5",
                 p: 3,
                 borderRadius: "10px",
                 display: "flex",
                 alignItems: "center",
                 textAlign: "left",
-                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
+                flexDirection: isGridView ? "column" : index % 2 === 0 ? "row" : "row-reverse",
               }}
             >
               <Box
@@ -125,7 +131,6 @@ const Blog = () => {
                 }}
               />
               <CardContent sx={{ flex: 1 }}>
-                {/* Clickable Arrow */}
                 <IconButton
                   component={Link}
                   to={post.link}
