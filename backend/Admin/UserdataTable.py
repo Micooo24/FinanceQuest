@@ -250,7 +250,7 @@ async def get_users():
                     user[key] = value.isoformat()
 
             if user.get("img_path"):
-                user["img_url"] = user["img_path"]  
+                user["img_url"] = user["img_path"]
 
         return JSONResponse(content={"users": users})
 

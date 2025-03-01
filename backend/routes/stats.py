@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from typing import List
 
 # MongoDB 
 from config.db import db  
@@ -38,6 +39,12 @@ class Q1DecisionRequest(BaseModel):
     
 class MedalPurchaseRequest(BaseModel):
     medal: str
+
+# class LeaderboardEntry(BaseModel):
+#     user_id: str
+#     medals: List[str]
+#     money: int
+
 
 medals = {
     "bronze_planner": 20,
@@ -224,3 +231,16 @@ async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Dep
         "new_points": new_points,
         "medals": medals_owned
     }
+    
+#     # Leaderboard routes
+# @router.get("/leaderboard/medals", response_model=List[LeaderboardEntry])
+# async def get_leaderboard_by_medals():
+#     leaderboard = db["stats"].find().sort([("medals", -1), ("money", -1)]).limit(10)
+#     leaderboard_list = []
+#     for entry in leaderboard:
+#         leaderboard_list.append(LeaderboardEntry(
+#             user_id=str(entry["user_id"]),
+#             medals=entry.get("medals", []),
+#             money=entry["money"]
+#         ))
+#     return leaderboard_list
