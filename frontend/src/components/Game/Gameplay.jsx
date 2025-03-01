@@ -307,13 +307,13 @@ const Gameplay = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchPlayerStats(); // Initial fetch
+  useEffect(() => {
+    fetchPlayerStats(); // Initial fetch
 
-  //   const intervalId = setInterval(fetchPlayerStats, 60000); // Refresh every 1 minute
+    const intervalId = setInterval(fetchPlayerStats, 60000); // Refresh every 1 minute
 
-  //   return () => clearInterval(intervalId); // Cleanup interval on unmount
-  // }, []);
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
 
   const initializeScene = () => {
     if (!mountRef.current || rendererRef.current) return;
@@ -477,7 +477,9 @@ const Gameplay = () => {
             />
           )}
 
-          {playerStats.sq1_done && <Quest2 />}
+          {playerStats.sq1_done &&
+           <Quest2 setPlayerStats={setPlayerStats} 
+              characterPosition={characterPosition} />}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats health={playerStats.health} pts={playerStats.points} level={playerStats.level} money={playerStats.money} />

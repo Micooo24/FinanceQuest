@@ -6,6 +6,8 @@ const npc4Position = new THREE.Vector3(-12.01533346391676, 0.2, 28.5053009810097
 
 const npc7Position = new THREE.Vector3(-4.565246672190189, 0.5, -21.978682238028398);
 
+const npcPosition = new  THREE.Vector3(-14.046558652575328, 0.2, -6.1948453448203065);
+
 const checkProximityToNPC4 = (characterPosition) => {
   const distanceToNPC4 = characterPosition.distanceTo(npc4Position);
   return distanceToNPC4 < 5; // Adjust the distance threshold as needed
@@ -15,5 +17,12 @@ const checkProximityToNPC7 = (characterPosition) => {
     const distanceToNPC7 = characterPosition.distanceTo(npc7Position);  
     return distanceToNPC7 < 5; // Adjust the distance threshold as needed
     }
+
+const checkProximityToNPC = (characterPosition) => {
+  const distanceToNPC = characterPosition.distanceTo(npcPosition);
+  return distanceToNPC < 5; // Adjust the distance threshold as needed
+};
+
+
     
-export { checkProximityToNPC4, checkProximityToNPC7 };
+export { checkProximityToNPC4, checkProximityToNPC7, checkProximityToNPC };

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Checkpoint from './Checkpoint';
 import Modal1 from './Modal1';
 import Modal2 from './Modal2';
 import Modal3 from './Modal3';
@@ -34,12 +35,47 @@ import Modal28 from './Modal28';
 import Modal29 from './Modal29';
 import Modal30 from './Modal30';
 import Modal31 from './Modal31';
+import { checkProximityToNPC } from '../../Utils/proximity';
+import { toast } from 'react-hot-toast';
+import { Button } from '@mui/material';
 
-const Quest2 = ({ onComplete }) => {
-  const [currentModal, setCurrentModal] = useState('1');
+const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
+  const [currentModal, setCurrentModal] = useState(null);
+  const [isCloseToNPC, setIsCloseToNPC] = useState(false);
+  const [showCheckpoint, setShowCheckpoint] = useState(true);
+  const [showGoToBankButton, setShowGoToBankButton] = useState(false);
+
+  useEffect(() => {
+    if (characterPosition) {
+      console.log('Character position updated:', characterPosition); // Debug log
+      const isCloseToNPC = checkProximityToNPC(characterPosition);
+      console.log('Is close to NPC:', isCloseToNPC); // Debug log
+      setIsCloseToNPC(isCloseToNPC);
+      if (isCloseToNPC) {
+        toast('You are close to the bank teller!');
+      }
+    }
+  }, [characterPosition]);
 
   const handleNextModal = () => {
     setCurrentModal((prev) => (parseInt(prev) + 1).toString());
+  };
+  
+  const handleGoToBank = () => {
+    const isCloseToNPC = checkProximityToNPC(characterPosition);
+    
+    if (isCloseToNPC) {
+      toast('You are at the bank!');
+      setCurrentModal('1');
+      setShowGoToBankButton(false);
+    } else {
+      toast.error('You are not close to the bank teller.');
+    }
+  };
+
+  const handleCheckpointContinue = () => {
+    setShowCheckpoint(false);
+    setShowGoToBankButton(true);
   };
 
   // Handles choice in Modal23 (Choose Activation Method)
@@ -63,6 +99,25 @@ const Quest2 = ({ onComplete }) => {
 
   return (
     <>
+      {showCheckpoint && <Checkpoint onContinue={handleCheckpointContinue} />}
+      {!showCheckpoint && showGoToBankButton && !currentModal && (
+        <Button 
+          onClick={handleGoToBank}
+          sx={{ 
+            position: 'fixed', 
+            bottom: 150, 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+            minWidth: 'auto', 
+            padding: '8px',
+            color: '#fff',
+            backgroundColor: '#1976d2',
+          }}
+        >
+          Go to Bank
+        </Button>
+      )}
       {currentModal === '1' && <Modal1 onContinue={handleNextModal} />}
       {currentModal === '2' && <Modal2 onContinue={handleNextModal} />}
       {currentModal === '3' && <Modal3 onContinue={handleNextModal} />}

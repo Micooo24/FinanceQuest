@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import toast from 'react-hot-toast';
-import { initializeBankInteraction, updateBankInteractionButton, handleBankInteractionClick } from './Interaction/BankInteraction';
-import { initializeNPCInteraction, updateNPCInteractionButton, handleNPCInteractionClick, createInteractionButton } from './Interaction/NPCInteraction';
+// import { initializeBankInteraction, updateBankInteractionButton, handleBankInteractionClick } from './Interaction/BankInteraction';
+// import { initializeNPCInteraction, updateNPCInteractionButton, handleNPCInteractionClick, createInteractionButton } from './Interaction/NPCInteraction';
 
 
 const idlePath = 'https://res.cloudinary.com/dwp8u82sd/raw/upload/v1739077535/Idle_dng8de.fbx';
@@ -19,38 +19,38 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
   const clock = new THREE.Clock();
 
   // Create a button for interaction
-  const interactionButton = createInteractionButton();
+  // const interactionButton = createInteractionButton();
 
-  // Initialize NPC interaction
-  initializeNPCInteraction();
+  // // Initialize NPC interaction
+  // initializeNPCInteraction();
 
-  // Initialize bank interaction
-  initializeBankInteraction();
+  // // Initialize bank interaction
+  // initializeBankInteraction();
 
-  // Function to calculate distance between two points
-  const calculateDistance = (position1, position2) => {
-    return position1.distanceTo(position2);
-  };
+  // // Function to calculate distance between two points
+  // const calculateDistance = (position1, position2) => {
+  //   return position1.distanceTo(position2);
+  // };
 
-  // Function to show/hide the button based on proximity
-  const updateInteractionButton = (characterPosition) => {
-    if (updateNPCInteractionButton(characterPosition, interactionButton)) {
-      // NPC interaction button update handled in NPCInteraction.js
-    } else if (updateBankInteractionButton(characterPosition, interactionButton)) {
-      // Bank interaction button update handled in BankInteraction.js
-    } else {
-      interactionButton.style.display = 'none';
-    }
-  };
+  // // Function to show/hide the button based on proximity
+  // const updateInteractionButton = (characterPosition) => {
+  //   if (updateNPCInteractionButton(characterPosition, interactionButton)) {
+  //     // NPC interaction button update handled in NPCInteraction.js
+  //   } else if (updateBankInteractionButton(characterPosition, interactionButton)) {
+  //     // Bank interaction button update handled in BankInteraction.js
+  //   } else {
+  //     interactionButton.style.display = 'none';
+  //   }
+  // };
 
-  // Event listeners for button clicks
-  interactionButton.addEventListener('click', () => {
-    if (interactionButton.innerText === 'Talk to Person') {
-      handleNPCInteractionClick(interactionButton);
-    } else if (interactionButton.innerText === 'Go to Bank') {
-      handleBankInteractionClick(interactionButton);
-    }
-  });
+  // // Event listeners for button clicks
+  // interactionButton.addEventListener('click', () => {
+  //   if (interactionButton.innerText === 'Talk to Person') {
+  //     handleNPCInteractionClick(interactionButton);
+  //   } else if (interactionButton.innerText === 'Go to Bank') {
+  //     handleBankInteractionClick(interactionButton);
+  //   }
+  // });
 
   fbxLoader.load(idlePath, (fbx) => {
     character = fbx;
@@ -184,8 +184,8 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
         character.position.lerp(targetPosition, dampingFactor);
         character.rotation.y += (targetRotation.y - character.rotation.y) * dampingFactor;
 
-        // Update the interaction button based on proximity
-        updateInteractionButton(character.position);
+        // // Update the interaction button based on proximity
+        // updateInteractionButton(character.position);
 
         // Update the character position
         if (onPositionUpdate) {
@@ -202,7 +202,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
-      document.body.removeChild(interactionButton); // Remove the button on cleanup
+      // document.body.removeChild(interactionButton); // Remove the button on cleanup
       document.getElementById('npcModal')?.remove(); // Remove the NPC modal on cleanup
       if (character) {
         vehicleLayer.remove(character);
