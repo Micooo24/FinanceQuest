@@ -36,6 +36,16 @@ class GrocerySelectionRequest(BaseModel):
 
 class Q1DecisionRequest(BaseModel):
     decision: str
+
+class Q2DecisionRequest(BaseModel):
+    decision: str
+    deposit: int
+    
+class Q3DecisionRequest(BaseModel):
+    decision: str
+
+class SQ2DecisionRequest(BaseModel):
+    decision: str
     
 class MedalPurchaseRequest(BaseModel):
     medal: str
@@ -231,7 +241,188 @@ async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Dep
         "new_points": new_points,
         "medals": medals_owned
     }
+
     
+@router.put("/decision/q2")
+async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    if request.decision not in ["online_banking", "atm_card"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'online_banking' or 'atm_card'.")
+
+    new_money = stats["money"] - request.deposit
+    if new_money < 0:
+        raise HTTPException(status_code=400, detail="Insufficient funds to make the deposit")
+
+    update_fields = {
+        "q2_decision": request.decision,
+        "q2_done": True,
+        "money": new_money,
+        "points": stats["points"] + 10
+    }
+
+    if request.decision == "online_banking":
+        update_fields["points"] += 5
+        rewards = [
+            "Easy access",
+            "Fast transactions",
+            "+5 points",
+            "Security perks"
+        ]
+        consequences = [
+            "Hacking risk",
+            "Fees",
+            "Needs internet"
+        ]
+    elif request.decision == "atm_card":
+        update_fields["points"] += 2
+        rewards = [
+            "Quick cash",
+            "Store payments",
+            "+2 points"
+        ]
+        consequences = [
+            "Loss risk",
+            "Withdrawal fees",
+            "Limits"
+        ]
+
+    q2_outcome = {
+        "rewards": rewards,
+        "consequences": consequences
+    }
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "Q2 decision processed successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
+        "q2_outcome": q2_outcome
+    }
+
+
+@router.put("/decision/sq2")
+async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    if request.decision not in ["deposit", "withdraw"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'deposit' or 'withdraw'.")
+
+    update_fields = {
+        "sq2_decision": request.decision,
+        "sq2_done": True
+    }
+
+    if request.decision == "deposit":
+        new_money = stats["money"] + 500
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] + 10
+        rewards = [
+            "Builds financial discipline",
+            "Ensures money is safe & accessible",
+            "Helps with future planning"
+        ]
+        consequences = []
+    elif request.decision == "withdraw":
+        new_money = stats["money"] - 500
+        if new_money < 0:
+            raise HTTPException(status_code=400, detail="Insufficient funds to withdraw")
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] - 5
+        rewards = [
+            "Enjoyment from the purchase"
+        ]
+        consequences = [
+            "No savings started",
+            "Less money for future needs",
+            "Increased risk of bad spending habits"
+        ]
+
+    sq2_outcome = {
+        "rewards": rewards,
+        "consequences": consequences
+    }
+    update_fields["sq2_outcome"] = sq2_outcome
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "SQ2 decision processed successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
+        "sq2_outcome": sq2_outcome
+    }
+
+
+@router.put("/decision/q3")
+async def q3_decision(request: Q3DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+    if request.decision not in ["barista", "freelancer"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'barista' or 'freelancer'.")
+
+    update_fields = {
+        "q3_decision": request.decision,
+        "q3_done": True
+    }
+
+    if request.decision == "barista":
+        new_money = stats["money"] + 100
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] + 15
+        rewards = [
+            "Gains customer service & teamwork skills",
+            "Opportunity to earn extra through tips",
+            "Hands-on experience in food service"
+        ]
+        consequences = [
+            "Physically demanding (long hours of standing)",
+            "Stressful during peak hours"
+        ]
+    elif request.decision == "freelancer":
+        new_money = stats["money"] + 150
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] + 10
+        rewards = [
+            "Flexible schedule, no commute",
+            "Builds digital and writing skills",
+            "Potential to scale up earnings"
+        ]
+        consequences = [
+            "Unstable income, may not get clients regularly",
+            "Requires strong self-discipline and time management"
+        ]
+
+    q3_outcome = {
+        "rewards": rewards,
+        "consequences": consequences
+    }
+    update_fields["q3_outcome"] = q3_outcome
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "Q3 decision processed successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
+        "q3_outcome": q3_outcome
+    }
+
+
+
 #     # Leaderboard routes
 # @router.get("/leaderboard/medals", response_model=List[LeaderboardEntry])
 # async def get_leaderboard_by_medals():
