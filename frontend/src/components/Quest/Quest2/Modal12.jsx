@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal, TextField, Checkbox, FormControlLabel } from '@mui/material';
+import { quest2Decision } from '../../Utils/decisions';
+import { toast } from 'react-hot-toast';
 
-const Modal12 = ({ onContinue }) => {
+const Modal12 = ({ onContinue, updateStatsCallback }) => {
   const [showModal, setShowModal] = useState(true);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -16,8 +18,33 @@ const Modal12 = ({ onContinue }) => {
     initialDeposit: '',
   });
 
-  const handleClose = () => {
+  const handleClose = async () => {
     setShowModal(false);
+
+    // Determine the decision based on the form data
+    let decision = '';
+    if (formData.onlineBanking) {
+      decision = 'online_banking';
+    } else if (formData.atmCard) {
+      decision = 'atm_card';
+    }
+
+    // Call quest2Decision with the decision and initialDeposit
+    if (decision) {
+      await quest2Decision(decision, parseInt(formData.initialDeposit), updateStatsCallback);
+
+      // Toast notifications based on the decision
+      if (decision === 'atm_card') {
+        toast(`You deposited an amount of ₱${formData.initialDeposit}`);
+        toast('You chose ATM Card');
+        toast('+12 points');
+      } else if (decision === 'online_banking') {
+        toast(`You deposited an amount of ₱${formData.initialDeposit}`);
+        toast('You chose Online Banking');
+        toast('+15 points');
+      }
+    }
+
     onContinue();
   };
 
