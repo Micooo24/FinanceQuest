@@ -1,44 +1,43 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 function Minigame() {
   const [selectedGame, setSelectedGame] = useState(0);
 
   const gameData = [
     {
-      title: "Budgeting", 
-      image: "/assets/money.jpg", // Image path for Budgeting
-      description: "Learn how to manage your finances by creating and following a budget."
-    },
-    {
       title: "Savings", 
-      image: "/assets/savings.jpg", // Image path for Saving
+      image: "/assets/savings.jpg",
       description: "Master the art of saving for future goals and emergencies."
     },
     {
       title: "Investing", 
-      image: "/assets/investing.jpg", // Image path for Investing
+      image: "/assets/investing.jpg",
       description: "Understand the basics of investing and how to grow your wealth."
     }
   ];
 
-  // Handle keyboard navigation (left and right)
   const handleKeyDown = (event) => {
     if (event.key === "ArrowRight") {
-      setSelectedGame((prev) => (prev + 1) % gameData.length); // Next game
+      setSelectedGame((prev) => (prev + 1) % gameData.length);
     } else if (event.key === "ArrowLeft") {
-      setSelectedGame((prev) => (prev - 1 + gameData.length) % gameData.length); // Previous game
+      setSelectedGame((prev) => (prev - 1 + gameData.length) % gameData.length);
     }
   };
 
   useEffect(() => {
-    // Adding event listener for keyboard events
     window.addEventListener("keydown", handleKeyDown);
-
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
+  }, []);
+
+  // Reset selected game if it's out of bounds after removing budgeting
+  useEffect(() => {
+    if (selectedGame >= gameData.length) {
+      setSelectedGame(0);
+    }
   }, []);
 
   return (
@@ -46,9 +45,10 @@ function Minigame() {
       sx={{
         minHeight: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(180deg, #5e3967, #351742)", // Gradient background
+        background: "linear-gradient(135deg, #5e3967, #351742, #2A1136)",
         position: "fixed",
         top: 0,
         left: 0,
@@ -56,137 +56,243 @@ function Minigame() {
         overflow: "hidden",
       }}
     >
-      <img
-        src="/assets/bg.jpg" // Your background image
-        alt="Game Background"
-        style={{
+      {/* Background with parallax effect */}
+      <Box
+        sx={{
           position: "absolute",
           top: 0,
           left: 0,
           width: "100%",
           height: "100%",
-          objectFit: "cover",
-          opacity: 0.3, // Background opacity
-          filter: "blur(5px)", // Background blur effect
+          zIndex: 0,
         }}
-      />
+      >
+        <img
+          src="/assets/bg.jpg"
+          alt="Game Background"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.3,
+            filter: "blur(5px)",
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            background: "radial-gradient(circle at center, transparent 0%, #351742 90%)",
+            mixBlendMode: "multiply",
+          }}
+        />
+      </Box>
       
-      {/* Mini-Games Header */}
+      {/* Header */}
       <Box
+        component={motion.div}
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
         sx={{
-          position: "absolute",
-          top: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
+          position: "relative",
           zIndex: 2,
+          mt: 6,
+          mb: 8,
         }}
       >
         <Typography
-          variant="h4"
+          variant="h1"
           sx={{
             color: "white",
             fontFamily: "'Gravitas One', sans-serif",
-            fontSize: "60px",
+            fontSize: { xs: "40px", sm: "50px", md: "60px" },
             textAlign: "center",
-            marginTop: "25px",
+            textShadow: "0 4px 15px rgba(0,0,0,0.4)",
+            letterSpacing: "3px",
+            fontWeight: "bold",
+            background: "linear-gradient(45deg, #B399D4, #E8D3F0)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
           }}
         >
           MINIGAMES
         </Typography>
+        <Box
+          sx={{
+            width: "100px",
+            height: "4px",
+            background: "linear-gradient(90deg, transparent, #B399D4, transparent)",
+            margin: "10px auto",
+            borderRadius: "2px",
+          }}
+        />
       </Box>
 
-      {/* Main Content Section */}
-      <Box
+      {/* Game Card Container */}
+      <Container
+        maxWidth="lg"
+        component={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
         sx={{
           display: "flex",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          gap: 3,
-          p: 3,
-          borderRadius: 3,
-          width: "80vw",
-          height: "60vh",
-          color: "white",
-          zIndex: 1,
-          mt: 10,
-          overflowX: "hidden",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: { xs: 2, md: 4 },
+          zIndex: 2,
+          my: 3,
         }}
       >
-        {/* Game Options (Horizontal layout) */}
         {gameData.map((game, index) => (
           <Box
+            component={motion.div}
             key={index}
+            whileHover={{ 
+              scale: 1.05, 
+              boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
+              y: -5
+            }}
+            animate={{ 
+              scale: selectedGame === index ? 1.05 : 1,
+              y: selectedGame === index ? -5 : 0,
+            }}
+            onClick={() => setSelectedGame(index)}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 250,
-              height: 300,
-              backgroundColor: "#351742",
-              borderRadius: 2,
-              padding: 2,
+              position: "relative",
+              width: { xs: "85%", sm: "280px" },
+              height: "320px",
+              borderRadius: "16px",
+              overflow: "hidden",
+              background: "rgba(255, 255, 255, 0.08)",
+              backdropFilter: "blur(10px)",
+              border: selectedGame === index 
+                ? "1px solid rgba(255, 255, 255, 0.3)" 
+                : "1px solid rgba(255, 255, 255, 0.1)",
+              boxShadow: selectedGame === index 
+                ? "0 8px 32px rgba(121, 74, 148, 0.5)" 
+                : "0 4px 12px rgba(0, 0, 0, 0.2)",
               cursor: "pointer",
-              marginBottom: "20px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-              transition: "transform 0.3s ease, background-color 0.3s ease",
-              transform: selectedGame === index ? "scale(1.05)" : "scale(1)", // Scale on selection
-              ":hover": {
-                transform: "scale(1.05)",
-                backgroundColor: "#5e3967",
-                
-              },
+              transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
             }}
           >
-            <img
-              src={game.image}
-              alt={game.title}
-              style={{
-                width: "100%",
-                height: "150px",
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-            />
-            <Typography
+            <Box
               sx={{
-                color: "white",
-                fontSize: "20px",
-                fontWeight: "bold",
-                textAlign: "center",
-                marginTop: 5,
-                fontFamily: "'Fraunces', sans-serif",   
+                height: "65%",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              {game.title}
-            </Typography>
+              <img
+                src={game.image}
+                alt={game.title}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.5s ease",
+                  transform: selectedGame === index ? "scale(1.05)" : "scale(1)",
+                }}
+              />
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: "40px",
+                  background: "linear-gradient(transparent, rgba(53, 23, 66, 0.8))",
+                }}
+              />
+            </Box>
+            
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "35%",
+                padding: "0 20px",
+                position: "relative",
+              }}
+            >
+              <Typography
+                sx={{
+                  color: "white",
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  textAlign: "center",
+                  fontFamily: "'Fraunces', serif",
+                  letterSpacing: "1px",
+                  mb: 1,
+                }}
+              >
+                {game.title}
+              </Typography>
+              
+              {selectedGame === index && (
+                <Box
+                  component={motion.div}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  sx={{
+                    position: "absolute",
+                    bottom: "-10px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    width: "40px",
+                    height: "4px",
+                    borderRadius: "2px",
+                    background: "linear-gradient(90deg, #B399D4, #9F84BD)",
+                  }}
+                />
+              )}
+            </Box>
           </Box>
         ))}
-      </Box>
+      </Container>
 
-      {/* Description Section (Outside the container) */}
+      {/* Description Section */}
       <Box
+        component={motion.div}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        layoutId="gameDescription"
         sx={{
-          position: "absolute",
-          bottom: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
+          position: "relative",
           zIndex: 2,
-          maxWidth: "80%",
-          textAlign: "center",
-          backgroundColor: "#5e3967",
-          padding: 2,
-          borderRadius: 2,
-          
+          width: { xs: "90%", md: "70%" },
+          maxWidth: "900px",
+          mt: 5,
+          mb: 4,
+          padding: "20px 30px",
+          borderRadius: "16px",
+          background: "rgba(255, 255, 255, 0.07)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Typography
+          component={motion.p}
+          key={selectedGame}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
           sx={{
             color: "white",
-            width: "1000px",
-            fontSize: "15px",
-            fontWeight: "normal",
-            fontFamily: "'Fraunces', sans-serif",  
+            fontSize: { xs: "14px", md: "16px" },
+            lineHeight: 1.6,
+            fontWeight: "400",
+            fontFamily: "'Fraunces', serif",
+            textAlign: "center",
+            letterSpacing: "0.5px",
           }}
         >
           {gameData[selectedGame].description}
