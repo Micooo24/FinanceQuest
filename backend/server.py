@@ -6,6 +6,7 @@ from Admin import UserdataTable
 from routes.trackers import router as trackers_router
 from routes.minibudget import router as minibudget_router
 from routes.minibudget_ai import router as minibudget_ai_router
+from routes import ai_analysis
 
 
 app = FastAPI()
@@ -32,4 +33,5 @@ app.include_router(trackers_router, prefix="/monthly_tracker", tags=["Monthly Tr
 app.include_router(blogReviews.router, prefix="/blogReview")
 app.include_router(minibudget_router, prefix="/minibudget")
 app.include_router(minibudget_ai_router, prefix="/minibudget_ai")
+app.include_router(ai_analysis.router, prefix="/ai")
  
