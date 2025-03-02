@@ -3,14 +3,14 @@ import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
 import { sq2Decision } from '../../Utils/decisions';
 import { toast } from 'react-hot-toast';
 
-const Modal25 = ({ onChoose, updateStatsCallback }) => {
+const Modal25 = ({ onChoose, setPlayerStats }) => {
   const [showModal, setShowModal] = useState(true);
 
   const handleChoice = async (choice) => {
     setShowModal(false);
 
     // Call sq2Decision with the choice
-    const response = await sq2Decision(choice, updateStatsCallback);
+    const response = await sq2Decision(choice, setPlayerStats);
 
     // Toast notifications based on the choice
     if (choice === 'withdraw') {

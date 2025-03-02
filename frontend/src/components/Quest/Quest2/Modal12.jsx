@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal, TextField, Checkbox, FormControlLabel } from '@mui/material';
 import { quest2Decision } from '../../Utils/decisions';
 import { toast } from 'react-hot-toast';
+// import { GameContext } from '../../Game/Context/GameContext';
 
-const Modal12 = ({ onContinue, updateStatsCallback }) => {
+const Modal12 = ({ onContinue }) => {
+  // const { setPlayerStats } = useContext(GameContext);
   const [showModal, setShowModal] = useState(true);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -31,7 +33,9 @@ const Modal12 = ({ onContinue, updateStatsCallback }) => {
 
     // Call quest2Decision with the decision and initialDeposit
     if (decision) {
-      await quest2Decision(decision, parseInt(formData.initialDeposit), updateStatsCallback);
+      await quest2Decision(decision, parseInt(formData.initialDeposit), (updatedStats) => {
+        setPlayerStats(updatedStats); // Update playerStats without disrupting the modal flow
+      });
 
       // Toast notifications based on the decision
       if (decision === 'atm_card') {
@@ -45,12 +49,8 @@ const Modal12 = ({ onContinue, updateStatsCallback }) => {
       }
     }
 
-    onContinue();
+    onContinue(); // Continue to the next modal
   };
-
-  useEffect(() => {
-    document.documentElement.style.overflow = showModal ? 'hidden' : 'auto';
-  }, [showModal]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -128,7 +128,7 @@ const Modal12 = ({ onContinue, updateStatsCallback }) => {
 
             <TextField fullWidth label="Initial Deposit Amount (₱)" name="initialDeposit" value={formData.initialDeposit} onChange={handleChange} sx={{ mt: 2, mb: 2 }} />
 
-            <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold' , color: '#000',}}>
+            <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: '#000' }}>
               I confirm that the information provided above is correct and that I agree to the terms and conditions of the Piso Debit Account.
             </Typography>
 

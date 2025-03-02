@@ -26,7 +26,18 @@ class Stats(BaseModel):
     location: Coordinates = Coordinates(x=0.0, y=0.0, z=0.0)
     q1_decision: Optional[str] = None
     q1_done: bool = False
+    q1_outcome: Optional[dict] = None
     sq1_done: bool = False
+    sq1_outcome: Optional[dict] = None
+    q2_decision: Optional[str] = None
+    q2_done: bool = False
+    q2_outcome: Optional[dict] = None
+    sq2_decision: Optional[str] = None
+    sq2_done: bool = False
+    sq2_outcome: Optional[dict] = None
+    q3_decision: Optional[str] = None
+    q3_done: bool = False
+    q3_outcome: Optional[dict] = None
 
     class Config:
         arbitrary_types_allowed = True  # Allow arbitrary types like ObjectId
@@ -55,7 +66,6 @@ class MedalPurchaseRequest(BaseModel):
 #     medals: List[str]
 #     money: int
 
-
 medals = {
     "bronze_planner": 20,
     "silver_analyst": 25,
@@ -64,7 +74,6 @@ medals = {
     "diamond_visionary": 50
 }
 
-
 @router.get("/get/player", response_model=Stats)
 async def read_current_user_stats(current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -72,7 +81,8 @@ async def read_current_user_stats(current_user: dict = Depends(get_current_user)
     if stats is None:
         raise HTTPException(status_code=404, detail="Stats not found for the current user")
     stats["_id"] = str(stats["_id"])
-    return stats    
+    stats["user_id"] = str(stats["user_id"])
+    return stats
 
 @router.post("/store/player", response_model=Stats)
 async def initialize_stats(current_user: dict = Depends(get_current_user)):
@@ -416,8 +426,6 @@ async def q3_decision(request: Q3DecisionRequest, current_user: dict = Depends(g
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q3_outcome": q3_outcome
     }
-
-
 
 #     # Leaderboard routes
 # @router.get("/leaderboard/medals", response_model=List[LeaderboardEntry])

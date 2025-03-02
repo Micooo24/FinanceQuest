@@ -60,7 +60,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
   const handleNextModal = () => {
     setCurrentModal((prev) => (parseInt(prev) + 1).toString());
   };
-  
+
   const handleGoToBank = () => {
     const isCloseToNPC = checkProximityToNPC(characterPosition);
     
@@ -97,6 +97,12 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
     else setCurrentModal('31'); // Shows Modal31
   };
 
+  // Call onComplete when the quest is finished
+  const handleQuestComplete = () => {
+    onComplete();
+    setPlayerStats((prevStats) => ({ ...prevStats, q2_done: true }));
+  };
+
   return (
     <>
       {showCheckpoint && <Checkpoint onContinue={handleCheckpointContinue} />}
@@ -129,7 +135,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
       {currentModal === '9' && <Modal9 onContinue={handleNextModal} />}
       {currentModal === '10' && <Modal10 onContinue={handleNextModal} />}
       {currentModal === '11' && <Modal11 onContinue={handleNextModal} />}
-      {currentModal === '12' && <Modal12 onContinue={handleNextModal} />}
+      {currentModal === '12' && <Modal12 onContinue={handleNextModal}/>}
       {currentModal === '13' && <Modal13 onContinue={handleNextModal} />}
       {currentModal === '14' && <Modal14 onContinue={handleNextModal} />}
       {currentModal === '15' && <Modal15 onContinue={handleNextModal} />}
@@ -151,7 +157,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
       {currentModal === '24B' && <Modal24B onContinue={() => setCurrentModal('25')} />}
       
       {/* Modal25: Choose Financial Decision */}
-      {currentModal === '25' && <Modal25 onChoose={handleFinancialDecision} />}
+      {currentModal === '25' && <Modal25 onChoose={handleFinancialDecision}/>}
       
       {/* Deposit Path */}
       {currentModal === '26A' && <Modal26A onContinue={() => setCurrentModal('27')} />}
@@ -166,7 +172,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
       {/* Banking Insights */}
       {currentModal === '29' && <Modal29 onBack={() => setCurrentModal('28')} />}
       {currentModal === '30' && <Modal30 onBack={() => setCurrentModal('28')} />}
-      {currentModal === '31' && <Modal31 onBack={() => setCurrentModal('28')} />}
+      {currentModal === '31' && <Modal31 onBack={() => setCurrentModal('28')} onComplete={handleQuestComplete} />}
     </>
   );
 };
