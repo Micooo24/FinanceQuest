@@ -19,8 +19,28 @@ const Modal12 = ({ onContinue }) => {
     atmCard: false,
     initialDeposit: '',
   });
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.fullName) newErrors.fullName = 'Full Name is required';
+    if (!formData.birthDate) newErrors.birthDate = 'Birth Date is required';
+    if (!formData.address) newErrors.address = 'Address is required';
+    if (!formData.mobileNumber) newErrors.mobileNumber = 'Mobile Number is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.sourceOfFunds) newErrors.sourceOfFunds = 'Source of Funds is required';
+    if (!formData.motherMaidenName) newErrors.motherMaidenName = 'Mother’s Maiden Name is required';
+    if (!formData.initialDeposit) newErrors.initialDeposit = 'Initial Deposit Amount is required';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleClose = async () => {
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     setShowModal(false);
 
     // Determine the decision based on the form data
@@ -108,25 +128,89 @@ const Modal12 = ({ onContinue }) => {
 
           {/* Form Fields */}
           <Box sx={{ mt: 3, textAlign: 'left' }}>
-            <TextField fullWidth label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} sx={{ mb: 2 }} />
-            <TextField fullWidth type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} sx={{ mb: 2 }} />
-            <TextField fullWidth label="Address" name="address" value={formData.address} onChange={handleChange} sx={{ mb: 2 }} />
-            <TextField fullWidth label="Mobile Number" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} sx={{ mb: 2 }} />
-            <TextField fullWidth label="Email (if available)" name="email" value={formData.email} onChange={handleChange} sx={{ mb: 2 }} />
+            <TextField
+              fullWidth
+              label="Full Name"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              error={!!errors.fullName}
+              helperText={errors.fullName}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              type="date"
+              name="birthDate"
+              value={formData.birthDate}
+              onChange={handleChange}
+              error={!!errors.birthDate}
+              helperText={errors.birthDate}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              error={!!errors.address}
+              helperText={errors.address}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Mobile Number"
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleChange}
+              error={!!errors.mobileNumber}
+              helperText={errors.mobileNumber}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Email (if available)"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
+              sx={{ mb: 2 }}
+            />
 
             <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>Source of Funds:</Typography>
             <FormControlLabel control={<Checkbox name="sourceOfFunds" value="Allowance" onChange={handleChange} />} label="Allowance" />
             <FormControlLabel control={<Checkbox name="sourceOfFunds" value="Part-time Job" onChange={handleChange} />} label="Part-time Job" />
             <FormControlLabel control={<Checkbox name="sourceOfFunds" value="Family Support" onChange={handleChange} />} label="Family Support" />
             <FormControlLabel control={<Checkbox name="sourceOfFunds" value="Others" onChange={handleChange} />} label="Others" />
+            {errors.sourceOfFunds && <Typography color="error">{errors.sourceOfFunds}</Typography>}
 
-            <TextField fullWidth label="Mother’s Maiden Name (for security verification)" name="motherMaidenName" value={formData.motherMaidenName} onChange={handleChange} sx={{ mt: 2, mb: 2 }} />
+            <TextField
+              fullWidth
+              label="Mother’s Maiden Name (for security verification)"
+              name="motherMaidenName"
+              value={formData.motherMaidenName}
+              onChange={handleChange}
+              error={!!errors.motherMaidenName}
+              helperText={errors.motherMaidenName}
+              sx={{ mt: 2, mb: 2 }}
+            />
 
             <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>Account Preferences:</Typography>
             <FormControlLabel control={<Checkbox name="onlineBanking" checked={formData.onlineBanking} onChange={handleChange} />} label="Enroll in Online Banking" />
             <FormControlLabel control={<Checkbox name="atmCard" checked={formData.atmCard} onChange={handleChange} />} label="Request ATM Card" />
 
-            <TextField fullWidth label="Initial Deposit Amount (₱)" name="initialDeposit" value={formData.initialDeposit} onChange={handleChange} sx={{ mt: 2, mb: 2 }} />
+            <TextField
+              fullWidth
+              label="Initial Deposit Amount (₱)"
+              name="initialDeposit"
+              value={formData.initialDeposit}
+              onChange={handleChange}
+              error={!!errors.initialDeposit}
+              helperText={errors.initialDeposit}
+              sx={{ mt: 2, mb: 2 }}
+            />
 
             <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: '#000' }}>
               I confirm that the information provided above is correct and that I agree to the terms and conditions of the Piso Debit Account.
