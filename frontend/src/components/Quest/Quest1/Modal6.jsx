@@ -8,7 +8,7 @@ const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
   
   const handleChoice = async (choice) => {
     setShowModal(false);
-    try {
+    try { 
       await quest1Decision(choice, (updatedStats) => {
         setPlayerStats(updatedStats);
         if (choice === 'pay') {
