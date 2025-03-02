@@ -16,7 +16,7 @@ import { Button } from '@mui/material';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { checkProximityToNPC4 } from '../../Utils/proximity';
 
-const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
+const Quest1 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStats }) => {
   const [currentModal, setCurrentModal] = useState(1);
   const [rentDecision, setRentDecision] = useState(null);
   const [isQuest1Completed, setIsQuest1Completed] = useState(false);
@@ -42,6 +42,7 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
         (rentDecision === 'delay' && currentModal === 11)) {
       setIsQuest1Completed(true); 
       onComplete();
+      fetchPlayerStats(); // Fetch player stats when quest 1 is completed
     } else {
       if (currentModal === 4) {
         setIsModal3Completed(true);
@@ -80,13 +81,19 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition }) => {
       {currentModal === 4 && <Modal3BoardingHouse onContinue={handleNextModal} />}
       {currentModal === 5 && showMeetingLandlordModal && <Modal4MeetingLandlord onContinue={handleNextModal} />}
       {currentModal === 6 && <Modal5PlayerReaction onContinue={handleNextModal} />}
-      {currentModal === 7 && <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />}
+      {currentModal === 7 && <Modal6RentDecision onSelectChoice={handleRentDecision} fetchPlayerStats={fetchPlayerStats} />}
       
       {rentDecision === 'pay' && currentModal === 8 && <Modal7A_PayRent onContinue={() => setCurrentModal(9)} />}
-      {rentDecision === 'pay' && currentModal === 9 && <Modal8A_LandlordResponse onContinue={handleNextModal} />}
+      {rentDecision === 'pay' && currentModal === 9 && <Modal8A_LandlordResponse onContinue={() => {
+        setIsQuest1Completed(true);
+        handleNextModal();
+      }} />}
       
       {rentDecision === 'delay' && currentModal === 10 && <Modal7B_DelayRent onContinue={() => setCurrentModal(11)} />}
-      {rentDecision === 'delay' && currentModal === 11 && <Modal8B_LandlordResponse onContinue={handleNextModal} />}
+      {rentDecision === 'delay' && currentModal === 11 && <Modal8B_LandlordResponse onContinue={() => {
+        setIsQuest1Completed(true);
+        handleNextModal();
+      }} />}
 
       {isModal3Completed && showTalkToLandlordButton && (
         <Button 
