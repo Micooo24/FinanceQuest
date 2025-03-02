@@ -22,6 +22,10 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { AttachMoney, ShoppingCart, Savings, Home, SportsEsports, Article, TravelExplore, Info, Login } from "@mui/icons-material";
 import { Pie, Bar } from "react-chartjs-2";
@@ -32,53 +36,6 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import TrackerReport from "./TrackerReport";
 import Navbar from './Navbar';
 
-// Navbar Component
-// const Navbar = () => {
-//   return (
-//     <AppBar
-//       position="fixed"
-//       sx={{
-//         top: 15,
-//         left: "5%",
-//         width: "90%",
-//         backgroundColor: "#331540",
-//         display: "flex",
-//         justifyContent: "center",
-//         padding: "10px 0",
-//         borderRadius: "100px",
-//         height: "10%",
-//       }}
-//     >
-//       <Toolbar sx={{ display: "flex", justifyContent: "space-between", width: "90%", margin: "0 auto" }}>
-//         <Typography variant="h5" sx={{ fontFamily: "'Lilita One'", fontWeight: "bold", color: "#fff" }}>
-//           Finance Quest
-//         </Typography>
-//         <Box sx={{ display: "flex", gap: 3 }}>
-//           <IconButton component={Link} to="/" sx={{ color: "#fff" }}>
-//             <Home />
-//           </IconButton>
-//           <IconButton component={Link} to="/gamefeatures" sx={{ color: "#fff" }}>
-//             <SportsEsports />
-//           </IconButton>
-//           <IconButton component={Link} to="/blogs" sx={{ color: "#fff" }}>
-//             <Article />
-//           </IconButton>
-//           <IconButton component={Link} to="/explore" sx={{ color: "#fff" }}>
-//             <TravelExplore />
-//           </IconButton>
-//           <IconButton component={Link} to="/about" sx={{ color: "#fff" }}>
-//             <Info />
-//           </IconButton>
-//           <IconButton component={Link} to="/signup" sx={{ color: "#fff" }}>
-//             <Login />
-//           </IconButton>
-//         </Box>
-//       </Toolbar>
-//     </AppBar>
-//   );
-// };
-
-// FinanceTracker Component
 const FinanceTracker = () => {
   const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // +1 to make the month 1-indexed
@@ -98,14 +55,59 @@ const FinanceTracker = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogType, setDialogType] = useState(""); // "income", "expenses", "bills", "savings"
   const [formValues, setFormValues] = useState({
+    subcategory: "",
+    customSubcategory: "",
     category: "",
     expected: "",
     actual: "",
     due: "",
   });
-
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [aiAnalysis, setAiAnalysis] = useState(null);
   const userId = localStorage.getItem("userId");
 
+  const categories = {
+    Expenses: {
+      "Payments/Dues": ["Housing Bills", "Rent", "Mortgage", "Property Tax", "Loan Payments", "Others"],
+      Utilities: ["Electricity", "Water", "Gas", "Internet", "Phone", "Garbage Collection", "Others"],
+      Insurance: ["Health Insurance", "Life Insurance", "Vehicle Insurance", "Home Insurance", "Travel Insurance", "Others"],
+      "Education Bills": ["Tuition Fees", "Student Loan Payments", "School Supplies", "Online Courses", "Others"],
+      "Food Expenses": ["Groceries", "Snacks", "Beverages", "Fast Food", "Others"],
+      Transportation: ["Gas", "Public Transportation", "Ride-Sharing Services", "Vehicle Maintenance", "Others"],
+      "Savings & Investments": ["Emergency Fund", "Retirement Savings", "Debt Repayment", "Stock Market Investments", "Others"],
+      Others: ["Charitable Donations", "Unexpected Expenses", "Pet Expenses"],
+    },
+    Bills: {
+      Subscriptions: ["Netflix", "Gym Membership", "Cloud Storage", "Magazine Subscriptions", "Music Streaming", "Others"],
+      Entertainment: ["Movies/Cinema", "Concerts", "Gaming", "Hobbies", "Streaming Services", "Others"],
+      Shopping: ["Clothes", "Accessories", "Gadgets", "Home Decor", "Books", "Others"],
+      "Dining Out": ["Restaurants", "Cafes", "Takeout/Delivery", "Street Food", "Others"],
+      "Travel Expenses": ["Flights", "Hotels", "Vacations", "Transportation Rentals", "Others"],
+      Others: ["Special Occasions", "Gifts", "Event Tickets"],
+    },
+    Savings: {
+      "Emergency Fund": ["Medical Emergencies", "Job Loss Fund", "Unexpected Repairs", "Others"],
+      "Retirement Savings": ["401(k)", "Pension Plan", "IRA Contributions", "Others"],
+      "Debt Repayment": ["Credit Card Payments", "Student Loan Repayments", "Car Loan Payments", "Others"],
+      "Investments": ["Stocks", "Bonds", "Mutual Funds", "Real Estate", "Others"],
+      "Savings Account Deposits": ["Monthly Savings", "High-Interest Savings Accounts", "Others"],
+      "Sinking Fund": ["Planned Future Expenses", "Car Purchase", "Wedding Fund", "Vacation Fund", "Others"],
+      Others: ["Tax Savings", "Investment in Business"],
+    },
+    Income: {
+      "Salary/Wages": ["Full-Time Job", "Part-Time Job", "Overtime Pay", "Others"],
+      "Freelance/Side Hustle Earnings": ["Freelance Writing", "Graphic Design", "Online Tutoring", "Others"],
+      "Business Income": ["E-commerce Sales", "Consulting Services", "Passive Income Streams", "Others"],
+      "Rental Income": ["Apartment Rental", "Car Rental", "Vacation Home Rental", "Others"],
+      "Dividends": ["Stock Dividends", "Mutual Fund Dividends", "Real Estate Investment Trusts (REITs)", "Others"],
+      "Government Benefits": ["SSS", "GSIS", "Unemployment Benefits", "Disability Benefits", "Others"],
+      "Bonuses/Commissions": ["Performance Bonus", "Referral Bonus", "Sales Commission", "Others"],
+      "Gifts or Allowances": ["Holiday Gifts", "Parental Support", "Scholarships", "Others"],
+      Others: ["Lottery Winnings", "Cash Prizes", "Refunds/Rebates"],
+    },
+  };
+  
   useEffect(() => { 
     if(!userId) {
       navigate("/login");
@@ -165,6 +167,24 @@ const FinanceTracker = () => {
   const handleCheckboxChange = (category, type, index, checked) => {
     const updatedData = [...data];
 
+    // Calculate the total checked expenses and bills
+    const totalCheckedExpenses = expensesData
+      .filter(item => item.done)
+      .reduce((total, item) => total + item.actual, 0);
+    const totalCheckedBills = billsData
+      .filter(item => item.done)
+      .reduce((total, item) => total + item.actual, 0);
+
+    // Find the current item
+    const currentItem = type === "expenses" ? expensesData.find(item => item.category === category) : billsData.find(item => item.category === category);
+
+    // Check if the new checked expense or bill exceeds the total income
+    if ((type === "expenses" || type === "bills") && checked && (totalCheckedExpenses + totalCheckedBills + currentItem.actual > totalIncome)) {
+      setErrorMessage("Total checked expenses and bills exceed the total income.");
+      setErrorDialogOpen(true);
+      return;
+    }
+
     updatedData.forEach((entry, entryIndex) => {
       if (Array.isArray(entry[type])) {
         updatedData[entryIndex] = {
@@ -202,11 +222,29 @@ const FinanceTracker = () => {
     });
   };
 
+  const handleAiAnalysis = async () => {
+    try {
+      const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
+      const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
+      setAiAnalysis(response.data.analysis);
+    } catch (error) {
+      console.error("Error fetching AI analysis:", error);
+    }
+  };
+
+  useEffect(() => {
+    handleAiAnalysis();
+  }, [selectedMonth, currentYear]);
+
+
+
   const totalIncome = incomeData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
   const totalExpenses = expensesData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
   const totalBills = billsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
-  const totalsavings = savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
-
+  const totalCombinedExpenses = totalExpenses + totalBills;
+  const additionalSavings = savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
+  const totalsavings = (totalIncome - totalCombinedExpenses) + additionalSavings;
+  
   const pieData = {
     labels: hasData ? ['Savings', 'Total Income'] : ['No data recorded'],
     datasets: [
@@ -216,7 +254,7 @@ const FinanceTracker = () => {
       },
     ],
   };
-
+  
   const barData = {
     labels: hasData ? ["Income", "Expenses", "Bills", "Savings"] : ["No data recorded"],
     datasets: hasData ? [
@@ -247,7 +285,7 @@ const FinanceTracker = () => {
   // Handlers for create dialog
   const handleOpenDialog = (type) => {
     setDialogType(type);
-    setFormValues({ category: "", expected: "", actual: "", due: "" });
+    setFormValues({   subcategory: "", customSubcategory: "",category: "", expected: "", actual: "", due: "" });
     setOpenDialog(true);
   };
 
@@ -262,38 +300,41 @@ const FinanceTracker = () => {
   const handleCreateRecord = async () => {
     // Ensure numeric values are properly parsed
     const newRecord = {
-      category: formValues.category,
+      category: formValues.subcategory === "Others" ? formValues.customSubcategory : formValues.subcategory,
       expected: parseFloat(formValues.expected) || 0,
-      actual: parseFloat(formValues.actual) || 0,
+      actual: parseFloat(formValues.actual) || 0, 
       done: false,
-      ...(dialogType === "expenses" && { due: formValues.due }),
+      ...(dialogType === "expenses" || dialogType === "bills" ? { due: formValues.due } : {}),
     };
 
     try {
+      // Convert selectedMonth to its corresponding index (1-indexed)
+      const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
+
       // Send request to create tracker
       const response = await axios.post(`http://127.0.0.1:8000/monthly_tracker/create-tracker`, {
         year: currentYear,
-        month: currentMonth,
+        month: monthIndex,
         user_id: userId,
         [dialogType]: [newRecord], // Ensure the new record is included in the correct array
       });
 
       if (response.data.success) {
         // Refetch data after creation
-        const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth);
-        fetchFinanceData(parseInt(currentYear), monthIndex + 1);
+        fetchFinanceData(parseInt(currentYear), monthIndex);
       } else {
         console.error("Failed to create new record:", response.data);
       }
 
       setOpenDialog(false);
       // Refetch data after closing the dialog
-      const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth);
-      fetchFinanceData(parseInt(currentYear), monthIndex + 1);
+      fetchFinanceData(parseInt(currentYear), monthIndex);
     } catch (error) {
       console.error("Error creating new record:", error);
     }
   };
+
+  const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
 
   return (
     <Box
@@ -334,7 +375,10 @@ const FinanceTracker = () => {
                   billsData={billsData} 
                   savingsData={savingsData} 
                   pieData={pieData} 
-                  barData={barData} />}
+                  barData={barData}
+                  aiAnalysis={aiAnalysis} 
+                  selectedYear={currentYear}
+                  selectedMonth={monthIndex} />}
           >
             {({ loading }) => (
           <Button
@@ -393,7 +437,7 @@ const FinanceTracker = () => {
         <Box sx={{ flex: 2, fontFamily: "'Lilita One'", pr: 4 }}>
           {[
             { label: "Total Income", amount: hasData ? totalIncome : 0, color: "#6a0dad", icon: <AttachMoney fontSize="large" /> },
-            { label: "Total Expenses", amount: hasData ? totalExpenses : 0, color: "#c2185b", icon: <ShoppingCart fontSize="large" /> },
+            { label: "Total Expenses", amount: hasData ? totalCombinedExpenses : 0, color: "#c2185b", icon: <ShoppingCart fontSize="large" /> },
             { label: "Savings", amount: hasData ? totalsavings : 0, color: "#4caf50", icon: <Savings fontSize="large" /> }
           ].map((item, index) => (
             <Paper key={index} elevation={3} sx={{ display: "flex", alignItems: "center", p: 2, my: 2, borderRadius: 5, backgroundColor: "#f3e5f5", width: "100%" }}>
@@ -405,7 +449,7 @@ const FinanceTracker = () => {
                   </Typography>
                   <LinearProgress
                     variant="determinate"
-                    value={item.label === "Total Expenses" ? (totalIncome ? (totalExpenses / totalIncome) * 100 : 0) : (item.label === "Savings" ? (totalIncome ? (totalsavings / totalIncome) * 100 : 0) : 100)}
+                    value={item.label === "Total Expenses" ? (totalIncome ? (totalCombinedExpenses / totalIncome) * 100 : 0) : (item.label === "Savings" ? (totalsavings ? (totalsavings / totalsavings) * 100 : 0) : 100)}
                     sx={{ width: "100%", height: 8, borderRadius: 2, bgcolor: "#d1c4e9" }}
                   />
                 </Box>
@@ -413,7 +457,7 @@ const FinanceTracker = () => {
             </Paper>
           ))}
         </Box>
-        </Box>
+      </Box>
 
         <Divider orientation="vertical" flexItem sx={{ mx: 5, bgcolor: "#5e3967" }} />
 
@@ -481,7 +525,7 @@ const FinanceTracker = () => {
           {/* Expenses Breakdown Table */}
           <Paper elevation={3} sx={{ p: 4 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Expenses Breakdown</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Essential Expenses </Typography>
               <Button variant="contained" onClick={() => handleOpenDialog("expenses")} sx={{ backgroundColor: "#c2185b" }}>Create</Button>
             </Box>
             <TableContainer>
@@ -527,7 +571,7 @@ const FinanceTracker = () => {
           {/* Bills Breakdown Table */}
           <Paper elevation={3} sx={{ p: 4 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Bills Breakdown</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Discretionary Expenses </Typography>
               <Button variant="contained" onClick={() => handleOpenDialog("bills")} sx={{ backgroundColor: "#5e3967" }}>Create</Button>
             </Box>
             <TableContainer>
@@ -537,6 +581,7 @@ const FinanceTracker = () => {
                     <TableCell>Category</TableCell>
                     <TableCell>Expected</TableCell>
                     <TableCell>Actual</TableCell>
+                    <TableCell>Due Date</TableCell>
                     <TableCell>Done</TableCell>
                   </TableRow>
                 </TableHead>
@@ -546,6 +591,7 @@ const FinanceTracker = () => {
                       <TableCell>{item.category}</TableCell>
                       <TableCell>₱{item.expected}</TableCell>
                       <TableCell>₱{item.actual}</TableCell>
+                      <TableCell>{item.due}</TableCell>
                       <TableCell>
                         <Checkbox
                           checked={item.done}
@@ -568,7 +614,7 @@ const FinanceTracker = () => {
           {/* Savings Breakdown Table */}
           <Paper elevation={3} sx={{ p: 4 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Savings Breakdown</Typography>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Personal Savings</Typography>
               <Button variant="contained" onClick={() => handleOpenDialog("savings")} sx={{ backgroundColor: "#4caf50" }}>Create</Button>
             </Box>
             <TableContainer>
@@ -606,54 +652,136 @@ const FinanceTracker = () => {
         </Box>
       </Paper>
 
-      {/* Dialog for Creating Records */}
+
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontFamily: "'Lilita One'" }}>
-          Create New {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} Record
-        </DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField
-            label="Category"
+  <DialogTitle sx={{ fontFamily: "'Lilita One'" }}>
+    Create New {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} Record
+  </DialogTitle>
+  <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    {(dialogType === "expenses" || dialogType === "bills" || dialogType === "savings" || dialogType === "income") ? (
+      <>
+        <FormControl fullWidth>
+          <InputLabel>Category</InputLabel>
+          <Select
             value={formValues.category}
             onChange={(e) => handleFormChange("category", e.target.value)}
-            fullWidth
-            sx={{ fontFamily: "'Lilita One'" }}
-          />
+            label="Category"
+          >
+            {Object.keys(categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)]).map((category) => (
+              <MenuItem key={category} value={category}>
+                {category}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        {formValues.category === "Others" ? (
           <TextField
-            label="Expected"
-            type="number"
-            value={formValues.expected}
-            onChange={(e) => handleFormChange("expected", e.target.value)}
+            label="Custom Subcategory"
+            value={formValues.customSubcategory}
+            onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
             fullWidth
             sx={{ fontFamily: "'Lilita One'" }}
           />
+        ) : (
+          formValues.category && (
+            <FormControl fullWidth>
+              <InputLabel>Subcategory</InputLabel>
+              <Select
+                value={formValues.subcategory}
+                onChange={(e) => handleFormChange("subcategory", e.target.value)}
+                label="Subcategory"
+              >
+                {categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)][formValues.category].map((subcategory) => (
+                  <MenuItem key={subcategory} value={subcategory}>
+                    {subcategory}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )
+        )}
+        {formValues.subcategory === "Others" && (
           <TextField
-            label="Actual"
-            type="number"
-            value={formValues.actual}
-            onChange={(e) => handleFormChange("actual", e.target.value)}
+            label="Custom Subcategory"
+            value={formValues.customSubcategory}
+            onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
             fullWidth
             sx={{ fontFamily: "'Lilita One'" }}
           />
-          {dialogType === "expenses" && (
-            <TextField
-              label="Due Date"
-              type="date"
-              value={formValues.due}
-              onChange={(e) => handleFormChange("due", e.target.value)}
-              fullWidth
-              sx={{ fontFamily: "'Lilita One'" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} sx={{ fontFamily: "'Lilita One'" }}>Cancel</Button>
-          <Button onClick={handleCreateRecord} variant="contained" sx={{ fontFamily: "'Lilita One'" }}>Create</Button>
-        </DialogActions>
-      </Dialog>
+        )}
+      </>
+    ) : (
+      <TextField
+        label="Category"
+        value={formValues.category}
+        onChange={(e) => handleFormChange("category", e.target.value)}
+        fullWidth
+        sx={{ fontFamily: "'Lilita One'" }}
+      />
+    )}
+    <TextField
+      label="Expected"
+      type="number"
+      value={formValues.expected}
+      onChange={(e) => handleFormChange("expected", e.target.value)}
+      fullWidth
+      sx={{ fontFamily: "'Lilita One'" }}
+    />
+    <TextField
+      label="Actual"
+      type="number"
+      value={formValues.actual}
+      onChange={(e) => handleFormChange("actual", e.target.value)}
+      fullWidth
+      sx={{ fontFamily: "'Lilita One'" }}
+    />
+    {(dialogType === "expenses" || dialogType === "bills") && (
+      <TextField
+        label="Due Date"
+        type="date"
+        value={formValues.due}
+        onChange={(e) => handleFormChange("due", e.target.value)}
+        fullWidth
+        sx={{ fontFamily: "'Lilita One'" }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCloseDialog} sx={{ fontFamily: "'Lilita One'" }}>Cancel</Button>
+    <Button onClick={handleCreateRecord} variant="contained" sx={{ fontFamily: "'Lilita One'" }}>Create</Button>
+  </DialogActions>
+</Dialog>
+
+<Dialog
+  open={errorDialogOpen}
+  onClose={() => setErrorDialogOpen(false)}
+  aria-labelledby="alert-dialog-title"
+  aria-describedby="alert-dialog-description"
+  PaperProps={{
+    style: {
+      backgroundColor: '#f3e5f5',
+      borderRadius: '15px',
+      padding: '20px',
+    },
+  }}
+>
+  <DialogTitle id="alert-dialog-title" sx={{ fontFamily: "'Lilita One'", color: '#c2185b' }}>
+    {"Error"}
+  </DialogTitle>
+  <DialogContent>
+    <Typography id="alert-dialog-description" sx={{ fontFamily: "'Lilita One'", color: '#5e3967' }}>
+      {errorMessage}
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setErrorDialogOpen(false)} sx={{ fontFamily: "'Lilita One'", color: '#fff', backgroundColor: '#c2185b', '&:hover': { backgroundColor: '#a31545' } }} autoFocus>
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
   );
 };
