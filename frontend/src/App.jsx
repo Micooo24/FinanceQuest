@@ -37,6 +37,7 @@ import SavingBlogs from "./components/LandingPage/savingBlog";
 import Gameplay from "./components/Game/Gameplay";
 // import { GameProvider } from "./components/Game/Context/GameContext";
 import UserProfile from "./components/Game/UserProfile";
+import Shop from "./components/Game/Shop";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from "./components/Admin/Dashboard";
 
@@ -85,6 +86,7 @@ function App() {
      
         <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
         <Route path="/user-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
         
    
         
