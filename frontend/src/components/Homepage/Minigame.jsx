@@ -1,20 +1,24 @@
 import { Box, Typography, Container } from "@mui/material";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 function Minigame() {
   const [selectedGame, setSelectedGame] = useState(0);
+  const navigate = useNavigate();
 
   const gameData = [
     {
       title: "Savings", 
       image: "/assets/savings.jpg",
-      description: "Master the art of saving for future goals and emergencies."
+      description: "Master the art of saving for future goals and emergencies.",
+      route: "/minibudget"
     },
     {
       title: "Investing", 
-      image: "/assets/investing.jpg",
-      description: "Understand the basics of investing and how to grow your wealth."
+      image: "/assets/invetsmentPage.webp",
+      description: "Understand the basics of investing and how to grow your wealth.",
+      route: "/Invest_Game"
     }
   ];
 
@@ -23,6 +27,8 @@ function Minigame() {
       setSelectedGame((prev) => (prev + 1) % gameData.length);
     } else if (event.key === "ArrowLeft") {
       setSelectedGame((prev) => (prev - 1 + gameData.length) % gameData.length);
+    } else if (event.key === "Enter") {
+      navigate(gameData[selectedGame].route);
     }
   };
 
@@ -31,14 +37,14 @@ function Minigame() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [selectedGame]);
 
   // Reset selected game if it's out of bounds after removing budgeting
   useEffect(() => {
     if (selectedGame >= gameData.length) {
       setSelectedGame(0);
     }
-  }, []);
+  }, [selectedGame]);
 
   return (
     <Box
@@ -161,7 +167,7 @@ function Minigame() {
               scale: selectedGame === index ? 1.05 : 1,
               y: selectedGame === index ? -5 : 0,
             }}
-            onClick={() => setSelectedGame(index)}
+            onClick={() => navigate(game.route)}
             sx={{
               position: "relative",
               width: { xs: "85%", sm: "280px" },
