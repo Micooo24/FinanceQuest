@@ -38,6 +38,7 @@ class Stats(BaseModel):
     q3_decision: Optional[str] = None
     q3_done: bool = False
     q3_outcome: Optional[dict] = None
+    medals: List[str] = []
 
     class Config:
         arbitrary_types_allowed = True  # Allow arbitrary types like ObjectId
