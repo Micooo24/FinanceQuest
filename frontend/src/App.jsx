@@ -35,6 +35,7 @@ import SavingBlogs from "./components/LandingPage/savingBlog";
 
 
 import Gameplay from "./components/Game/Gameplay";
+// import { GameProvider } from "./components/Game/Context/GameContext";
 import UserProfile from "./components/Game/UserProfile";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from "./components/Admin/Dashboard";
@@ -58,9 +59,10 @@ function App() {
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)', 
         },
       }}
-    />
+   />
 
     <Router>
+    {/* <GameProvider> */}
       <Routes>
         {/* Route for Landing Page */}
 
@@ -80,10 +82,12 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/explore" element={<Explore />} />
 
-
+     
         <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
         <Route path="/user-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-
+        
+   
+        
         <Route path="/blogs" element={<Blog />} />
         <Route path="/budgeting" element={<Budgeting />} />
         <Route path="/investingBlog" element={<InvestingBlog />} />
@@ -107,6 +111,7 @@ function App() {
         {/* <Route path="/blevel1" element={<BLevel1 />} /> */}
 
       </Routes>
+      {/* </GameProvider> */}
     </Router>
     </>
   );

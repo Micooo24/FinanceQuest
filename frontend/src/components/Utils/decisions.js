@@ -49,8 +49,7 @@ export const quest2Decision = async (decision, deposit, updateStatsCallback) => 
         },
       }
     );
-    updateStatsCallback(response.data.updatedStats);
-    return response.data;
+    updateStatsCallback(response.data.updatedStats); // Use the callback to update playerStats
   } catch (error) {
     console.error('Error processing Q2 decision:', error);
   }
@@ -68,7 +67,9 @@ export const sq2Decision = async (decision, updateStatsCallback) => {
         },
       }
     );
-    updateStatsCallback(response.data.updatedStats);
+    if (typeof updateStatsCallback === 'function') {
+      updateStatsCallback(response.data.updatedStats);
+    }
     return response.data;
   } catch (error) {
     console.error('Error processing SQ2 decision:', error);
