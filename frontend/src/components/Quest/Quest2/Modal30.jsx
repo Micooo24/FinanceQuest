@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
 
-const Modal30 = ({ onBack }) => {
+const Modal30 = ({ onBack, onComplete }) => {
   const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
     document.documentElement.style.overflow = showModal ? "hidden" : "auto";
   }, [showModal]);
 
+  const handleClose = () => {
+    setShowModal(false);
+    onComplete(); // Call onComplete when the modal is closed
+  };
+
   return (
     <Modal
       open={showModal}
-      onClose={() => setShowModal(false)}
+      onClose={handleClose}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
@@ -151,7 +156,7 @@ const Modal30 = ({ onBack }) => {
               color: "white",
               "&:hover": { backgroundColor: "#451d6b" },
             }}
-            onClick={() => setShowModal(false)}
+            onClick={handleClose}
           >
             ✅ Got It!
           </Button>

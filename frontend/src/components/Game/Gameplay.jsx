@@ -470,11 +470,12 @@ const Gameplay = () => {
             </>
           )}
 
-          {/* {playerStats.q1_done && !playerStats.sq1_done && (
+          {playerStats.q1_done && !playerStats.sq1_done && (
             <>
             <SideQuest1 
               setPlayerStats={setPlayerStats} 
               characterPosition={characterPosition} 
+              fetchPlayerStats={fetchPlayerStats}
               // Optional: Uncomment if using local state tracking
               // onComplete={() => setSideQuestCompleted(true)}
             />
@@ -486,9 +487,10 @@ const Gameplay = () => {
                 onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q2_done: true }))}
                 setPlayerStats={setPlayerStats}
                 characterPosition={characterPosition} 
+                fetchPlayerStats={fetchPlayerStats}
               />
             </>
-          )} */}
+          )}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats health={playerStats.health} pts={playerStats.points} level={playerStats.level} money={playerStats.money} />
