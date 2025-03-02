@@ -19,12 +19,16 @@ import Menu from "./components/Homepage/Menu";
 import Howtoplay from "./components/Homepage/Howtoplay";
 import Minigame from "./components/Homepage/Minigame";
 
-import Budget from "./components/Minigames/Budgeting/Budget";
-import Savings from "./components/Minigames/Saving/SavingPage";
-import Investment from "./components/Minigames/Investing/InvestingPage";
+// import Budget from "./components/Minigames/Budgeting/Budget";
+// import Savings from "./components/Minigames/Saving/SavingPage";
+// import Investment from "./components/Minigames/Investing/InvestingPage";
 
-//Budgeting-Minigame
-// import BLevel1 from "./components/Minigames/Budget/BLevel1";
+//Minigames Investing
+import InvestmentAssessmentMinigame from "./components/Minigames/Investing/AssessmentPage.jsx";
+import AboutPageInvestGameInteractive from "./components/Minigames/Investing/LearnToInvest_Game/About.jsx";
+import InvestmentGame from "./components/Minigames/Investing/LearnToInvest_Game/InvestmentGame.jsx";
+import LearnTheGameInvest from "./components/Minigames/Investing/LearnToInvest_Game/LearnGame.jsx";
+import InvestGameReady from "./components/Minigames/Investing/LearnToInvest_Game/InvestGameReady.jsx";
 
 // kay janna to
 import Blog from "./components/LandingPage/Blog";
@@ -106,6 +110,51 @@ function App() {
         <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
         <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} /> */}
 
+        {/* Minigame Investing-Jana */}
+          <Route
+            path="/Invest_Assessment"
+            element={
+              <ProtectedRoute>
+                <InvestmentAssessmentMinigame />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/About_Page_Investing"
+            element={
+              <ProtectedRoute>
+                <AboutPageInvestGameInteractive />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Invest_Game"
+            element={
+              <ProtectedRoute>
+                <InvestmentGame />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Learn_Game"
+            element={
+              <ProtectedRoute>
+                <LearnTheGameInvest />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Ready_Set_Invest"
+            element={
+              <ProtectedRoute>
+                <InvestGameReady />
+              </ProtectedRoute>
+            }
+          />
+
+
+        {/* Monthly Dashboard */}
         <Route path="/monthlydashboard" element={<ProtectedRoute><MonthlyDashboard /></ProtectedRoute>} />
 
 
