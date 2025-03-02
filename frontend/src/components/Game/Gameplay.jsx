@@ -306,14 +306,11 @@ const Gameplay = () => {
     }
   };
 
-
   useEffect(() => {
-    fetchPlayerStats(); // Initial fetch
-
-    const intervalId = setInterval(fetchPlayerStats, 120000); // Refresh every 2 minutes
-
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, []);
+    if (gameStarted) {
+      fetchPlayerStats();
+    }
+  }, [gameStarted]);
 
   const initializeScene = () => {
     if (!mountRef.current || rendererRef.current) return;
@@ -461,14 +458,19 @@ const Gameplay = () => {
         <>
           {!playerStats.q1_done && (
             <>
-              <Quest1 onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q1_done: true }))} setPlayerStats={setPlayerStats} characterPosition={characterPosition} />
-              {showRentDecisionModal && (
-                <Modal6RentDecision onSelectChoice={handleRentDecision} setPlayerStats={setPlayerStats} />
-              )}
+              <Quest1 
+                  onComplete={() => {
+                    setPlayerStats((prevStats) => ({ ...prevStats, q1_done: true }));
+                    fetchPlayerStats(); // Fetch player stats when quest 1 is completed
+                  }} 
+                  setPlayerStats={setPlayerStats} 
+                  characterPosition={characterPosition} 
+                  fetchPlayerStats={fetchPlayerStats} // Pass the fetchPlayerStats function
+                />
             </>
           )}
 
-          {playerStats.q1_done && !playerStats.sq1_done && (
+          {/* {playerStats.q1_done && !playerStats.sq1_done && (
             <>
             <SideQuest1 
               setPlayerStats={setPlayerStats} 
@@ -486,7 +488,7 @@ const Gameplay = () => {
                 characterPosition={characterPosition} 
               />
             </>
-          )}
+          )} */}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats health={playerStats.health} pts={playerStats.points} level={playerStats.level} money={playerStats.money} />

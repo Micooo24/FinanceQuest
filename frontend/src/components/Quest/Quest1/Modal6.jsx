@@ -3,22 +3,20 @@ import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
 import { quest1Decision } from '../../Utils/decisions';
 import toast from 'react-hot-toast';
 
-const Modal6RentDecision = ({ onSelectChoice, setPlayerStats }) => {
+const Modal6RentDecision = ({ onSelectChoice }) => {
   const [showModal, setShowModal] = useState(true);
   
   const handleChoice = async (choice) => {
     setShowModal(false);
     try { 
-      await quest1Decision(choice, (updatedStats) => {
-        setPlayerStats(updatedStats);
-        if (choice === 'pay') {
-          toast.success('You paid rent ₱2,500.');
-          toast.success('+10 points');
-        } else if (choice === 'delay') {
-          toast.success('You chose to delay, deduct ₱500.');
-          toast.success('+5 points');
-        }
-      });
+      await quest1Decision(choice);
+      if (choice === 'pay') {
+        toast.success('You paid rent ₱2,500.');
+        toast.success('+10 points');
+      } else if (choice === 'delay') {
+        toast.success('You chose to delay, deduct ₱500.');
+        toast.success('+5 points');
+      }
     } catch (error) {
       console.error('Error handling choice:', error);
     }
