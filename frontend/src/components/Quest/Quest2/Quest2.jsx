@@ -39,7 +39,7 @@ import { checkProximityToNPC } from '../../Utils/proximity';
 import { toast } from 'react-hot-toast';
 import { Button } from '@mui/material';
 
-const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
+const Quest2 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStats }) => {
   const [currentModal, setCurrentModal] = useState(null);
   const [isCloseToNPC, setIsCloseToNPC] = useState(false);
   const [showCheckpoint, setShowCheckpoint] = useState(true);
@@ -101,6 +101,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
   const handleQuestComplete = () => {
     onComplete();
     setPlayerStats((prevStats) => ({ ...prevStats, q2_done: true }));
+    fetchPlayerStats(); // Fetch player stats when quest 2 is completed
   };
 
   return (
@@ -170,8 +171,8 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition }) => {
       {currentModal === '28' && <Modal28 onChoose={handleBankingInsightChoice} />}
       
       {/* Banking Insights */}
-      {currentModal === '29' && <Modal29 onBack={() => setCurrentModal('28')} />}
-      {currentModal === '30' && <Modal30 onBack={() => setCurrentModal('28')} />}
+      {currentModal === '29' && <Modal29 onBack={() => setCurrentModal('28')} onComplete={handleQuestComplete}/>}
+      {currentModal === '30' && <Modal30 onBack={() => setCurrentModal('28')} onComplete={handleQuestComplete}/>}
       {currentModal === '31' && <Modal31 onBack={() => setCurrentModal('28')} onComplete={handleQuestComplete} />}
     </>
   );
