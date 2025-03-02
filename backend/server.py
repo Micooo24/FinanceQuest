@@ -4,6 +4,9 @@ from routes import users, characters,stats, blogReviews
 import firebase_backend.firebaseconfig
 from Admin import UserdataTable
 from routes.trackers import router as trackers_router
+from routes.minibudget import router as minibudget_router
+from routes.minibudget_ai import router as minibudget_ai_router
+
 
 app = FastAPI()
 
@@ -27,4 +30,6 @@ app.include_router(stats.router, prefix="/stats")
 app.include_router(UserdataTable.router, prefix="/admin")
 app.include_router(trackers_router, prefix="/monthly_tracker", tags=["Monthly Tracker"])
 app.include_router(blogReviews.router, prefix="/blogReview")
+app.include_router(minibudget_router, prefix="/minibudget")
+app.include_router(minibudget_ai_router, prefix="/minibudget_ai")
  
