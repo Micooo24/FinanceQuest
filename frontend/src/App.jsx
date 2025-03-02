@@ -30,6 +30,9 @@ import InvestmentGame from "./components/Minigames/Investing/LearnToInvest_Game/
 import LearnTheGameInvest from "./components/Minigames/Investing/LearnToInvest_Game/LearnGame.jsx";
 import InvestGameReady from "./components/Minigames/Investing/LearnToInvest_Game/InvestGameReady.jsx";
 
+//Minigames Saving
+import MiniBudget from "./components/Minigames/Saving/Intro"
+
 // kay janna to
 import Blog from "./components/LandingPage/Blog";
 import Budgeting from "./components/LandingPage/Budgeting";
@@ -109,6 +112,9 @@ function App() {
         {/* <Route path="/budget" element={<ProtectedRoute><Budget /></ProtectedRoute>} />
         <Route path="/savings" element={<ProtectedRoute><Savings /></ProtectedRoute>} />
         <Route path="/investment" element={<ProtectedRoute><Investment /></ProtectedRoute>} /> */}
+
+        {/* Minigame Saving Lei */}
+        <Route path="/minibudget" element={<MiniBudget />} />
 
         {/* Minigame Investing-Jana */}
           <Route
