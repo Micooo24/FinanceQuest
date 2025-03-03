@@ -1082,7 +1082,7 @@ const InvestingBlog = () => {
                 </Typography>
                 <Button
                   component={Link}
-                  to="/saving"
+                  to="/savingBlog"
                   sx={{
                     mt: 1,
                     fontWeight: "bold",

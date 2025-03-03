@@ -19,6 +19,7 @@ class User(BaseModel):
     firebaseuid: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     verified: bool = False
+    is_active: bool = True  # New field for activation status
     missions: List[str] = []  # List of mission IDs assigned to the user
 
     class Config:

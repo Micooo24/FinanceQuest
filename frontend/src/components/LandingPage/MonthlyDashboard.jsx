@@ -662,7 +662,8 @@ useEffect(() => {
 
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
   <DialogTitle sx={{ fontFamily: "'Lilita One'" }}>
-    Create New {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} Record
+    {/* Create New {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} Record */}
+    Create New Record
   </DialogTitle>
   <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
     {(dialogType === "expenses" || dialogType === "bills" || dialogType === "savings" || dialogType === "income") ? (

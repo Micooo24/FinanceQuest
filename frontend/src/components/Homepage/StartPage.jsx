@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const StartPageWrapper = styled.div`
-  font-family: 'Gravitas One', sans-serif;
+  font-family: "Gravitas One", sans-serif;
   height: 100vh;
   margin: 0;
   overflow: hidden;
@@ -41,7 +41,7 @@ const StartPageWrapper = styled.div`
   color: white;
   position: relative;
   cursor: pointer;
-  background: linear-gradient(180deg, #451d6b,  #451d6b);
+  background: linear-gradient(180deg, #451d6b, #451d6b);
 `;
 
 const BackgroundImage = styled.img`
@@ -95,16 +95,18 @@ const GameTitle1 = styled.div`
 const Button = styled.button`
   background: transparent;
   border: 2px black;
-  color: ${(props) => (props.selected ? "black" : "white")}; /* Highlight selected button */
+  color: ${(props) =>
+    props.selected ? "black" : "white"}; /* Highlight selected button */
   font-size: 20px;
-  font-family: 'Fraunces', sans-serif;
-  margin-top: 25px;
+  font-family: "Fraunces", sans-serif;
+  margin-top: 5px;
   margin-bottom: 2px;
   border-radius: 25px;
   cursor: pointer;
   opacity: 0.9;
   width: 200px;
   transition: 0.3s;
+  padding: 10px;
 
   &:hover {
     background-color: rgba(156, 170, 241, 0.2);
@@ -120,7 +122,7 @@ const Button = styled.button`
 const Arrow = styled.div`
   position: absolute;
   top: ${(props) => props.top};
-  right: 500px;
+  right: 600px;
   z-index: 2;
   width: 20px;
   height: 20px;
@@ -156,7 +158,7 @@ const StartPage = () => {
     { label: "MENU", onClick: () => navigate("/menu") },
     { label: "HOW TO PLAY", onClick: () => navigate("/howtoplay") },
     { label: "LEADERBOARDS", onClick: () => navigate("/leaderboards") },
-    { label: "HOME", onClick: () => navigate("/") }
+    { label: "HOME", onClick: () => navigate("/") },
   ];
 
   // Auto-play audio on page load
@@ -166,7 +168,10 @@ const StartPage = () => {
         try {
           await audioRef.current.play();
         } catch (err) {
-          console.error("Autoplay prevented: User interaction may be required", err);
+          console.error(
+            "Autoplay prevented: User interaction may be required",
+            err
+          );
         }
       };
 
@@ -206,13 +211,14 @@ const StartPage = () => {
     <>
       <GlobalStyle />
       <StartPageWrapper>
-        <BackgroundImage src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg" alt="Game Background" />
-
+        <BackgroundImage
+          src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg"
+          alt="Game Background"
+        />
         <audio ref={audioRef} loop>
           <source src="/assets/quiet.mp3" type="audio/mp3" />
           Your browser does not support the audio element.
         </audio>
-
         <Content>
           <GameTitle>Finance</GameTitle>
           <GameTitle1>Quest</GameTitle1>
@@ -222,17 +228,23 @@ const StartPage = () => {
               key={index}
               selected={selectedIndex === index} // Highlight selected button
               onClick={button.onClick}
+              style={{ alignSelf: "center" }}
             >
               {button.label}
             </Button>
           ))}
         </Content>
 
-        <Arrow top={`${selectedIndex * 52 + 365}px`} /> {/* Adjust for arrow positioning */}
+        <Arrow top={`${selectedIndex * 52 + 380}px`} />
 
+        {/* Adjust for arrow positioning */}
         <MusicIconWrapper onClick={handleMuteToggle}>
           <MusicIcon
-            src={isMuted ? "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/mute_hzttoc.jpg" : "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/music_hf9tay.jpg"}
+            src={
+              isMuted
+                ? "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/mute_hzttoc.jpg"
+                : "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/music_hf9tay.jpg"
+            }
             alt={isMuted ? "Mute Icon" : "Unmute Icon"}
           />
         </MusicIconWrapper>

@@ -39,7 +39,8 @@ from controllers.trackers import (
     create_monthly_tracker,
     get_monthly_tracker,
     update_monthly_tracker,
-    delete_monthly_tracker
+    delete_monthly_tracker,
+    get_all_monthly_tracker
 )
 from models.trackers import MonthlyTracker
 from typing import List, Dict
@@ -65,3 +66,9 @@ def update(tracker_id: str, data: MonthlyTracker):
 @router.delete("/delete-tracker/{year}/{month}/{user_id}")
 def delete(year: int, month: int, user_id: str):
     return delete_monthly_tracker(year, month, user_id)
+
+
+@router.get("/get-all-tracker", response_model=List[Dict])
+def get_all():
+    return get_all_monthly_tracker()
+

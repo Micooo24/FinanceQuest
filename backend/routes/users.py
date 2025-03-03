@@ -139,6 +139,47 @@ async def verify_email(email: str = Body(...), otp: int = Body(...)):
         logger.error(f"Email verification failed: {str(e)}")
         raise HTTPException(status_code=400, detail="Email verification failed")
     
+# @router.post("/login")
+# async def login(
+#     email: str = Body(...), 
+#     password: str = Body(...),  
+# ):
+#     try:
+#         user = db["users"].find_one({"email": email})
+#         if not user:
+#             raise HTTPException(status_code=400, detail="Invalid email or password")
+        
+#         if not bcrypt.checkpw(password.encode('utf-8'), user["password"].encode('utf-8')):
+#             raise HTTPException(status_code=400, detail="Invalid email or password")
+        
+#         if not user["verified"]:
+#             raise HTTPException(status_code=400, detail="Email not verified. Please check your email to verify your account.")
+        
+#         access_token_expires = timedelta(days=7)
+#         access_token = create_access_token(data={"sub": user["email"]}, expires_delta=access_token_expires)
+        
+#         # Initialize stats for the user if they don't already exist
+#         user_id = user["_id"]
+#         existing_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+#         if not existing_stats:
+#             new_stats = {
+#                 "user_id": ObjectId(user_id),
+#                 "health": 100,
+#                 "level": 1,
+#                 "money": 5000,
+#                 "points": 0,
+#                 "location": {
+#                     "x": -8.389501036635487,
+#                     "y": 0.5,
+#                     "z": 33.26385975348472
+#                 }
+#             }
+#             db["stats"].insert_one(new_stats)
+        
+#         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
 @router.post("/login")
 async def login(
     email: str = Body(...), 
@@ -154,7 +195,11 @@ async def login(
         
         if not user["verified"]:
             raise HTTPException(status_code=400, detail="Email not verified. Please check your email to verify your account.")
-        
+       
+        # Apply 'is_active' restriction only to normal users, not admins
+        if user["role"] == "user" and not user.get("is_active", True):  
+            raise HTTPException(status_code=403, detail="Your account has been deactivated. Please contact support.")
+
         access_token_expires = timedelta(days=7)
         access_token = create_access_token(data={"sub": user["email"]}, expires_delta=access_token_expires)
         
@@ -179,7 +224,8 @@ async def login(
         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-
+    
+    
 @router.post("/google-signup")
 async def google_signup(request: Request):
     try:
@@ -255,6 +301,94 @@ async def google_signup(request: Request):
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}") 
 
 
+# @router.post("/google-login")
+# async def google_login(request: Request):
+#     try:
+#         body = await request.json()
+#         token = body.get("token")
+
+#         if not token:
+#             raise HTTPException(status_code=400, detail="Token is required")
+
+#         # Verify the token with Firebase
+#         try:
+#             id_info = auth.verify_id_token(token)
+#         except ValueError as e:
+#             logger.error(f"Token verification failed: {str(e)}")
+#             raise HTTPException(status_code=400, detail="Token verification failed")
+
+#         # Retrieve user information
+#         email = id_info.get("email")
+
+#         # Check if user exists in the database
+#         user = db["users"].find_one({"email": email})
+#         if not user:
+#             # If user does not exist, create a new user in Firebase and the database
+#             username = id_info.get("name")
+#             birthday = id_info.get("birthday")
+#             img_path = id_info.get("picture")
+
+#             try:
+#                 user_record = auth.create_user(
+#                     email=email,
+#                     email_verified=True,
+#                     display_name=username,
+#                     photo_url=img_path,
+#                 )
+#             except Exception as e:
+#                 logger.error(f"Firebase user creation failed: {str(e)}")
+#                 raise HTTPException(status_code=500, detail="Firebase user creation failed")
+
+#             user_dict = {
+#                 "username": username,
+#                 "email": email,
+#                 "password": None,  # Explicitly set password to None
+#                 "birthday": birthday,
+#                 "img_path": img_path,
+#                 "firebase_uid": user_record.uid,
+#                 "role": Role.user,
+#                 "verified": True
+#             }
+#             inserted_user = db["users"].insert_one(user_dict)
+#             user_dict["_id"] = str(inserted_user.inserted_id)
+#         else:
+#             user_dict = user
+#             user_dict["_id"] = str(user_dict["_id"])  # Convert ObjectId to string
+
+#         # Initialize stats for the user if they don't already exist
+#         user_id = user_dict["_id"]
+#         existing_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+#         if not existing_stats:
+#             new_stats = {
+#                 "user_id": ObjectId(user_id),
+#                 "health": 100,
+#                 "level": 1,
+#                 "money": 5000,
+#                 "points": 0,
+#                 "location": {
+#                     "x": -8.389501036635487,
+#                     "y": 0.5,
+#                     "z": 33.26385975348472
+#                 }
+#             }
+#             db["stats"].insert_one(new_stats)
+
+#         # Generate access token
+#         access_token_expires = timedelta(minutes=30)
+#         access_token = create_access_token(data={"sub": user_dict["email"]}, expires_delta=access_token_expires)
+
+#         return JSONResponse(content={"access_token": access_token, "token_type": "bearer", "user": user_dict})
+
+#     except ValueError as e:
+#         logger.error(f"Token verification failed: {str(e)}")
+#         raise HTTPException(status_code=400, detail="Token verification failed")
+#     except HTTPException as e:
+#         logger.error(f"HTTPException: {str(e)}")
+#         raise e
+#     except Exception as e:
+#         logger.error(f"An error occurred: {str(e)}")
+#         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
 @router.post("/google-login")
 async def google_login(request: Request):
     try:
@@ -301,13 +435,17 @@ async def google_login(request: Request):
                 "img_path": img_path,
                 "firebase_uid": user_record.uid,
                 "role": Role.user,
-                "verified": True
+                "verified": True ,
+                "is_active": True,  # Ensure new users are active by default
             }
             inserted_user = db["users"].insert_one(user_dict)
             user_dict["_id"] = str(inserted_user.inserted_id)
         else:
+            if user.get("role") == "user" and not user.get("is_active", True):
+                raise HTTPException(status_code=403, detail="Your account has been deactivated. Please contact support.")
+
             user_dict = user
-            user_dict["_id"] = str(user_dict["_id"])  # Convert ObjectId to string
+            user_dict["_id"] = str(user_dict["_id"])
 
         # Initialize stats for the user if they don't already exist
         user_id = user_dict["_id"]
@@ -342,7 +480,6 @@ async def google_login(request: Request):
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    
 
 @router.put("/update-profile/{user_id}")
 async def update_profile(

@@ -1,51 +1,35 @@
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
   Box,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Menu,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   Collapse,
 } from "@mui/material";
 import {
-  Notifications,
-  Search,
-  Settings,
   Dashboard,
   Person,
   TableChart,
-  Logout,
-  ArrowDropDown,
   ExpandLess,
   ExpandMore,
+  ViewModule,
+  Article,
+  Check,
+  Info
 } from "@mui/icons-material";
 
-import {useNavigate} from "react-router-dom";
-
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
-  const [anchorEl, setAnchorEl] = useState(null); 
-  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false); 
-  const [miniGamesOpen, setMiniGamesOpen] = useState(false); 
-  const navigate = useNavigate();
-
-  const userName = "User 1";
+  const [miniGamesOpen, setMiniGamesOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const menuItems = [
     { text: "Dashboard", icon: <Dashboard /> },
-    // { text: "Notifications", icon: <Notifications /> },
-    { text: "User Table", icon: <Person /> },
+    { text: "Accounts", icon: <Info /> },
+    { text: "Users", icon: <Person /> },
+    { text: "Feedbacks", icon: <Article /> },
+    { text: "FinanceTracker", icon: <Check /> },
+   
   ];
 
   const miniGamesItems = [
@@ -54,178 +38,40 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
     { text: "Investment Table", icon: <TableChart /> },
   ];
 
-  const handleItemClick = (text) => {
-    setActiveSection(text);
-  };
-
-  const handleProfileMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogoutClick = () => {
-    setLogoutDialogOpen(true); 
-  };
-
-  const handleLogoutConfirm = () => {
-    localStorage.clear(); 
-    navigate("/");
-    console.log("Logged out");
-    setLogoutDialogOpen(false);
-  };
-
-  const handleLogoutCancel = () => {
-    setLogoutDialogOpen(false); 
-  };
-
-  const handleMiniGamesClick = () => {
-    setMiniGamesOpen(!miniGamesOpen); 
-  };
-
   return (
-    <Box 
-      sx={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        width: "100%",  
-        background: "linear-gradient(180deg, #5e3967, #351742)",
-        }}
-      >
-      {/* Navbar */}
-      <AppBar position="fixed" sx={{ backgroundColor: "#351742", zIndex: 1300 }}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>{activeSection}</Typography>
-          {/* <IconButton color="inherit"><Search /></IconButton>
-          <IconButton color="inherit"><Notifications /></IconButton>
-          <IconButton color="inherit"><Settings /></IconButton> */}
-
-          {/* Profile Menu Dropdown */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <IconButton color="inherit"><Person /></IconButton>
-            <Typography variant="body1" sx={{ color: "white", marginRight: "8px" }}>{userName}</Typography>
-            <IconButton color="inherit" onClick={handleProfileMenuClick}>
-              <ArrowDropDown />
-            </IconButton>
-            
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu} > 
-              <MenuItem onClick={handleCloseMenu}>View Profile</MenuItem>
-              <MenuItem onClick={handleLogoutClick}>Log Out</MenuItem>
-            </Menu>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      {/* Sidebar */}
-      <Box
-        sx={{
-          width: 250,
-          height: "100vh",
-          background: "rgba(0, 0, 0, 0.3)",
-          padding: "20px",
-          borderRadius: "12px",
-          backdropFilter: "blur(10px)",
-          color: "white",
-          mt: 8,
-        }}
-      >
-        <Box sx={{ textAlign: "center", pb: 2, marginLeft: -5 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>FinanceQuest</Typography>
-        </Box>
-        <Divider sx={{ backgroundColor: "white" }} />
-        <List>
-          {menuItems.map((item, index) => (
-            <ListItem
-              button
-              key={index}
-              sx={{
-                backgroundColor: activeSection === item.text ? "#5e3967" : "transparent",
-                borderRadius: "4px",
-                transition: "background-color 0.3s",
-                "&:hover": { backgroundColor: "#5e3967" },
-              }}
-              onClick={() => handleItemClick(item.text)}
-            >
-              <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} sx={{ color: "white" }} />
-            </ListItem>
-          ))}
-
-          {/* Mini Games Dropdown */}
+    <Box
+      sx={{
+        width: expanded ? 100 : 60, // Reduced width for better fit
+        height: "90vh",
+        background: "#220E36",
+        color: "white",
+        position: "fixed",
+        left: 20,
+        top: 20,
+        borderRadius: "10px",
+        transition: "width 0.3s ease-in-out",
+        "&:hover": { width: 180 }, // Adjusted hover effect
+      }}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
+    >
+      <List>
+        {menuItems.map((item, index) => (
           <ListItem
             button
-            onClick={handleMiniGamesClick}
-            sx={{
-              borderRadius: "4px",
-              transition: "background-color 0.3s",
-              "&:hover": { backgroundColor: "#5e3967" },
-            }}
+            key={index}
+            onClick={() => setActiveSection(item.text)}
+            sx={{ padding: "10px 16px", mb: 2, mt: 1 }}
           >
-            <ListItemIcon sx={{ color: "white" }}><TableChart /></ListItemIcon>
-            <ListItemText primary="Mini Games" sx={{ color: "white" }} />
-            {miniGamesOpen ? <ExpandLess sx={{ color: "white" }} /> : <ExpandMore sx={{ color: "white" }} />}
+
+            <ListItemIcon sx={{ color: "white", minWidth: "40px" }}>
+              {item.icon}
+            </ListItemIcon>
+            {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem" }} />}
           </ListItem>
-          <Collapse in={miniGamesOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {miniGamesItems.map((item, index) => (
-                <ListItem
-                  button
-                  key={index}
-                  sx={{
-                    pl: 4,
-                    backgroundColor: activeSection === item.text ? "#5e3967" : "transparent",
-                    borderRadius: "4px",
-                    transition: "background-color 0.3s",
-                    "&:hover": { backgroundColor: "#5e3967" },
-                  }}
-                  onClick={() => handleItemClick(item.text)}
-                >
-                  <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} sx={{ color: "white" }} />
-                </ListItem>
-              ))}
-            </List>
-          </Collapse>
-        </List>
-        <Divider sx={{ backgroundColor: "white" }} />
-
-        {/* Log Out Button */}
-        <ListItem
-          button
-          sx={{
-            color: "#f44336",
-            borderRadius: "4px",
-            transition: "background-color 0.3s",
-            "&:hover": { backgroundColor: "#5e3967" },
-          }}
-          onClick={handleLogoutClick}
-        >
-          <ListItemIcon sx={{ color: "#f44336" }}>
-            <Logout />
-          </ListItemIcon>
-          <ListItemText primary="Log Out" sx={{ color: "#f44336" }} />
-        </ListItem>
-      </Box>
-
-      {/* Logout Confirmation Dialog */}
-      <Dialog open={logoutDialogOpen} onClose={handleLogoutCancel}>
-        <DialogTitle sx={{ backgroundColor: "#5e3967", color: "white", textAlign: "center" }}>
-          Do you want to Log out?
-        </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#5e3967", color: "white", textAlign: "center" }}>
-          <Typography variant="body1">You will be logged out of your account.</Typography>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#5e3967", justifyContent: "center" }}>
-          <Button onClick={handleLogoutCancel} sx={{ color: "white", border: "1px solid white", "&:hover": { backgroundColor: "#351742" } }}>
-            No
-          </Button>
-          <Button onClick={handleLogoutConfirm} sx={{ color: "#f44336", border: "1px solid #f44336", "&:hover": { backgroundColor: "#ff7961" } }}>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
+        ))}
+        
+      </List>
     </Box>
   );
 };

@@ -65,6 +65,7 @@ const AboutPageInvestGameInteractive = () => {
           zIndex: 1,
         }}
       >
+         <Link to="/minigame" style={{ textDecoration: "none" }}>
         {/* Close Button */}
         <IconButton
           style={{
@@ -76,8 +77,10 @@ const AboutPageInvestGameInteractive = () => {
             color: "white",
           }}
         >
+          
           <CloseIcon />
         </IconButton>
+        </Link>
         <div
           className="pictures_what_to_expect_in_the_game"
           style={{

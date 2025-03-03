@@ -90,3 +90,28 @@ def delete_monthly_tracker(year: int, month: int, user_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Record not found")
     return {"message": "Record deleted successfully"}
+
+def get_all_monthly_tracker() -> List[Dict]:
+    data = db.monthly_tracker.find()  
+    print("Data from MongoDB:", data)  
+    
+    trackers = []
+    for item in data:
+        item["_id"] = str(item["_id"])  
+        
+        user_id = item.get("user_id")
+        if user_id:
+            user = db.users.find_one({"_id": ObjectId(user_id)})
+            if user:
+                item["username"] = user.get("username", "Unknown")
+            else:
+                item["username"] = "Unknown"
+        else:
+            item["username"] = "Unknown"
+        
+        trackers.append(item)
+
+    if not trackers:
+        raise HTTPException(status_code=404, detail="No records found")
+
+    return trackers

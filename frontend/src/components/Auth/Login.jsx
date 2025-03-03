@@ -55,7 +55,7 @@ const Login = () => {
         }
       }
     } catch (err) {
-      toast.error("Login failed. Please try again.");
+      toast.error("Deactivated Account.");
     }
   };
 
@@ -86,11 +86,16 @@ const Login = () => {
         if (userRole === "admin") {
           navigate("/dashboard");
         } else {
-          navigate("/loading");
+          navigate("/loading"); 
         }
       }
     } catch (error) {
+      console.error("Google login error", error);
+      if (error.response && error.response.status === 403) {
+        toast.error("Your account has been deactivated. Please contact support.");
+      } else{
       toast.error("Google login failed");
+      }
     }
   };
 

@@ -101,6 +101,7 @@ const Blog = () => {
             flexDirection: isGridView ? "row" : "column",
             flexWrap: isGridView ? "wrap" : "nowrap",
             justifyContent: "center",
+            alignItems:"center",
             gap: 3,
             mb: 5,
           }}
