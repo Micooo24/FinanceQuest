@@ -311,3 +311,28 @@ async def delete_user(user_id: str):
     except Exception as e:
         logger.error(f"An error occurred: {str(e)}")
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+ 
+@router.put("/toggle-user-status/{user_id}")
+async def toggle_user_status(user_id: str):
+    try:
+        user = db["users"].find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        new_status = not user.get("is_active", True)  # Toggle status
+        db["users"].update_one({"_id": ObjectId(user_id)}, {"$set": {"is_active": new_status}})
+
+        return JSONResponse(content={"message": "User status updated", "is_active": new_status})
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+@router.get("/active-users")
+async def get_active_users():
+    active_users_count = db.users.count_documents({"is_active": True, "role": "user"})
+    total_users_count = db.users.count_documents({"role": "user"})
+    inactive_users_count = total_users_count - active_users_count
+    return {"active_users": active_users_count, "inactive_users": inactive_users_count}
+   
+    

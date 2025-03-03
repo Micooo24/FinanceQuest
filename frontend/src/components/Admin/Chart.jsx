@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,18 +8,19 @@ import {
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend
@@ -30,6 +31,9 @@ const DashboardCharts = () => {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
     counts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   });
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [inactiveUsers, setInactiveUsers] = useState(0); // Add this!
+
 
   useEffect(() => {
     const fetchRegisteredPlayersData = async () => {
@@ -37,30 +41,39 @@ const DashboardCharts = () => {
         const response = await axios.get("http://127.0.0.1:8000/admin/get-users");
         const users = response.data.users;
 
-        // Initialize grouped data with all months
         const groupedData = {
           Jan: 0, Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0,
           Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0
         };
 
-        // Process data to group by month
         users.forEach(user => {
           const createdAt = new Date(user.created_at);
           const month = createdAt.toLocaleDateString('default', { month: 'short' });
           groupedData[month]++;
         });
 
-        // Convert grouped data to chart data format
-        const labels = Object.keys(groupedData);
-        const counts = Object.values(groupedData);
-
-        setRegisteredPlayersData({ labels, counts });
+        setRegisteredPlayersData({
+          labels: Object.keys(groupedData),
+          counts: Object.values(groupedData),
+        });
       } catch (error) {
         console.error("Error fetching registered players data:", error);
       }
     };
 
+    const fetchActiveUsers = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/admin/active-users");
+        setActiveUsers(response.data.active_users);
+        setInactiveUsers(response.data.inactive_users);
+      } catch (error) {
+        console.error("Error fetching active users:", error);
+      }
+    };
+    
+
     fetchRegisteredPlayersData();
+    fetchActiveUsers();
   }, []);
 
   const lineData = {
@@ -69,16 +82,12 @@ const DashboardCharts = () => {
       {
         label: "Registered Players",
         data: registeredPlayersData.counts,
-        borderColor: "rgba(0, 123, 255, 0.9)",
-        backgroundColor: "rgba(0, 123, 255, 0.2)",
-        borderWidth: 2,
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(0, 123, 255, 0.9)",
-        pointBorderColor: "rgba(0, 123, 255, 0.9)",
-        pointBorderWidth: 1,
+        borderColor: "#8c2fc7",
+        backgroundColor: "rgba(140, 47, 199, 0.3)",
+        borderWidth: 3,
+        pointBackgroundColor: "#5e3967",
+        pointRadius: 4,
         tension: 0.4,
-        shadowColor: "rgba(0, 123, 255, 0.8)",
-        shadowBlur: 100,
       },
     ],
   };
@@ -87,121 +96,85 @@ const DashboardCharts = () => {
     labels: ["USA", "GER", "AUS", "UK", "RO", "BR"],
     datasets: [
       {
-        label: "Year",
+        label: "Top Players",
         data: [50, 30, 20, 75, 100, 45],
-        backgroundColor: "rgba(255, 99, 132, 0)",
-        borderColor: "rgba(255, 99, 132, 1)",
+        backgroundColor: ["#8c2fc7", "#451d6b","#5e3967"],
+        borderColor: "#8c2fc7",
         borderWidth: 2,
       },
     ],
   };
 
-  const lineOptions = {
+  const gaugeData = {
+    labels: ["Active Users", "Inactive Users"],
+    datasets: [
+      {
+        data: [activeUsers, inactiveUsers], 
+        backgroundColor: ["#00cac9", "#8c2fc7"],
+        borderWidth: 0,
+      },
+    ],
+  };
+  
+  
+
+  const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: true,
-        labels: {
-          color: "white",
-          font: {
-            size: 14,
-            weight: "bold",
-          },
-          boxWidth: 15,
-        },
-      },
+      legend: { display: true, labels: { color: "white", font: { size: 14, weight: "bold" } } },
       tooltip: {
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backgroundColor: "#000",
         titleColor: "white",
         bodyColor: "white",
-        borderColor: "rgba(0, 123, 255, 0.8)",
+        borderColor: "#8c2fc7",
         borderWidth: 1,
         cornerRadius: 6,
       },
     },
     scales: {
-      x: {
-        ticks: { color: "white", font: { weight: "bold" } },
-        grid: { color: "rgba(255,255,255,0.1)" },
-      },
-      y: {
-        ticks: { color: "white", font: { weight: "bold" } },
-        grid: { color: "rgba(255,255,255,0.1)" },
-      },
+      x: { ticks: { color: "white" }, grid: { color: "rgba(255,255,255,0.1)" } },
+      y: { ticks: { color: "white" }, grid: { color: "rgba(255,255,255,0.1)" } },
     },
   };
 
-  const chartContainerStyle = {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "10px",
-    padding: "10px",
-  };
-
-  const chartRowStyle = {
-    display: "flex",
-    justifyContent: "center",
-    gap: "10px",
-    width: "100%",
-  };
-
-  const chartStyle = {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    width: "100%",
-    maxWidth: "450px",
-    height: "280px",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: "12px",
-    padding: "15px",
-    overflow: "hidden",
-  };
-
-  const titleStyle = {
-    color: "white",
-    marginBottom: "10px",
-    textAlign: "left",
-    width: "100%",
-  };
-
-  const chartCanvasStyle = {
-    flexGrow: 1,
-    width: "100%",
-  };
-
   return (
-    <div style={chartContainerStyle}>
-      <div style={{ ...chartStyle, maxWidth: "1030px" }}>
-        <h3 style={titleStyle}>Registered Players by Month</h3>
-        <div style={chartCanvasStyle}>
-          <Line data={lineData} options={lineOptions} />
-        </div>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "90vw",
+      height: "100vh",
+      gap: "25px",
+    }}>
+      <div style={{ width: "90%", height: "50%" }}>
+        <h3 style={{ color: "white", marginBottom: "5px" }}>Registered Players by Month</h3>
+        <Line data={lineData} options={chartOptions} />
       </div>
 
-      <div style={chartRowStyle}>
-        <div style={chartStyle}>
-          <h3 style={titleStyle}>Leaderboard</h3>
-          <div style={chartCanvasStyle}>
-            <Line data={lineData} options={lineOptions} />
-          </div>
+      <div style={{
+        display: "flex",
+        width: "90%",
+        height: "50%",
+        gap: "25px",
+        justifyContent: "space-between",
+      }}>
+        <div style={{ width: "25%", height: "100%", marginTop: "50px" }}>
+          <h3 style={{ color: "white", marginBottom: "5px" }}>Leaderboard</h3>
+          <Line data={lineData} options={chartOptions} />
         </div>
 
-        <div style={chartStyle}>
-          <h3 style={titleStyle}>Top 10 Players</h3>
-          <div style={chartCanvasStyle}>
-            <Bar data={barData} options={lineOptions} />
-          </div>
+        <div style={{ width: "25%", height: "100%", marginTop: "50px" }}>
+          <h3 style={{ color: "white", marginBottom: "5px" }}>Top 10 Players</h3>
+          <Bar data={barData} options={chartOptions} />
         </div>
 
-        <div style={chartStyle}>
-          <h3 style={titleStyle}></h3>
-          <div style={chartCanvasStyle}>
-            <Line data={lineData} options={lineOptions} />
-          </div>
+        
+
+        <div style={{ width: "25%", height: "100%", marginTop: "50px" }}>
+          <h3 style={{ color: "white", marginBottom: "5px" }}>Total Active Users</h3>
+          <Doughnut data={gaugeData} options={{ cutout: "70%" }} />
         </div>
       </div>
     </div>

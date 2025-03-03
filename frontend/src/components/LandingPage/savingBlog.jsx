@@ -388,10 +388,10 @@ const SavingBlog = () => {
         {/* Top Image */}
         <Box sx={{ width: "100%", textAlign: "center", mt: 2 }}>
           <img
-            src="/assets/SavingPage.webp"
+            src="/mediaMinigameInvestment/about/pic2.png"
             alt="Investment Tips"
             style={{
-              width: "90%",
+              width: "80%",
               height: "400px",
               objectFit: "cover",
               borderRadius: "100px",

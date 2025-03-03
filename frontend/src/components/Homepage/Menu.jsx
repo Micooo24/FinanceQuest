@@ -68,8 +68,8 @@ const Content = styled.div`
 `;
 
 const GameTitle = styled.div`
-  margin-top: 40px;
-  font-size: 60px;
+margin-top: 40px;
+  font-size: 90px;
   text-transform: uppercase;
   animation: ${bounce} 1s infinite alternate;
   background: #451d6b;
@@ -82,7 +82,7 @@ const GameTitle = styled.div`
 `;
 
 const GameTitle1 = styled.div`
-  font-size: 40px;
+  font-size: 70px;
   margin-bottom: 40px;
   text-transform: uppercase;
   animation: ${bounce} 1s infinite alternate;
@@ -95,16 +95,18 @@ const GameTitle1 = styled.div`
 const Button = styled.button`
   background: transparent;
   border: 2px black;
-  color: ${(props) => (props.selected ? "black" : "white")};
+  color: ${(props) =>
+    props.selected ? "black" : "white"}; /* Highlight selected button */
   font-size: 20px;
-  font-family: 'Fraunces', sans-serif;
-  margin-top: 25px;
+  font-family: "Fraunces", sans-serif;
+  margin-top: 5px;
   margin-bottom: 2px;
   border-radius: 25px;
   cursor: pointer;
   opacity: 0.9;
   width: 200px;
   transition: 0.3s;
+  padding: 10px;
 
   &:hover {
     background-color: rgba(156, 170, 241, 0.2);
@@ -120,7 +122,7 @@ const Button = styled.button`
 const Arrow = styled.div`
   position: absolute;
   top: ${(props) => props.top};
-  right: 500px;
+  right: 600px;
   z-index: 2;
   width: 20px;
   height: 20px;
@@ -288,7 +290,7 @@ const MenuPage = () => {
           ))}
         </Content>
 
-        <Arrow top={`${selectedIndex * 52 + 327}px`} /> {/* Adjust for arrow positioning */}
+        <Arrow top={`${selectedIndex * 52 + 409}px`} /> {/* Adjust for arrow positioning */}
 
         <BackArrowWrapper onClick={() => navigate("/start")}>
           <BackArrowIcon />

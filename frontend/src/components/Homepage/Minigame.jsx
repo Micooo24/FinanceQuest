@@ -18,7 +18,7 @@ function Minigame() {
       title: "Investing", 
       image: "/assets/invetsmentPage.webp",
       description: "Understand the basics of investing and how to grow your wealth.",
-      route: "/Invest_Game"
+      route: "/About_Page_Investing"
     }
   ];
 
