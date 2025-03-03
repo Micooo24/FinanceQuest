@@ -102,6 +102,7 @@ const Quest2 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
     onComplete();
     setPlayerStats((prevStats) => ({ ...prevStats, q2_done: true }));
     fetchPlayerStats(); // Fetch player stats when quest 2 is completed
+    toast.success('Updated Stats Displayed!');
   };
 
   return (

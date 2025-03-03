@@ -57,6 +57,10 @@ async def analyze_finances(user_id: str, year: int, month: int):
     {formatted_data}
     
     ALL DATA PROVIDED ARE NON EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY. Provide a detailed diagnosis in 3 sentences discussing their financial behaviour and suggestion for improvement.
+    first sentence includes the financial behaivour, note no need and don't mention any percentage just use the actual values if you want, but avoid that as well, its safe to just
+    describe the financial behaivour. Note I forgot to adjust the naming in database but the expenses is the needs and the bills is the wants so in your feedback use the correct naming no need to mention the expenses or bills JUST USE THE NEEDS OR WANTS
+    to describe. Then on the second sentence describe what type of budget maker or finance is the user like is he a spender, saver, or a mix of both, etc use alot of to describe. Lastly, suggest some improvements and what to avoid next time. Note if you are to
+    mention money use the Philippine Peso currency sign. In addition, mention their potential risk if they continue this and then what and who to seek help in finances with according to their situation.
     """
 
     # logger.info(f"AI Prompt: {prompt}")  # Log the AI prompt

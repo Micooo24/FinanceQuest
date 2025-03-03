@@ -57,6 +57,7 @@ const SideQuest1 = ({ setPlayerStats, characterPosition, fetchPlayerStats }) => 
     setShowLessonUnlocked(false);
     setSideQuestCompleted(true); 
     fetchPlayerStats(); // Fetch player stats when side quest is completed
+    toast.success('Updated Stats Displayed!');
   };
 
   const handleGoToSupermarket = () => {
