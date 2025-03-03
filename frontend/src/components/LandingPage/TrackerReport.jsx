@@ -69,9 +69,8 @@ const Watermark = () => (
   </View>
 );
 
-const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, expensesData, billsData, savingsData, selectedYear, selectedMonth }) => {
+const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, expensesData, billsData, savingsData, aiAnalysis }) => {
   const [userDetails, setUserDetails] = useState({ username: "", email: "" });
-  const [aiAnalysis, setAiAnalysis] = useState("Fetching AI insights...");
   
   // Fetch user details from localStorage
   const userId = localStorage.getItem("userId");
@@ -93,18 +92,6 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
         .catch((error) => console.error("Error fetching user details:", error));
     }
   }, [authToken, email]);
-
-  useEffect(() => {
-    if (userId && selectedYear && selectedMonth) {
-      axios
-        .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${selectedYear}/${selectedMonth}`)
-        .then((response) => setAiAnalysis(response.data.analysis))
-        .catch((error) => {
-          console.error("Error fetching AI analysis:", error);
-          setAiAnalysis("Unable to generate AI insights.");
-        });
-    }
-  }, [userId, selectedYear, selectedMonth]);
 
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
@@ -137,15 +124,9 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
             <Text style={styles.text}>Savings: ₱{(totalsavings || 0).toLocaleString()}</Text>
           </View>
         </View>
-
-        {/* AI Analysis */}
-        <View style={styles.section}>
-          <Text style={styles.heading}>AI Insights</Text>
-          <Text style={styles.text}>{aiAnalysis}</Text>
-        </View>
-
+        
         {/* Financial Data Tables */}
-        {[{ title: "Income Data", data: incomeData }, { title: "Expenses Data", data: expensesData }, { title: "Bills Data", data: billsData }, { title: "Savings Data", data: savingsData }].map((section, idx) => (
+        {[{ title: "Income Data", data: incomeData }, { title: "Needs Data", data: expensesData }, { title: "Wants Data", data: billsData }, { title: "Savings Data", data: savingsData }].map((section, idx) => (
           <View key={idx} style={styles.section} wrap={false}>
             <Text style={{ ...styles.heading, textAlign: "left" }}>{section.title}</Text>
             <View style={styles.table}>
@@ -166,6 +147,13 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
             </View>
           </View>
         ))}
+
+             {/* AI Analysis */}
+             <View style={styles.section}>
+          <Text style={styles.heading}>AI Insights</Text>
+          <Text style={styles.text}>{aiAnalysis}</Text>
+        </View>
+
       </Page>
     </Document>
   );

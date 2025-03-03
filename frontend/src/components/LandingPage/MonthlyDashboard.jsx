@@ -222,21 +222,29 @@ const FinanceTracker = () => {
     });
   };
 
-  const handleAiAnalysis = async () => {
-    try {
-      const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
-      const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
-      setAiAnalysis(response.data.analysis);
-    } catch (error) {
-      console.error("Error fetching AI analysis:", error);
+const handleAiAnalysis = async () => {
+  try {
+    const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
+    const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
+    setAiAnalysis(response.data.analysis);
+
+    if (userId && selectedYear && selectedMonth) {
+      axios
+        .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${currentYear}/${selectedMonth}`)
+        .then((response) => setAiAnalysis(response.data.analysis))
+        .catch((error) => {
+          console.error("Error fetching AI analysis:", error);
+          setAiAnalysis("Unable to generate AI insights.");
+        });
     }
-  };
+  } catch (error) {
+    console.error("Error fetching AI analysis:", error);
+  }
+};
 
-  useEffect(() => {
-    handleAiAnalysis();
-  }, [selectedMonth, currentYear]);
-
-
+useEffect(() => {
+  handleAiAnalysis();
+}, [selectedMonth, currentYear]);
 
   const totalIncome = incomeData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
   const totalExpenses = expensesData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
@@ -376,9 +384,8 @@ const FinanceTracker = () => {
                   savingsData={savingsData} 
                   pieData={pieData} 
                   barData={barData}
-                  aiAnalysis={aiAnalysis} 
-                  selectedYear={currentYear}
-                  selectedMonth={monthIndex} />}
+                  aiAnalysis={aiAnalysis}     
+                  />}
           >
             {({ loading }) => (
           <Button

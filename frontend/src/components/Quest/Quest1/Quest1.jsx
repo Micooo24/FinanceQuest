@@ -42,7 +42,8 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
         (rentDecision === 'delay' && currentModal === 11)) {
       setIsQuest1Completed(true); 
       onComplete();
-      fetchPlayerStats(); // Fetch player stats when quest 1 is completed
+      fetchPlayerStats(); 
+      toast.success('Updated Stats Displayed!');// Fetch player stats when quest 1 is completed
     } else {
       if (currentModal === 4) {
         setIsModal3Completed(true);
