@@ -228,9 +228,9 @@ const handleAiAnalysis = async () => {
     const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
     setAiAnalysis(response.data.analysis);
 
-    if (userId && selectedYear && selectedMonth) {
+    if (userId && currentYear && monthIndex) {
       axios
-        .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${currentYear}/${selectedMonth}`)
+        .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${currentYear}/${monthIndex}`)
         .then((response) => setAiAnalysis(response.data.analysis))
         .catch((error) => {
           console.error("Error fetching AI analysis:", error);
