@@ -14,10 +14,10 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Email, Lock, AccountCircle, Cake, Close } from "@mui/icons-material";
-import { Google as GoogleIcon} from "@mui/icons-material";
+import { Google as GoogleIcon } from "@mui/icons-material";
 import axios from "axios";
 import { auth } from "../firebase/firebase";
-import { GoogleAuthProvider,  signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import SunCity from "../../assets/suncity.mp4";
 import toast from 'react-hot-toast';
 
@@ -27,7 +27,7 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
   const [img, setImg] = useState(null);
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(new Array(6).fill("")); // Initialize as an array of empty strings
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -76,10 +76,9 @@ const Signup = () => {
     }
   };
 
-
   const handleOtpSubmit = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email, otp });
+      const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email, otp: otp.join("") });
       if (response.status === 200) {
         toast.success("Email verification successful!");
         setOtpDialogOpen(false);
@@ -88,6 +87,17 @@ const Signup = () => {
     } catch (err) {
       console.error(err);
       toast.error("OTP verification failed. Please try again.");
+    }
+  };
+
+  const handleChange = (value, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(0, 1); // Ensure only one character
+    setOtp(newOtp);
+
+    // Automatically move to the next input
+    if (value && index < otp.length - 1) {
+      document.getElementById(`otp-input-${index + 1}`).focus();
     }
   };
 
@@ -266,22 +276,86 @@ const Signup = () => {
         </Grid>
       </Grid>
 
-      {/* OTP Verification Dialog */}
-      <Dialog open={otpDialogOpen} onClose={() => setOtpDialogOpen(false)}>
-        <DialogTitle>Enter OTP</DialogTitle>
+  {/* OTP Verification Dialog */}
+  <Dialog
+        open={otpDialogOpen}
+        onClose={() => setOtpDialogOpen(false)}
+        style={{ textAlign: "center", padding: "20px" }}
+      >
+        <DialogTitle
+          style={{ fontSize: "1.5rem", color: "#5e3967", fontWeight: "bold" }}
+        >
+          Verify Your Email Address
+        </DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="OTP"
-            variant="outlined"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "10px",
+              margin: "20px 0",
+            }}
+          >
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                id={`otp-input-${index}`}
+                type="text"
+                value={digit}
+                onChange={(e) => handleChange(e.target.value, index)}
+                maxLength={1}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  fontSize: "1.2rem",
+                  textAlign: "center",
+                  border: "2px solid #351742",
+                  borderRadius: "8px",
+                  backgroundColor: "#fdfdfd",
+                  outline: "none",
+                  transition: "border-color 0.3s",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#00cac9")}
+                onBlur={(e) => (e.target.style.borderColor = "#351742")}
+              />
+            ))}
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOtpDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleOtpSubmit}>Submit</Button>
+        <DialogActions
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1px",
+            margin: "5px",
+          }}
+        >
+          <Button
+            onClick={() => setOtpDialogOpen(false)}
+            style={{
+              backgroundColor: "#5e3967",
+              color: "white",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              margin: "0 5px",
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => handleOtpSubmit(otp.join(""))}
+            style={{
+              backgroundColor: "#00cac9",
+              color: "white",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              margin: "0 5px",
+            }}
+          >
+            Verify Email
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
