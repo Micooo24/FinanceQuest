@@ -6,6 +6,16 @@ from config.db import db  # Import the MongoDB database
 from bson import ObjectId
 import logging
 
+# Mailtrap
+from config.mailtrap import MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import random
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Secret key for signing tokens
 SECRET_KEY = "b6562e66f1c68ffe24fa"
 
@@ -44,3 +54,33 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError as e:
         logging.error(f"JWTError: {str(e)}")
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+    
+def generate_otp():
+    return random.randint(100000, 999999)
+
+def send_verification_email(email: str, otp: int):
+    subject = "Email Verification"
+    body = f"""
+    <html>
+        <body>
+            <p>Please use the following OTP to verify your email:</p>
+            <h2>{otp}</h2>
+        </body>
+    </html>
+    """
+
+    msg = MIMEMultipart()
+    msg["From"] = MAIL_FROM
+    msg["To"] = email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "html"))  # Use "html" instead of "plain"
+
+    try:
+        with smtplib.SMTP(MAIL_HOST, MAIL_PORT) as server:
+            server.login(MAIL_USERNAME, MAIL_PASSWORD)
+            server.sendmail(MAIL_FROM, email, msg.as_string())
+    except Exception as e:
+        logger.error(f"Failed to send email: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to send email")
+
+   

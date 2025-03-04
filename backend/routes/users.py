@@ -8,22 +8,18 @@ from utils.utils import SECRET_KEY
 # Cloudinary
 import cloudinary.uploader
 import config.cloudinary 
+
 # Logging
 import logging
 
 from itsdangerous import URLSafeTimedSerializer
 from bson import ObjectId
 import bcrypt
-from utils.utils import create_access_token, get_current_user
+from utils.utils import create_access_token, get_current_user, generate_otp, send_verification_email
 from datetime import timedelta, datetime, date  
 from models.users import Role
 from fastapi import Body
 
-# Mailtrap
-from config.mailtrap import MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 # firebase
@@ -42,34 +38,7 @@ logger = logging.getLogger(__name__)
 # Initialize the serializer with the SECRET_KEY
 serializer = URLSafeTimedSerializer(SECRET_KEY)
 
-import random
-def generate_otp():
-    return random.randint(100000, 999999)
 
-def send_verification_email(email: str, otp: int):
-    subject = "Email Verification"
-    body = f"""
-    <html>
-        <body>
-            <p>Please use the following OTP to verify your email:</p>
-            <h2>{otp}</h2>
-        </body>
-    </html>
-    """
-
-    msg = MIMEMultipart()
-    msg["From"] = MAIL_FROM
-    msg["To"] = email
-    msg["Subject"] = subject
-    msg.attach(MIMEText(body, "html"))  # Use "html" instead of "plain"
-
-    try:
-        with smtplib.SMTP(MAIL_HOST, MAIL_PORT) as server:
-            server.login(MAIL_USERNAME, MAIL_PASSWORD)
-            server.sendmail(MAIL_FROM, email, msg.as_string())
-    except Exception as e:
-        logger.error(f"Failed to send email: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to send email")
 
 @router.post("/register")
 async def register(

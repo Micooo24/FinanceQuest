@@ -66,6 +66,7 @@ const Login = () => {
       const token = await result.user.getIdToken();
       const response = await axios.post("http://127.0.0.1:8000/users/google-login", { token });
       if (response.status === 200) {
+        
         const { access_token } = response.data;
         localStorage.setItem("authToken", access_token);
         toast.success("Google login successful!");
@@ -79,6 +80,8 @@ const Login = () => {
         const user = userResponse.data.users.find(user => user.email === result.user.email);
         const userRole = user.role;
         const userId = user._id;
+        const useremail = user.email;
+        localStorage.setItem("email", useremail);
         localStorage.setItem("userRole", userRole);
         localStorage.setItem("userId", userId);
         console.log("User ID:", userId);
