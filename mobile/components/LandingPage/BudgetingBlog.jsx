@@ -1,0 +1,328 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Image,
+  Dimensions
+} from 'react-native';
+import { Card } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
+
+const BudgetingBlog = () => {
+  const navigation = useNavigation();
+
+  const budgetingTips = [
+    {
+      title: "Track Your Spending",
+      icon: "receipt-long",
+      description: "Record all purchases and expenses. You can't manage what you don't measure."
+    },
+    {
+      title: "Use the 50/30/20 Rule",
+      icon: "pie-chart",
+      description: "Allocate 50% of income to needs, 30% to wants, and 20% to savings and debt repayment."
+    },
+    {
+      title: "Plan for Irregular Expenses",
+      icon: "event",
+      description: "Set aside money monthly for expenses that don't occur every month like car repairs or holidays."
+    },
+    {
+      title: "Avoid Impulse Purchases",
+      icon: "shopping-bag",
+      description: "Wait 24 hours before making unplanned purchases to decide if you really need them."
+    },
+    {
+      title: "Use Cash Envelopes",
+      icon: "account-balance-wallet",
+      description: "Withdraw cash for different spending categories to help stick to your budget limits."
+    }
+  ];
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Mastering Budgeting</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      <ScrollView 
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <Image 
+          source={{ uri: 'https://res.cloudinary.com/dwp8u82sd/image/upload/v1740388942/savings_efocff.jpg' }}
+          style={styles.headerImage}
+        />
+        
+        <View style={styles.content}>
+          <View style={styles.metaInfo}>
+            <Text style={styles.date}>February 7, 2025</Text>
+            <Text style={styles.readTime}>5 min read</Text>
+          </View>
+          
+          <Text style={styles.sectionTitle}>Why Budgeting Matters</Text>
+          <Text style={styles.paragraph}>
+            Budgeting is the foundation of financial health. It helps you understand where your money goes, 
+            ensures you live within your means, and allows you to plan for future goals. Without a budget, 
+            you might find yourself wondering where all your money went at the end of each month.
+          </Text>
+          
+          <Text style={styles.sectionTitle}>Getting Started with Budgeting</Text>
+          <Text style={styles.paragraph}>
+            Creating your first budget might seem overwhelming, but it doesn't have to be complicated. 
+            Start by tracking your income and expenses for a month to get a clear picture of your financial habits. 
+            Then, categorize your spending and set reasonable limits for each category.
+          </Text>
+
+          <Card style={styles.quoteCard}>
+            <Card.Content>
+              <Text style={styles.quote}>
+                "A budget is telling your money where to go instead of wondering where it went."
+              </Text>
+              <Text style={styles.quoteAuthor}>- Dave Ramsey</Text>
+            </Card.Content>
+          </Card>
+
+          <Text style={styles.sectionTitle}>Top 5 Budgeting Tips</Text>
+          
+          {budgetingTips.map((tip, index) => (
+            <Card key={index} style={styles.tipCard}>
+              <Card.Content style={styles.tipContent}>
+                <View style={styles.tipIconContainer}>
+                  <Icon name={tip.icon} size={28} color="#472751" />
+                </View>
+                <View style={styles.tipTextContainer}>
+                  <Text style={styles.tipTitle}>{tip.title}</Text>
+                  <Text style={styles.tipDescription}>{tip.description}</Text>
+                </View>
+              </Card.Content>
+            </Card>
+          ))}
+          
+          <Text style={styles.sectionTitle}>Budgeting Methods</Text>
+          <Text style={styles.paragraph}>
+            There are many budgeting approaches to choose from:
+          </Text>
+          
+          <View style={styles.methodsContainer}>
+            <View style={styles.methodItem}>
+              <Text style={styles.methodTitle}>Zero-Based Budget</Text>
+              <Text style={styles.methodDescription}>
+                Assign every peso a job so your income minus expenses equals zero.
+              </Text>
+            </View>
+            
+            <View style={styles.methodItem}>
+              <Text style={styles.methodTitle}>Envelope System</Text>
+              <Text style={styles.methodDescription}>
+                Divide cash into envelopes for different spending categories.
+              </Text>
+            </View>
+            
+            <View style={styles.methodItem}>
+              <Text style={styles.methodTitle}>50/30/20 Budget</Text>
+              <Text style={styles.methodDescription}>
+                Split income between needs (50%), wants (30%), and savings/debt (20%).
+              </Text>
+            </View>
+            
+            <View style={styles.methodItem}>
+              <Text style={styles.methodTitle}>Pay Yourself First</Text>
+              <Text style={styles.methodDescription}>
+                Set aside savings before spending on anything else.
+              </Text>
+            </View>
+          </View>
+          
+          <Text style={styles.sectionTitle}>Common Budgeting Mistakes to Avoid</Text>
+          <Text style={styles.paragraph}>
+            • Setting unrealistic spending limits that you can't maintain long-term
+          </Text>
+          <Text style={styles.paragraph}>
+            • Forgetting to budget for occasional expenses like car maintenance
+          </Text>
+          <Text style={styles.paragraph}>
+            • Not updating your budget as your income or expenses change
+          </Text>
+          <Text style={styles.paragraph}>
+            • Failing to track small expenses that add up over time
+          </Text>
+          <Text style={styles.paragraph}>
+            • Not having an emergency fund for unexpected expenses
+          </Text>
+
+          <Card style={styles.conclusionCard}>
+            <Card.Content>
+              <Text style={styles.conclusionTitle}>Start Your Budgeting Journey Today</Text>
+              <Text style={styles.conclusionText}>
+                Remember, budgeting is not about restricting your spending—it's about making intentional choices 
+                with your money. The perfect budget is one that you can stick to consistently and that helps you 
+                achieve your financial goals. Start small, be patient with yourself, and adjust as needed.
+              </Text>
+            </Card.Content>
+          </Card>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F7',
+  },
+  header: {
+    backgroundColor: '#472751',
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  headerImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+  },
+  content: {
+    padding: 16,
+  },
+  metaInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  date: {
+    fontSize: 14,
+    color: '#666',
+  },
+  readTime: {
+    fontSize: 14,
+    color: '#666',
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#472751',
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  paragraph: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
+    marginBottom: 16,
+  },
+  quoteCard: {
+    backgroundColor: '#E8E1F0',
+    marginVertical: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#8C2FC7',
+  },
+  quote: {
+    fontSize: 18,
+    fontStyle: 'italic',
+    color: '#472751',
+    marginBottom: 8,
+  },
+  quoteAuthor: {
+    fontSize: 14,
+    textAlign: 'right',
+    color: '#666',
+  },
+  tipCard: {
+    marginBottom: 12,
+    elevation: 2,
+  },
+  tipContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  tipIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#E8E1F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  tipTextContainer: {
+    flex: 1,
+  },
+  tipTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#472751',
+    marginBottom: 4,
+  },
+  tipDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  methodsContainer: {
+    marginVertical: 16,
+  },
+  methodItem: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 12,
+    elevation: 1,
+  },
+  methodTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#472751',
+    marginBottom: 4,
+  },
+  methodDescription: {
+    fontSize: 14,
+    color: '#666',
+  },
+  conclusionCard: {
+    marginTop: 24,
+    marginBottom: 40,
+    backgroundColor: '#472751',
+  },
+  conclusionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+  },
+  conclusionText: {
+    fontSize: 15,
+    color: 'white',
+    lineHeight: 22,
+  },
+});
+
+export default BudgetingBlog;
