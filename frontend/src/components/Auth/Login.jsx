@@ -34,7 +34,7 @@ const Login = () => {
         localStorage.setItem("email", email);
         localStorage.setItem("authToken", access_token);
         toast.success("Login successful!");
-
+  
         // Fetch user details
         const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
           headers: {
@@ -47,7 +47,7 @@ const Login = () => {
         localStorage.setItem("userRole", userRole);
         localStorage.setItem("userId", userId);
         console.log("User ID:", userId);
-
+  
         if (userRole === "admin") {
           navigate("/dashboard");
         } else {
@@ -55,7 +55,13 @@ const Login = () => {
         }
       }
     } catch (err) {
-      toast.error("Deactivated Account.");
+      if (err.response && err.response.status === 403) {
+        toast.error("Your Account is Deactivated");
+      } else if (err.response && err.response.status === 400) {
+        toast.error("Email not verified. Please check your email to verify your account.");
+      } else {
+        toast.error("Error Login.");
+      }
     }
   };
 

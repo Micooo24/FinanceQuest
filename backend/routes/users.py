@@ -191,7 +191,11 @@ async def login(
             db["stats"].insert_one(new_stats)
         
         return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    except HTTPException as e:
+        # Allow HTTPExceptions to propagate
+        raise e
     except Exception as e:
+        # Catch unexpected errors
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
     
     
