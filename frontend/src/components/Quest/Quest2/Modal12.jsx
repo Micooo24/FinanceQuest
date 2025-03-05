@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal, TextField, Checkbox, FormControlLabel } from '@mui/material';
 import { quest2Decision } from '../../Utils/decisions';
 import { toast } from 'react-hot-toast';
-// import { GameContext } from '../../Game/Context/GameContext';
+import axios from 'axios';
 
 const Modal12 = ({ onContinue }) => {
-  // const { setPlayerStats } = useContext(GameContext);
   const [showModal, setShowModal] = useState(true);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -20,6 +19,33 @@ const Modal12 = ({ onContinue }) => {
     initialDeposit: '',
   });
   const [errors, setErrors] = useState({});
+  const [currentMoney, setCurrentMoney] = useState(0);
+
+  useEffect(() => {
+    // Fetch the player's current money from the backend
+    const fetchCurrentMoney = async () => {
+      try {
+        const authToken = localStorage.getItem('authToken');
+        const response = await axios.get('http://127.0.0.1:8000/stats/get/player', {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const money = response.data.money;
+        setCurrentMoney(money);
+        // Calculate 30% of the current money and set it as the initial deposit
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          initialDeposit: (money * 0.3).toFixed(2), // Round to 2 decimal places
+        }));
+      } catch (error) {
+        console.error('Error fetching current money:', error);
+        toast.error('Failed to fetch current money');
+      }
+    };
+
+    fetchCurrentMoney();
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};

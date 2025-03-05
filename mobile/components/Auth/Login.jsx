@@ -7,6 +7,7 @@ import LottieView from 'lottie-react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import baseURL from '../../assets/common/baseurl';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,8 +40,24 @@ const Login = () => {
       console.log('Login response:', response.data);
       if (response.status === 200) {
         const { access_token } = response.data;
-        await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('authToken', access_token);
+
+        // Fetch user data
+        const userResponse = await axios.get(`${baseURL}/admin/get-users`, {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        });
+        const user = userResponse.data.users.find(user => user.email === email);
+        const userRole = user.role;
+        const userId = user._id;
+        const useremail = user.email;
+
+        // Store user data in AsyncStorage
+        await AsyncStorage.setItem("email", useremail);
+        await AsyncStorage.setItem("userRole", userRole);
+        await AsyncStorage.setItem("userId", userId);
+
         Alert.alert('Success', 'Login successful!');
         navigation.navigate('Home');
         logAsyncStorage(); // Log AsyncStorage contents after setting the tokens

@@ -33,11 +33,11 @@ const LandingPage = () => {
   }
 
   const handleLogin = () => {
-    navigation.navigate('Login');
+    navigation.navigate('Auth', { screen: 'Login' });
   };
 
   const handleSignup = () => {
-    navigation.navigate('Signup');
+    navigation.navigate('Auth', { screen: 'Signup' });
   };
 
   return (

@@ -35,6 +35,11 @@ const Modal8GroceryGame = ({ onCheckout, setPlayerStats }) => {
   }, 0);
 
   const handleCheckout = () => {
+    if (totalSpent === 500) {
+      toast.error('You must select enough items before checking out.');
+      return;
+    }
+
     updatePlayerMoneyAfterGrocery(totalSpent, (newBalance) => {
       onCheckout(newBalance); // Pass the new balance to the parent component
       setPlayerStats((prevStats) => ({
