@@ -52,11 +52,13 @@ const Login = () => {
         const userRole = user.role;
         const userId = user._id;
         const useremail = user.email;
+        const username = user.username;
 
         // Store user data in AsyncStorage
         await AsyncStorage.setItem("email", useremail);
         await AsyncStorage.setItem("userRole", userRole);
         await AsyncStorage.setItem("userId", userId);
+        await AsyncStorage.setItem("username", username);
 
         Alert.alert('Success', 'Login successful!');
         navigation.navigate('Home');

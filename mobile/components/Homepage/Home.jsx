@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -8,17 +8,21 @@ import {
   SafeAreaView,
   ActivityIndicator,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Animated,
+  BackHandler
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import baseURL from '../../assets/common/baseurl';
+import LottieView from 'lottie-react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
+const scale = Math.min(width / 360, height / 800);
+const DRAWER_WIDTH = width * 0.7;
 
 // Game data for the Games section
 const popularGames = [
@@ -26,25 +30,19 @@ const popularGames = [
     id: 1,
     title: "Saving Challenge",
     description: "Save money and reach your goals",
-    icon: "money-bill-wave",
-    color: "#9370DB",
-    screen: "SavingGame"
+    icon: "savings",
+    color: "#8F7BE8",
+    screen: "SavingGame",
+    animation: require('../../assets/animations/savings.json')
   },
   {
     id: 2,
     title: "Investment Challenge",
     description: "Grow your virtual portfolio",
-    icon: "chart-line",
-    color: "#B39DDB",
-    screen: "InvestmentGame"
-  },
-  {
-    id: 3,
-    title: "Debt Destroyer",
-    description: "Eliminate debt strategies",
-    icon: "piggy-bank",
-    color: "#7B68EE",
-    screen: "DebtGame"
+    icon: "show-chart",
+    color: "#8F7BE8",
+    screen: "InvestmentGame",
+    animation: require('../../assets/animations/investing.json')
   }
 ];
 
@@ -52,15 +50,41 @@ const Home = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('User');
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const slideAnimation = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
+
+  // Handle drawer animation
+  useEffect(() => {
+    Animated.timing(slideAnimation, {
+      toValue: menuOpen ? 0 : -DRAWER_WIDTH,
+      duration: 300,
+      useNativeDriver: true
+    }).start();
+  }, [menuOpen]);
+
+  // Handle back button to close drawer if open
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (menuOpen) {
+        setMenuOpen(false);
+        return true;
+      }
+      return false;
+    });
+
+    return () => backHandler.remove();
+  }, [menuOpen]);
 
   useEffect(() => {
     // Get user data from AsyncStorage
     const fetchUserData = async () => {
       try {
-        const email = await AsyncStorage.getItem('email');
+        const storedUsername = await AsyncStorage.getItem('username');
         const token = await AsyncStorage.getItem('authToken');
         
-        if (email && token) {
+        if (storedUsername) {
+          setUsername(storedUsername);
+        } else if (token) {
           const response = await axios.get(`${baseURL}/users/profile`, {
             headers: {
               Authorization: `Bearer ${token}`
@@ -69,6 +93,7 @@ const Home = () => {
           
           // Set user data
           setUsername(response.data.username);
+          await AsyncStorage.setItem('username', response.data.username);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -84,6 +109,7 @@ const Home = () => {
     try {
       await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('username');
       navigation.navigate('Auth', { screen: 'Login' });
     } catch (error) {
       console.error('Error logging out:', error);
@@ -93,7 +119,7 @@ const Home = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#9370DB" />
+        <ActivityIndicator size="large" color="#8F7BE8" />
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );
@@ -101,10 +127,68 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor="#121212" barStyle="light-content" />
+      <StatusBar backgroundColor="#FFFAFA" barStyle="dark-content" />
       
-      {/* Minimal header with shadow */}
-      <View style={styles.header} />
+      {/* Header with burger menu */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => setMenuOpen(true)}>
+          <Icon name="menu" size={28 * scale} color="#8F7BE8" />
+        </TouchableOpacity>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle}>Home</Text>
+        </View>
+        <View style={{width: 28 * scale}} /> {/* Empty view for balanced layout */}
+      </View>
+      
+      {/* Sliding Menu */}
+      <Animated.View style={[styles.drawer, { transform: [{ translateX: slideAnimation }] }]}>
+        <View style={styles.drawerHeader}>
+          <Icon name="attach-money" size={40 * scale} color="#8F7BE8" />
+          <Text style={styles.drawerTitle}>Financial Quest</Text>
+        </View>
+        <View style={styles.drawerContent}>
+          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+            setMenuOpen(false);
+            navigation.navigate('GameFeatures');
+          }}>
+            <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
+            <Text style={styles.drawerItemText}>Games</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+            setMenuOpen(false);
+            navigation.navigate('Blog');
+          }}>
+            <Icon name="book" size={24 * scale} color="#8F7BE8" />
+            <Text style={styles.drawerItemText}>Blogs</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+            setMenuOpen(false);
+            navigation.navigate('About');
+          }}>
+            <Icon name="info" size={24 * scale} color="#8F7BE8" />
+            <Text style={styles.drawerItemText}>About</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <TouchableOpacity style={styles.logoutButton} onPress={() => {
+          setMenuOpen(false);
+          logout();
+        }}>
+          <Icon name="logout" size={24 * scale} color="#FFFAFA" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </Animated.View>
+      
+      {/* Overlay when menu is open */}
+      {menuOpen && (
+        <TouchableOpacity 
+          style={styles.overlay} 
+          activeOpacity={1} 
+          onPress={() => setMenuOpen(false)}
+        />
+      )}
       
       <ScrollView 
         style={styles.container}
@@ -113,6 +197,12 @@ const Home = () => {
       >
         {/* Welcome Banner */}
         <View style={styles.welcomeBanner}>
+          <LottieView
+            source={require('../../assets/animations/welcome.json')}
+            autoPlay
+            loop
+            style={styles.lottieAnimation}
+          />
           <View style={styles.welcomeContent}>
             <Text style={styles.welcomeText}>Welcome back,</Text>
             <Text style={styles.usernameText}>{username}!</Text>
@@ -126,12 +216,9 @@ const Home = () => {
         <View style={styles.gamesSection}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
-              <Icon name="sports-esports" size={24} color="#9370DB" />
-              <Text style={styles.sectionTitle}>Financial Games</Text>
+              <Icon name="sports-esports" size={26 * scale} color="#8F7BE8" />
+              <Text style={styles.sectionTitle}>GAMES</Text>
             </View>
-            <TouchableOpacity style={styles.viewAllButton}>
-              <Text style={styles.viewAllText}>View All</Text>
-            </TouchableOpacity>
           </View>
           
           <ScrollView 
@@ -146,8 +233,14 @@ const Home = () => {
                 onPress={() => navigation.navigate(game.screen)}
               >
                 <View style={[styles.gameIconContainer, {backgroundColor: game.color}]}>
-                  <FontAwesome5 name={game.icon} size={24} color="#F9F6FF" />
+                  <Icon name={game.icon} size={26 * scale} color="#FFFAFA" />
                 </View>
+                <LottieView
+                  source={game.animation}
+                  autoPlay
+                  loop
+                  style={styles.lottieAnimation}
+                />
                 <Text style={styles.gameTitle}>{game.title}</Text>
                 <Text style={styles.gameDescription}>{game.description}</Text>
                 <View style={styles.playButtonContainer}>
@@ -155,7 +248,7 @@ const Home = () => {
                     style={[styles.playButton, {backgroundColor: game.color}]}
                     onPress={() => navigation.navigate(game.screen)}
                   >
-                    <Icon name="play-arrow" size={16} color="#F9F6FF" />
+                    <Icon name="play-arrow" size={18 * scale} color="#FFFAFA" />
                     <Text style={styles.playText}>Play</Text>
                   </TouchableOpacity>
                 </View>
@@ -164,96 +257,34 @@ const Home = () => {
           </ScrollView>
         </View>
 
-        {/* Main Menu Section */}
-        <View style={styles.menuSection}>
-          <View style={styles.sectionTitleContainer}>
-            <Icon name="menu" size={24} color="#9370DB" />
-            <Text style={styles.sectionTitle}>Main Menu</Text>
-          </View>
-
-          {/* Game Features Menu */}
-          <TouchableOpacity 
-            style={styles.menuCard}
-            onPress={() => navigation.navigate('GameFeatures')}
-          >
-            <View style={[styles.menuIconContainer, {backgroundColor: '#9370DB'}]}>
-              <FontAwesome5 name="gamepad" size={22} color="#F9F6FF" />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuTitle}>Game Features</Text>
-              <Text style={styles.menuDescription}>
-                Explore quizzes, challenges, and earn rewards
-              </Text>
-            </View>
-            <Icon name="chevron-right" size={22} color="#9370DB" />
-          </TouchableOpacity>
-          
-          {/* Blogs Menu */}
-          <TouchableOpacity 
-            style={styles.menuCard}
-            onPress={() => navigation.navigate('Blog')}
-          >
-            <View style={[styles.menuIconContainer, {backgroundColor: '#B39DDB'}]}>
-              <FontAwesome5 name="book-open" size={22} color="#F9F6FF" />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuTitle}>Financial Blogs</Text>
-              <Text style={styles.menuDescription}>
-                Read articles on personal finance and investing
-              </Text>
-            </View>
-            <Icon name="chevron-right" size={22} color="#9370DB" />
-          </TouchableOpacity>
-          
-          {/* About Menu */}
-          <TouchableOpacity 
-            style={styles.menuCard}
-            onPress={() => navigation.navigate('About')}
-          >
-            <View style={[styles.menuIconContainer, {backgroundColor: '#7B68EE'}]}>
-              <FontAwesome5 name="info-circle" size={22} color="#F9F6FF" />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={styles.menuTitle}>About</Text>
-              <Text style={styles.menuDescription}>
-                Learn about Financial Quest and our mission
-              </Text>
-            </View>
-            <Icon name="chevron-right" size={22} color="#9370DB" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Tips Section */}
-        <View style={styles.tipsSection}>
-          <View style={styles.sectionTitleContainer}>
-            <Icon name="lightbulb" size={24} color="#9370DB" />
-            <Text style={styles.sectionTitle}>Financial Tip of the Day</Text>
-          </View>
-          <Card style={styles.tipCard}>
-            <Card.Content>
-              <View style={styles.tipIconContainer}>
-                <FontAwesome5 name="piggy-bank" size={18} color="#9370DB" />
-              </View>
-              <Text style={styles.tipTitle}>Save Early, Save Often</Text>
-              <Text style={styles.tipDescription}>
-                The earlier you start saving, the more time your money has to grow. Even small amounts can add up over time!
-              </Text>
-            </Card.Content>
-          </Card>
-        </View>
-
-        {/* Footer spacing padding */}
-        <View style={styles.footerSpace} />
+        {/* Space at bottom to avoid content being hidden behind nav bar */}
+        <View style={{height: 30 * scale}} />
       </ScrollView>
 
-      {/* Bottom App Title and Logout Button */}
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomLogoContainer}>
-          <Icon name="attach-money" size={24} color="#9370DB" />
-          <Text style={styles.headerTitle}>Financial Quest</Text>
-        </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-          <Icon name="logout" size={20} color="#F9F6FF" />
+      {/* Bottom Navigation Bar */}
+      <View style={styles.bottomNavBar}>
+        <TouchableOpacity 
+          style={styles.navButton} 
+          onPress={() => navigation.navigate('GameFeatures')}
+        >
+          <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
+          <Text style={styles.navButtonText}>Games</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Blog')}
+        >
+          <Icon name="book" size={24 * scale} color="#8F7BE8" />
+          <Text style={styles.navButtonText}>Blogs</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.navButton}
+          onPress={() => navigation.navigate('About')}
+        >
+          <Icon name="info" size={24 * scale} color="#8F7BE8" />
+          <Text style={styles.navButtonText}>About</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -263,121 +294,206 @@ const Home = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FFFAFA',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#121212',
+    backgroundColor: '#FFFAFA',
   },
   loadingText: {
-    color: '#9370DB',
-    fontSize: 16,
+    color: '#8F7BE8',
+    fontSize: 18 * scale,
     marginTop: 10,
-    fontWeight: '500',
+    fontFamily: 'Poppins-Regular',
   },
   header: {
-    height: 15,
-    backgroundColor: '#1E1E1E',
+    height: 70 * scale,
+    backgroundColor: '#F5F5F5',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(147, 112, 219, 0.3)',
+    borderBottomColor: 'rgba(143, 123, 232, 0.3)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    paddingHorizontal: 24,
+    paddingBottom: 10,
+  },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   headerTitle: {
-    color: '#F9F6FF',
-    fontSize: 22,
+    color: '#333',
+    fontSize: 24 * scale,
+    fontFamily: 'Poppins-Bold',
     fontWeight: 'bold',
-    marginLeft: 8,
+  },
+  // Drawer styles
+  drawer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: DRAWER_WIDTH,
+    height: '100%',
+    backgroundColor: '#F5F5F5',
+    zIndex: 1000,
+    elevation: 10,
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    borderRightWidth: 1,
+    borderRightColor: 'rgba(143, 123, 232, 0.3)',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 2,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    zIndex: 999,
+  },
+  drawerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  drawerTitle: {
+    fontSize: 24 * scale,
+    fontFamily: 'Poppins-Bold',
+    color: '#333',
+    marginLeft: 10,
+    fontWeight: 'bold',
+  },
+  drawerContent: {
+    flex: 1,
+  },
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(143, 123, 232, 0.2)',
+  },
+  drawerItemText: {
+    fontSize: 18 * scale,
+    color: '#333',
+    marginLeft: 15,
+    fontFamily: 'Poppins-Regular',
   },
   logoutButton: {
-    padding: 8,
-    backgroundColor: 'rgba(147, 112, 219, 0.3)',
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'rgba(143, 123, 232, 0.8)',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    justifyContent: 'center',
+    marginBottom: 30,
+  },
+  logoutText: {
+    color: '#FFFAFA',
+    fontSize: 18 * scale,
+    fontFamily: 'Poppins-Bold',
+    marginLeft: 10,
+    fontweight: 'bold',
   },
   container: {
     flex: 1,
   },
   contentContainer: {
-    paddingBottom: 80, // Increased for high-res screens
+    paddingBottom: 100 * scale,
   },
   welcomeBanner: {
-    paddingHorizontal: 20,
-    paddingTop: 25,
-    paddingBottom: 25,
-    backgroundColor: '#1E1E1E',
+    paddingHorizontal: 24,
+    paddingTop: 30 * scale,
+    paddingBottom: 30 * scale,
+    backgroundColor: '#F5F5F5',
     borderBottomWidth: 2,
-    borderBottomColor: '#9370DB',
-    marginBottom: 15,
+    borderBottomColor: '#8F7BE8',
+    marginBottom: 20,
+  },
+  lottieAnimation: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
   },
   welcomeContent: {
     marginTop: 5,
   },
   welcomeText: {
-    fontSize: 16,
-    color: 'rgba(249, 246, 255, 0.7)',
+    fontSize: 18 * scale,
+    color: '#666',
+    fontFamily: 'Poppins-Regular',
   },
   usernameText: {
-    fontSize: 24,
+    fontSize: 28 * scale,
+    fontFamily: 'Poppins-Bold',
+    color: '#333',
+    marginBottom: 8,
     fontWeight: 'bold',
-    color: '#F9F6FF',
-    marginBottom: 5,
   },
   welcomeSubtext: {
-    fontSize: 14,
-    color: 'rgba(249, 246, 255, 0.7)',
-    fontWeight: '400',
+    fontSize: 16 * scale,
+    color: '#666',
+    fontFamily: 'Poppins-Regular',
   },
   
   // Games Section Styles
   gamesSection: {
-    padding: 20,
-    paddingBottom: 10,
+    padding: 24,
+    paddingBottom: 15,
   },
   sectionTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   gamesScrollView: {
-    marginLeft: -5,
-    paddingRight: 15,
+    marginLeft: -8,
+    paddingRight: 16,
   },
   gameCard: {
-    backgroundColor: '#2D2D2D',
-    borderRadius: 16,
-    padding: 16,
-    width: width * 0.65,
-    marginRight: 12,
-    marginLeft: 5,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 20,
+    padding: 20,
+    width: width * 0.8,
+    marginRight: 16,
+    marginLeft: 8,
     elevation: 4,
-    shadowColor: "rgba(0, 0, 0, 0.5)",
+    shadowColor: "rgba(0, 0, 0, 0.2)",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     borderWidth: 1,
-    borderColor: 'rgba(147, 112, 219, 0.2)',
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   gameIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: 56 * scale,
+    height: 56 * scale,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   gameTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#F9F6FF',
-    marginBottom: 6,
+    fontSize: 20 * scale,
+    fontFamily: 'Poppins-Bold',
+    color: '#333',
+    marginBottom: 8,
+    fontWeight: 'bold',   
   },
   gameDescription: {
-    fontSize: 14,
-    color: '#BDBDBD',
-    marginBottom: 15,
+    fontSize: 16 * scale,
+    color: '#666',
+    marginBottom: 18,
+    fontFamily: 'Poppins-Regular',
   },
   playButtonContainer: {
     alignItems: 'flex-start',
@@ -385,149 +501,77 @@ const styles = StyleSheet.create({
   playButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 24,
   },
   playText: {
-    color: '#F9F6FF',
-    fontWeight: '500',
-    marginLeft: 4,
-    fontSize: 14,
+    color: '#FFFAFA',
+    fontFamily: 'Poppins-Bold',
+    marginLeft: 6,
+    fontSize: 16 * scale,
+    fontWeight: 'bold',
   },
   
-  menuSection: {
-    padding: 20,
-    marginTop: 5,
-  },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#F9F6FF',
+    fontSize: 22 * scale,
+    fontFamily: 'Poppins-Bold',
+    color: '#333',
     marginBottom: 15,
-    marginLeft: 8,
+    marginLeft: 10,
+    fontWeight: 'bold',
   },
   viewAllButton: {
-    backgroundColor: 'rgba(147, 112, 219, 0.2)',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 12,
+    backgroundColor: 'rgba(143, 123, 232, 0.2)',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 16,
   },
   viewAllText: {
-    color: '#9370DB',
-    fontWeight: '500',
-    fontSize: 13,
+    color: '#8F7BE8',
+    fontFamily: 'Poppins-Regular',
+    fontSize: 14 * scale,
   },
-  menuCard: {
-    backgroundColor: '#2D2D2D',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+  
+  // Bottom Navigation Bar
+  bottomNavBar: {
+    height: 80 * scale,
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: "rgba(0, 0, 0, 0.5)",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    borderWidth: 1,
-    borderColor: 'rgba(147, 112, 219, 0.2)',
-  },
-  menuIconContainer: {
-    width: 45,
-    height: 45,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  menuContent: {
-    flex: 1,
-  },
-  menuTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#F9F6FF',
-    marginBottom: 4,
-  },
-  menuDescription: {
-    fontSize: 13,
-    color: '#BDBDBD',
-    lineHeight: 18,
-  },
-  tipsSection: {
-    padding: 20,
-    paddingTop: 0,
-    marginBottom: 10,
-  },
-  tipCard: {
-    borderRadius: 16,
-    backgroundColor: '#2D2D2D',
-    elevation: 3,
-    shadowColor: "rgba(0, 0, 0, 0.5)",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    borderWidth: 1,
-    borderColor: 'rgba(147, 112, 219, 0.2)',
-  },
-  tipIconContainer: {
-    backgroundColor: 'rgba(147, 112, 219, 0.2)',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  tipTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#F9F6FF',
-    marginBottom: 8,
-  },
-  tipDescription: {
-    fontSize: 14,
-    color: '#BDBDBD',
-    lineHeight: 22,
-  },
-  // Space for footer padding
-  footerSpace: {
-    height: 80,
-  },
-  // Bottom bar for app title and logout
-  bottomBar: {
-    height: 65,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#F5F5F5',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(147, 112, 219, 0.3)',
+    borderTopColor: 'rgba(143, 123, 232, 0.3)',
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     elevation: 8,
-    shadowColor: "rgba(0, 0, 0, 0.7)",
+    shadowColor: "rgba(0, 0, 0, 0.3)",
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },
-  bottomLogoContainer: {
-    flexDirection: 'row',
+  
+  navButton: {
     alignItems: 'center',
-  }
+    justifyContent: 'center',
+    flex: 1,
+    paddingVertical: 12,
+  },
+  
+  navButtonText: {
+    color: '#666',
+    fontSize: 14 * scale,
+    marginTop: 6,
+    fontFamily: 'Poppins-Regular',
+  },
 });
 
 export default Home;
