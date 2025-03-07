@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { PieChart, Pie, Cell, Legend, Tooltip } from "recharts";
 import { Link } from "react-router-dom";
 import "./InvestingMinigame.css";
+import axios from "axios";
+
 const questions = {
   level1: [
     {
@@ -17,216 +19,6 @@ const questions = {
         "Diversifying your portfolio helps balance potential gains and losses, offering a safer and more stable approach.",
     },
     {
-      question: "What should you do if your investments are underperforming?",
-      options: [
-        "Sell everything and cut your losses",
-        "Review your strategy and consider adjusting your investments",
-      ],
-      answer: 1,
-      tip: "Panicking and selling can lock in losses. A strategic review allows you to make informed decisions.",
-      explanation:
-        "Evaluating your investments regularly and adjusting strategies ensures long-term growth, even during downturns.",
-    },
-    {
-      question: "Why is it important to have a long-term investment plan?",
-      options: [
-        "It helps ride out market volatility and provides time for growth",
-        "It guarantees immediate high returns",
-      ],
-      answer: 0,
-      tip: "Investments take time to grow. Short-term fluctuations are normal, but long-term planning yields better results.",
-      explanation:
-        "Long-term investments tend to recover from market downturns and grow steadily, ensuring greater returns over time.",
-    },
-    {
-      question: "What is a diversified investment portfolio?",
-      options: [
-        "Investing in one type of asset or stock",
-        "Investing in a variety of assets like stocks, bonds, and real estate",
-      ],
-      answer: 1,
-      tip: "Diversification spreads risk and increases the chance of steady returns across different markets.",
-      explanation:
-        "A diversified portfolio lowers the overall risk by ensuring that losses in one area can be offset by gains in another.",
-    },
-    {
-      question: "How should you approach risk when investing?",
-      options: [
-        "Avoid risky investments entirely",
-        "Assess your risk tolerance and invest accordingly",
-      ],
-      answer: 1,
-      tip: "It's important to understand your risk tolerance and balance it with investment opportunities that align with your goals.",
-      explanation:
-        "Investing based on your risk tolerance ensures you don’t overextend yourself while aiming for reasonable returns.",
-    },
-    {
-      question: "What is the purpose of an emergency fund?",
-      options: [
-        "To cover unexpected expenses without touching investments",
-        "To buy more stocks when the market dips",
-      ],
-      answer: 0,
-      tip: "An emergency fund acts as a financial safety net.",
-      explanation:
-        "Having an emergency fund prevents you from having to sell investments prematurely during financial crises.",
-    },
-    {
-      question: "When should you start investing?",
-      options: [
-        "As soon as you have stable income and an emergency fund",
-        "Only after retirement",
-      ],
-      answer: 0,
-      tip: "The earlier you start, the more time your money has to grow.",
-      explanation:
-        "Starting early allows you to benefit from compound growth, significantly increasing returns over time.",
-    },
-    {
-      question: "What does 'compounding' mean in investing?",
-      options: [
-        "Earning returns on your initial investment and its accumulated gains",
-        "Investing in multiple stocks simultaneously",
-      ],
-      answer: 0,
-      tip: "Compounding accelerates wealth growth by reinvesting earnings.",
-      explanation:
-        "Compounding allows your earnings to generate additional returns over time, creating exponential growth.",
-    },
-    {
-      question: "What is dollar-cost averaging?",
-      options: [
-        "Investing a fixed amount regularly regardless of market conditions",
-        "Buying stocks only during market dips",
-      ],
-      answer: 0,
-      tip: "Consistency in investing helps reduce the impact of market volatility.",
-      explanation:
-        "Dollar-cost averaging spreads out investments over time, reducing the risk of market timing and price fluctuations.",
-    },
-    {
-      question: "What is a 'bull market'?",
-      options: [
-        "A market condition where prices are generally rising",
-        "A market condition where prices are consistently falling",
-      ],
-      answer: 0,
-      tip: "A bull market is a sign of investor confidence and economic growth.",
-      explanation:
-        "In a bull market, investor optimism drives prices upward, creating opportunities for gains.",
-    },
-    {
-      question: "Why is setting financial goals important before investing?",
-      options: [
-        "It helps you choose investments that align with your needs",
-        "It ensures you will never lose money",
-      ],
-      answer: 0,
-      tip: "Financial goals guide your investment decisions.",
-      explanation:
-        "Clear goals provide direction, helping you select the right investments to achieve them.",
-    },
-    {
-      question: "What is a 'stock dividend'?",
-      options: [
-        "A share of a company's profits distributed to its shareholders",
-        "The price you pay to buy a share",
-      ],
-      answer: 0,
-      tip: "Dividends are a reward for being a shareholder.",
-      explanation:
-        "Dividends represent a portion of a company's profits, offering regular income in addition to potential stock value growth.",
-    },
-    {
-      question: "What is the main benefit of mutual funds?",
-      options: [
-        "They offer professional management and diversification",
-        "They guarantee high returns",
-      ],
-      answer: 0,
-      tip: "Mutual funds are managed by professionals who diversify investments for you.",
-      explanation:
-        "Mutual funds pool money from many investors to buy a diversified portfolio, reducing individual risk.",
-    },
-    {
-      question: "What should you do before investing in a company?",
-      options: [
-        "Research its financial performance and future potential",
-        "Buy shares based on market trends alone",
-      ],
-      answer: 0,
-      tip: "Understanding the company ensures informed investment decisions.",
-      explanation:
-        "Analyzing a company's financial health and growth prospects reduces the risk of losses.",
-    },
-    {
-      question: "What does a high P/E (Price-to-Earnings) ratio indicate?",
-      options: [
-        "The stock might be overvalued",
-        "The stock is a guaranteed safe investment",
-      ],
-      answer: 0,
-      tip: "A high P/E ratio suggests the market expects high future growth.",
-      explanation:
-        "While a high P/E ratio might indicate potential growth, it could also mean the stock is overvalued.",
-    },
-    {
-      question: "Why is rebalancing your portfolio important?",
-      options: [
-        "To maintain your desired asset allocation",
-        "To sell low-performing investments in a panic",
-      ],
-      answer: 0,
-      tip: "Rebalancing ensures your investments stay aligned with your goals.",
-      explanation:
-        "Regularly adjusting your portfolio helps manage risk and adapt to changing market conditions.",
-    },
-    {
-      question:
-        "What is the primary purpose of bonds in an investment portfolio?",
-      options: [
-        "To provide stability and regular income",
-        "To achieve rapid high returns",
-      ],
-      answer: 0,
-      tip: "Bonds are typically lower-risk investments that balance portfolios.",
-      explanation:
-        "Bonds offer steady returns and lower risk, making them a good counterbalance to higher-risk assets like stocks.",
-    },
-    {
-      question: "What does ROI (Return on Investment) measure?",
-      options: [
-        "The profitability of an investment",
-        "The total amount invested",
-      ],
-      answer: 0,
-      tip: "ROI compares your gains to your investment cost.",
-      explanation:
-        "ROI is a percentage that indicates how profitable an investment is relative to its cost.",
-    },
-    {
-      question: "What should you avoid when investing in stocks?",
-      options: [
-        "Making emotional decisions based on market fluctuations",
-        "Sticking to your investment strategy",
-      ],
-      answer: 0,
-      tip: "Emotional decisions often lead to poor outcomes.",
-      explanation:
-        "Avoid reacting to short-term market changes emotionally. Focus on long-term strategies.",
-    },
-    {
-      question: "What is the benefit of index funds?",
-      options: [
-        "Low fees and diversified market exposure",
-        "Guaranteed higher returns than other funds",
-      ],
-      answer: 0,
-      tip: "Index funds mirror market performance with low management costs.",
-      explanation:
-        "Index funds are cost-effective and provide broad market exposure, ideal for long-term investors.",
-    },
-    {
       question: "Why should you track your net worth regularly?",
       options: [
         "To monitor financial progress and make adjustments",
@@ -237,6 +29,18 @@ const questions = {
       explanation:
         "Regularly reviewing your net worth allows you to evaluate financial progress and adjust plans as needed.",
     },
+    {
+      question: "why should you know the investment interest?",
+      options: [
+        "To monitor financial progress and make adjustments",
+        "To know how much money you can spend immediately",
+      ],
+      answer: 0,
+      tip: "Tracking net worth helps you assess your overall financial health.",
+      explanation:
+        "Regularly reviewing your net worth allows you to evaluate financial progress and adjust plans as needed.",
+    },
+    
   ],
 };
 
@@ -250,6 +54,7 @@ const InvestingPage = () => {
   const [points, setPoints] = useState(0);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [resultMessage, setResultMessage] = useState(""); // Define resultMessage state
+  const [aiAnalysis, setAiAnalysis] = useState(""); // Define aiAnalysis state
   const navigate = useNavigate(); // Hook for navigation
   // Timers
   const [secondsLeft, setSecondsLeft] = useState(7);
@@ -264,57 +69,134 @@ const InvestingPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState([]); // Initialize as empty array
   let timer; // Declare the timer variable at the top of your component or relevant scope
-  // Calculate analytics when the game is over
-
+  
   const handleAnswer = (selectedIndex) => {
     setSelectedIndex(selectedIndex);
     setIsButtonDisabled(true); // Disable buttons for 3 seconds
 
     // Update selectedAnswers state
     setSelectedAnswers((prevAnswers) => {
-      const updatedAnswers = [...prevAnswers];
-      updatedAnswers[currentQuestionIndex] = {
-        question: currentQuestion.question,
-        selectedIndex,
-        isCorrect: selectedIndex === currentQuestion.answer,
-      };
-      return updatedAnswers;
+        const updatedAnswers = [...prevAnswers];
+        updatedAnswers[currentQuestionIndex] = {
+            question: currentQuestion.question,
+            selected_index: selectedIndex,
+            is_correct: selectedIndex === currentQuestion.answer,
+            timestamp: new Date().toISOString(),
+        };
+        return updatedAnswers;
     });
 
     // Set feedback based on the answer
     if (selectedIndex === currentQuestion.answer) {
-      setPoints((prevPoints) => prevPoints + 1); // Increase points on correct answer
-      setFeedback({
-        type: "correct",
-        message: currentQuestion.explanation, // Show explanation on correct answer
-      });
+        setPoints((prevPoints) => prevPoints + 1); // Increase points on correct answer
+        setFeedback({
+            type: "correct",
+            message: currentQuestion.explanation, // Show explanation on correct answer
+        });
     } else {
-      setFeedback({
-        type: "incorrect",
-        message: currentQuestion.tip, // Show tip on incorrect answer
-      });
+        setFeedback({
+            type: "incorrect",
+            message: currentQuestion.tip, // Show tip on incorrect answer
+        });
     }
 
     // Disable buttons for 3 seconds, show feedback, then proceed to next question
     setTimeout(() => {
-      setIsButtonDisabled(false); // Enable buttons after 3 seconds
-      setFeedback(null); // Hide the feedback temporarily
-      setSelectedIndex(null); // Reset the selected index (clear classes)
+        setIsButtonDisabled(false); // Enable buttons after 3 seconds
+        setFeedback(null); // Hide the feedback temporarily
+        setSelectedIndex(null); // Reset the selected index (clear classes)
 
-      // Show feedback for 5 seconds
-      setTimeout(() => {
-        // Proceed to the next question
-        setCurrentQuestionIndex((prevIndex) => {
-          if (prevIndex + 1 < questions.level1.length) {
-            return prevIndex + 1;
-          } else {
-            setGameOver(true); // End the game when all questions are done
-            return prevIndex;
-          }
-        });
-      }, 50); // Delay before showing the next question and re-enabling the buttons
+        // Show feedback for 5 seconds
+        setTimeout(() => {
+            setCurrentQuestionIndex((prevIndex) => {
+                if (prevIndex + 1 < questions.level1.length) {
+                    return prevIndex + 1;
+                } else {
+                    setGameOver(true); // Set game over state
+                    return prevIndex;
+                }
+            });
+        }, 50); // Delay before showing the next question
     }, 3000); // Delay before showing feedback and enabling the next question
-  };
+};
+
+// Save answers when gameOver changes
+useEffect(() => {
+    if (gameOver) {
+        saveUserAnswers(selectedAnswers);
+    }
+}, [gameOver]);
+
+const saveUserAnswers = async (userAnswers) => {
+    try {
+        const userId = localStorage.getItem('userId'); // Retrieve userId from local storage
+        if (!userId) {
+            console.error("User ID not found in localStorage");
+            return;
+        }
+
+        const payload = {
+            user_id: userId,
+            answers: userAnswers,
+        };
+
+        console.log('Payload:', JSON.stringify(payload, null, 2)); // Log the payload to verify its structure
+
+        // Save user answers
+        const saveResponse = await axios.post('http://localhost:8000/miniInvesting/save-answers', payload);
+        console.log(saveResponse.data.message);
+
+        // Only proceed to analyze miniInvest if the save was successful
+        if (saveResponse.status === 200) {
+            const analyzeResponse = await axios.post(`http://localhost:8000/miniInvesting_ai/analyze-miniInvest/${userId}`);
+            console.log('Analysis:', analyzeResponse.data.analysis);
+
+          // Fetch the latest AI analysis after the analysis is completed
+          fetchAiAnalysis(userId);
+        } else {
+            console.error('Failed to save user answers');
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+
+const fetchAiAnalysis = async (userId) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/miniInvesting_ai/get-miniInvest-analysis/${userId}`);
+    if (response.data && response.data.analysis) {
+      setAiAnalysis(response.data.analysis);
+    } else {
+      console.error('No analysis data found in response');
+    }
+  } catch (error) {
+    console.error('Error fetching AI analysis:', error);
+  }
+};
+
+useEffect(() => {
+  if (gameOver) {
+    // Calculate results and update state
+
+    // Set result message based on points
+    if (points >= 10) {
+      setResultMessage("Winner! Congratulations!");
+    } else {
+      setResultMessage("The score is too low");
+    }
+
+    // Fetch AI analysis
+    const userId = localStorage.getItem('userId');
+    fetchAiAnalysis(userId);
+
+    // Clean up the timer if the component unmounts
+    return () => clearTimeout(timer);
+  }
+}, [gameOver, points, navigate]);
+
+
   // loading Timer
   useEffect(() => {
     if (secondsLeft === 0) {
@@ -363,23 +245,6 @@ const InvestingPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!isVisible || timeLeft === 0 || gameOver) return; // Stop timer if game is over or no time left
-
-    const interval = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
-    }, 1000); // 1 second interval
-
-    return () => clearInterval(interval);
-  }, [isVisible, timeLeft, gameOver]); // Added gameOver dependency to clear timer when game ends
-
-  // Timer stops when game is over or when time runs out
-  useEffect(() => {
-    if (gameOver) {
-      setTimeLeft(0); // Ensure timeLeft is 0 when game is over
-    }
-  }, [gameOver]); // Added gameOver dependency to stop the timer when game ends
-
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -414,13 +279,18 @@ const InvestingPage = () => {
   useEffect(() => {
     if (gameOver) {
       // Calculate results and update state
-
+  
       // Set result message based on points
       if (points >= 10) {
         setResultMessage("Winner! Congratulations!");
       } else {
         setResultMessage("The score is too low");
       }
+  
+      // Fetch AI analysis
+      const userId = localStorage.getItem('userId');
+      fetchAiAnalysis(userId);
+  
       // Clean up the timer if the component unmounts
       return () => clearTimeout(timer);
     }
@@ -617,6 +487,23 @@ const InvestingPage = () => {
                           accuracy rate. <br /> 🚀 Keep practicing to improve
                           further!
                         </p>
+
+                           {/* Display AI analysis */}
+                           {aiAnalysis && (
+                          <div
+                            style={{
+                              marginTop: "20px",
+                              padding: "20px",
+                              backgroundColor: "#351742",
+                              borderRadius: "10px",
+                              color: "#fff",
+                              textAlign: "left",
+                            }}
+                          >
+                            <h3>AI Analysis</h3>
+                            <p>{aiAnalysis}</p>
+                          </div>
+                        )}
                       </div>
 
                       <div
