@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, StatusBar } from "react-native";
-import { BarChart } from "react-native-chart-kit";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import baseURL from '../../../assets/common/baseurl';
 
 const { width, height } = Dimensions.get('window');
 // Calculate responsive sizes based on screen dimensions
@@ -12,50 +14,33 @@ const screenWidth = width - moderateScale(40);
 
 const SummaryScreen = ({ route, navigation }) => {
   const { finalBalance, weeklyBalances } = route.params;
+  const [analysis, setAnalysis] = useState("");
+
+  useEffect(() => {
+    const fetchAnalysis = async () => {
+      try {
+        const userId = await AsyncStorage.getItem("userId");
+        const response = await axios.get(`${baseURL}/minibudget_ai/get-minibudget-analysis/${userId}`);
+        setAnalysis(response.data.analysis);
+      } catch (error) {
+        console.error("Error fetching analysis:", error);
+      }
+    };
+
+    fetchAnalysis();
+  }, []);
 
   // Calculate weekly expenses
   const weeklyExpenses = weeklyBalances.map((balance, index) => {
     const previousBalance = index === 0 ? 5000 : weeklyBalances[index - 1];
-    return previousBalance - balance;
+    return Math.max(previousBalance - balance, 0); // Ensure no negative values
   });
 
   // Calculate total weekly expenses
   const totalWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0);
 
   // Calculate average weekly expenses
-  const averageWeeklyExpenses = totalWeeklyExpenses / weeklyExpenses.length;
-
-  // Define analysis based on balance
-  let conclusion = "";
-  let recommendation = "";
-  let icon = "sentiment-satisfied";
-  let iconColor = "#4CAF50";
-
-  if (finalBalance >= 5000) {
-    conclusion = "Great Job! You managed your finances well and saved money.";
-    recommendation = "Consider investing your extra savings or setting up an emergency fund.";
-    icon = "sentiment-very-satisfied";
-    iconColor = "#4CAF50";
-  } else if (finalBalance > 0) {
-    conclusion = "You survived until payday, but there's room for improvement.";
-    recommendation = "Try to reduce unnecessary expenses and plan better for unexpected costs.";
-    icon = "sentiment-neutral";
-    iconColor = "#FFC107";
-  } else {
-    conclusion = "You ran out of money before payday!";
-    recommendation = "Track your spending more carefully and prioritize essentials.";
-    icon = "sentiment-very-dissatisfied";
-    iconColor = "#FF5252";
-  }
-
-  const barData = {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    datasets: [
-      {
-        data: weeklyBalances,
-      },
-    ],
-  };
+  const averageWeeklyExpenses = totalWeeklyExpenses / weeklyBalances.length;
 
   return (
     <View style={styles.safeArea}>
@@ -74,49 +59,10 @@ const SummaryScreen = ({ route, navigation }) => {
           <Text style={styles.balanceAmount}>₱{finalBalance.toLocaleString()}</Text>
         </View>
 
-        <View style={styles.chartContainer}>
-          <Text style={styles.chartTitle}>Your Financial Journey</Text>
-          <BarChart
-            data={barData}
-            width={screenWidth}
-            height={moderateScale(220)}
-            yAxisLabel="₱"
-            chartConfig={{
-              backgroundColor: '#2D2D2D',
-              backgroundGradientFrom: '#2D2D2D',
-              backgroundGradientTo: '#2D2D2D',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(147, 112, 219, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: moderateScale(16),
-              },
-              barPercentage: 0.7,
-              propsForLabels: {
-                fontSize: moderateScale(12),
-              },
-            }}
-            style={styles.chart}
-            showValuesOnTopOfBars={true}
-            withInnerLines={false}
-          />
-        </View>
-
-        <View style={styles.analysisContainer}>
-          <View style={styles.conclusionHeader}>
-            <Icon name={icon} size={moderateScale(28)} color={iconColor} />
-            <Text style={[styles.conclusion, {color: iconColor}]}>{conclusion}</Text>
-          </View>
-          <Text style={styles.recommendation}>💡 {recommendation}</Text>
-        </View>
-
-        <View style={styles.weeklySummaryContainer}>
-          <Text style={styles.weeklySummaryTitle}>Weekly Summary</Text>
+        <View style={styles.weeklyBalancesContainer}>
+          <Text style={styles.weeklyBalancesTitle}>Weekly Balances</Text>
           {weeklyBalances.map((balance, index) => (
-            <View key={index} style={styles.weeklySummaryItem}>
-              <Text style={styles.weeklySummaryText}>Week {index + 1} Balance: ₱{balance.toLocaleString()}</Text>
-              <Text style={styles.weeklySummaryText}>Weekly Expenses: ₱{weeklyExpenses[index].toLocaleString()}</Text>
-            </View>
+            <Text key={index} style={styles.weeklyBalanceText}>Week {index + 1}: ₱{balance.toLocaleString()}</Text>
           ))}
         </View>
 
@@ -129,6 +75,13 @@ const SummaryScreen = ({ route, navigation }) => {
           <Text style={styles.averageExpensesTitle}>Average Weekly Expenses</Text>
           <Text style={styles.averageExpensesAmount}>₱{averageWeeklyExpenses.toLocaleString()}</Text>
         </View>
+
+        {analysis && (
+          <View style={styles.analysisContainer}>
+            <Text style={styles.analysisTitle}>Financial Quest Analysis</Text>
+            <Text style={styles.analysisText}>{analysis}</Text>
+          </View>
+        )}
 
         <TouchableOpacity 
           style={styles.button} 
@@ -188,70 +141,26 @@ const styles = StyleSheet.create({
     color: '#00cac9',
     marginBottom: moderateScale(12),
   },
-  chartContainer: {
-    backgroundColor: '#2D2D2D',
-    width: '100%',
-    padding: moderateScale(16),
-    borderRadius: moderateScale(16),
-    marginBottom: moderateScale(24),
-    elevation: 5,
-  },
-  chartTitle: {
-    fontSize: moderateScale(18),
-    fontWeight: 'bold',
-    color: '#F9F6FF',
-    marginBottom: moderateScale(16),
-    textAlign: 'center',
-  },
-  chart: {
-    marginVertical: moderateScale(8),
-    borderRadius: moderateScale(16),
-  },
-  analysisContainer: {
+  weeklyBalancesContainer: {
     backgroundColor: '#2D2D2D',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
-  },
-  conclusionHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: moderateScale(16),
   },
-  conclusion: {
-    fontSize: moderateScale(18),
-    fontWeight: "bold",
-    marginLeft: moderateScale(10),
-    flex: 1,
-  },
-  recommendation: {
-    fontSize: moderateScale(16),
-    color: '#BDBDBD',
-    lineHeight: moderateScale(24),
-  },
-  weeklySummaryContainer: {
-    backgroundColor: '#2D2D2D',
-    width: '100%',
-    padding: moderateScale(20),
-    borderRadius: moderateScale(16),
-    marginBottom: moderateScale(24),
-    elevation: 5,
-  },
-  weeklySummaryTitle: {
+  weeklyBalancesTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
     color: '#F9F6FF',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
-  weeklySummaryItem: {
-    marginBottom: moderateScale(12),
-  },
-  weeklySummaryText: {
+  weeklyBalanceText: {
     fontSize: moderateScale(16),
     color: '#BDBDBD',
+    marginBottom: moderateScale(8),
   },
   totalExpensesContainer: {
     backgroundColor: '#2D2D2D',
@@ -294,6 +203,25 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(36),
     fontWeight: 'bold',
     color: '#FF5252',
+  },
+  analysisContainer: {
+    backgroundColor: '#2D2D2D',
+    width: '100%',
+    padding: moderateScale(20),
+    borderRadius: moderateScale(16),
+    marginBottom: moderateScale(24),
+    elevation: 5,
+  },
+  analysisTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#F9F6FF',
+    marginBottom: moderateScale(16),
+    textAlign: 'center',
+  },
+  analysisText: {
+    fontSize: moderateScale(16),
+    color: '#BDBDBD',
   },
   button: {
     flexDirection: 'row',

@@ -40,7 +40,7 @@ const week1Scenarios = [
   { 
     question: "You get a sideline job opportunity (₱500 bonus).", 
     options: [
-      { text: "Take the job (earn ₱500)", cost: -500, result: "You took the job and earned an extra ₱500." },
+      { text: "Take the job (earn ₱500)", cost: 0, result: "You took the job and earned an extra ₱500." }, // Changed cost to 0 to avoid negative values
       { text: "Skip it (₱0)", cost: 0, result: "You skipped the job and had more free time." }
     ]
   },

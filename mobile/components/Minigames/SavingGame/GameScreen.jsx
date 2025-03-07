@@ -31,15 +31,6 @@ const GameScreen = ({ navigation }) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [weeklyBalances, setWeeklyBalances] = useState([]);
   const [result, setResult] = useState("");
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    const fetchUserId = async () => {
-      const id = await AsyncStorage.getItem("userId");
-      setUserId(id);
-    };
-    fetchUserId();
-  }, []);
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
@@ -53,7 +44,7 @@ const GameScreen = ({ navigation }) => {
     if (newBalance < 0) {
       Alert.alert("Game Over!", "You ran out of money before payday!");
       await saveMinibudget(0, weeklyBalances);
-      navigation.navigate("Summary", { finalBalance: 0, weeklyBalances });
+      navigation.navigate("Intro");
       return;
     }
 
@@ -76,14 +67,15 @@ const GameScreen = ({ navigation }) => {
   };
 
   const saveMinibudget = async (finalBalance, weeklyBalances) => {
+    const userId = await AsyncStorage.getItem("userId");
     const [firstweek, secondweek, thirdweek, fourthweek] = weeklyBalances;
 
     // Calculate weekly expenses
     const weeklyExpenses = [
-      5000 - firstweek,
-      firstweek - secondweek,
-      secondweek - thirdweek,
-      thirdweek - fourthweek
+      Math.max(5000 - firstweek, 0),
+      Math.max(firstweek - secondweek, 0),
+      Math.max(secondweek - thirdweek, 0),
+      Math.max(thirdweek - fourthweek, 0)
     ];
 
     // Calculate average weekly expenses
@@ -99,8 +91,11 @@ const GameScreen = ({ navigation }) => {
         fourthweek: fourthweek || 0,
         average: averageWeeklyExpenses || 0
       });
+
+      // Call analyze-minibudget endpoint
+      await axios.post(`${baseURL}/minibudget_ai/analyze-minibudget/${userId}`);
     } catch (error) {
-      console.error("Error saving minibudget:", error);
+      console.error("Error saving minibudget or analyzing minibudget:", error);
     }
   };
 
