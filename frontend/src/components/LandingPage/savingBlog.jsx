@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 
 import {
   FormControl,
@@ -20,6 +20,7 @@ import {
   Card,
   CardContent,
   FormLabel,
+  Avatar,
 } from "@mui/material";
 import {
   Home,
@@ -36,8 +37,9 @@ import {
   Close,
 } from "@mui/icons-material";
 import axios from "axios";
-import toast  from "react-hot-toast";
-import Navbar from './Navbar';
+import toast from "react-hot-toast";
+import Navbar from "./Navbar";
+import moment from "moment"; // Make sure to install moment: npm install moment
 
 const SavingBlog = () => {
   const blogId = "1234"; // Declare blogId here
@@ -64,6 +66,56 @@ const SavingBlog = () => {
   const [visibleReplyBox, setVisibleReplyBox] = useState({});
   const [replyText, setReplyText] = useState("");
   const [anonymousReply, setAnonymousReply] = useState(false);
+  const [userLikes, setUserLikes] = useState({});
+  const [replyCounts, setReplyCounts] = useState({});
+  const [replyLikes, setReplyLikes] = useState({}); // Add new state for reply likes
+
+  const buttonStyles = {
+    primary: {
+      backgroundColor: "#351742",
+      color: "white",
+      "&:hover": {
+        backgroundColor: "#5e3967",
+      },
+    },
+    secondary: {
+      backgroundColor: "#00cac9",
+      color: "white",
+      "&:hover": {
+        backgroundColor: "#008f8e",
+      },
+    },
+    outlined: {
+      border: "1px solid #5e3967",
+      color: "#5e3967",
+      "&:hover": {
+        backgroundColor: "rgba(94, 57, 103, 0.1)",
+        border: "1px solid #351742",
+        color: "#351742",
+      },
+    },
+    action: {
+      color: "#5e3967",
+      "&:hover": {
+        backgroundColor: "rgba(0, 202, 201, 0.1)",
+        color: "#00cac9",
+      },
+    },
+    like: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      color: (props) => (props.isLiked ? "#00cac9" : "#5e3967"),
+      backgroundColor: (props) =>
+        props.isLiked ? "rgba(0, 202, 201, 0.1)" : "transparent",
+      border: (props) =>
+        props.isLiked ? "1px solid #00cac9" : "1px solid #5e3967",
+      "&:hover": {
+        backgroundColor: (props) =>
+          props.isLiked ? "rgba(0, 202, 201, 0.2)" : "rgba(94, 57, 103, 0.1)",
+      },
+    },
+  };
 
   //handle delete comments
   const handleDelete = async (reviewId) => {
@@ -120,16 +172,63 @@ const SavingBlog = () => {
         `http://127.0.0.1:8000/blogReview/get_comments/${blogId}`
       );
 
-      console.log("Response: ", response);
-      setComments(response.data.comments || []);
+      const comments = response.data.comments || [];
+
+      // Fetch reply counts for each comment
+      const counts = {};
+      for (const comment of comments) {
+        const countResponse = await axios.get(
+          `http://127.0.0.1:8000/blogReview/reply-count/${comment._id}`
+        );
+        counts[comment._id] = countResponse.data.count;
+      }
+
+      setReplyCounts(counts);
+      setComments(comments);
     } catch (error) {
       console.error("Failed to fetch comments:", error);
     }
   };
 
   useEffect(() => {
-    fetchComments();
+    const initializePage = async () => {
+      await fetchComments();
+    };
+    initializePage();
   }, [blogId]);
+
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!token || !comments.length) return;
+
+      try {
+        const likes = {};
+        for (const comment of comments) {
+          try {
+            const response = await axios.get(
+              `http://127.0.0.1:8000/blogReview/check-like/${comment._id}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+            likes[comment._id] = response.data.hasLiked;
+          } catch (error) {
+            console.error(
+              `Error fetching like for comment ${comment._id}:`,
+              error
+            );
+            likes[comment._id] = false; // Default to unliked if there's an error
+          }
+        }
+        setUserLikes(likes);
+      } catch (error) {
+        console.error("Error in fetchLikes:", error);
+        // Don't update userLikes state if there's a top-level error
+      }
+    };
+
+    fetchLikes();
+  }, [comments, token]);
 
   const handleToggleReplies = (commentId) => {
     setVisibleReplies((prevState) => ({
@@ -344,6 +443,83 @@ const SavingBlog = () => {
       alert(error.response?.data?.detail || "Failed to post reply");
     }
   };
+  const handleLike = async (reviewId) => {
+    if (!token) {
+      toast.error("Please login to like comments");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/blogReview/like/${reviewId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update UI immediately with optimistic update
+      const isNowLiked = !userLikes[reviewId];
+
+      setUserLikes((prev) => ({
+        ...prev,
+        [reviewId]: isNowLiked,
+      }));
+
+      // Update comments array
+      setComments((prevComments) =>
+        prevComments.map((comment) =>
+          comment._id === reviewId
+            ? {
+                ...comment,
+                like_count: isNowLiked
+                  ? (comment.like_count || 0) + 1
+                  : (comment.like_count || 1) - 1,
+              }
+            : comment
+        )
+      );
+    } catch (error) {
+      // Revert optimistic update on error
+      setUserLikes((prev) => ({
+        ...prev,
+        [reviewId]: !prev[reviewId],
+      }));
+      console.error("Like error:", error);
+    }
+  };
+
+  const handleReplyLike = async (reviewId, replyIndex) => {
+    if (!token) {
+      toast.error("Please login to like replies");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/blogReview/like_reply/${reviewId}/${replyIndex}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update UI
+      setReplyLikes((prev) => ({
+        ...prev,
+        [`${reviewId}-${replyIndex}`]: response.data.hasLiked,
+      }));
+
+      // Update replies state
+      setReplies((prev) => ({
+        ...prev,
+        [reviewId]: prev[reviewId].map((reply, idx) =>
+          idx === replyIndex
+            ? { ...reply, like_count: response.data.like_count }
+            : reply
+        ),
+      }));
+    } catch (error) {
+      console.error("Reply like error:", error);
+    }
+  };
+
   const getTipContent = (index) => {
     const tipsContent = [
       "Set clear and measurable financial goals to guide your investment decisions.",
@@ -359,6 +535,127 @@ const SavingBlog = () => {
     ];
     return tipsContent[index] || "";
   };
+
+  const LikeButton = ({ comment }) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClick = async () => {
+      if (isLoading) return;
+      setIsLoading(true);
+      await handleLike(comment._id);
+      setIsLoading(false);
+    };
+
+    return (
+      <Button
+        onClick={handleClick}
+        disabled={!token || isLoading}
+        sx={{
+          ...buttonStyles.like,
+          "& .MuiSvgIcon-root": {
+            color: userLikes[comment._id] ? "#00cac9" : "#5e3967",
+          },
+          "& .MuiTypography-root": {
+            color: userLikes[comment._id] ? "#00cac9" : "#5e3967",
+          },
+        }}
+      >
+        <ThumbUp
+          sx={{
+            transform: userLikes[comment._id] ? "scale(1.2)" : "scale(1)",
+            transition: "transform 0.2s ease",
+            color: userLikes[comment._id] ? "#351742" : "inherit",
+          }}
+        />
+        <span
+          style={{
+            fontWeight: userLikes[comment._id] ? "600" : "400",
+            color: userLikes[comment._id] ? "#351742" : "inherit",
+          }}
+        >
+          {isLoading ? "..." : comment.like_count || 0}
+        </span>
+      </Button>
+    );
+  };
+
+  const ReplyLikeButton = ({ reviewId, replyIndex, reply }) => {
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClick = async () => {
+      if (isLoading) return;
+      setIsLoading(true);
+      await handleReplyLike(reviewId, replyIndex);
+      setIsLoading(false);
+    };
+
+    const isLiked = replyLikes[`${reviewId}-${replyIndex}`];
+
+    return (
+      <Button
+        startIcon={
+          <ThumbUp
+            sx={{
+              color: isLiked ? "#00cac9" : "#5e3967",
+            }}
+          />
+        }
+        onClick={handleClick}
+        disabled={!token || isLoading}
+        fullWidth
+        sx={{
+          ...buttonStyles.like,
+          color: isLiked ? "#00cac9" : "#5e3967",
+          backgroundColor: isLiked ? "rgba(0, 202, 201, 0.1)" : "transparent",
+          border: isLiked ? "1px solid #00cac9" : "1px solid #5e3967",
+          width: "100%",
+          justifyContent: "center",
+          gap: 2,
+          "&:hover": {
+            backgroundColor: isLiked
+              ? "rgba(0, 202, 201, 0.2)"
+              : "rgba(94, 57, 103, 0.1)",
+          },
+        }}
+      >
+        <span
+          style={{
+            fontWeight: isLiked ? "600" : "400",
+            color: isLiked ? "#00cac9" : "#5e3967",
+          }}
+        >
+          {isLoading ? "..." : reply.like_count || 0}
+        </span>
+      </Button>
+    );
+  };
+
+  useEffect(() => {
+    const fetchReplyLikes = async () => {
+      if (!token) return;
+
+      try {
+        for (const [reviewId, replyList] of Object.entries(replies)) {
+          for (let i = 0; i < replyList.length; i++) {
+            const response = await axios.get(
+              `http://127.0.0.1:8000/blogReview/check_reply_like/${reviewId}/${i}`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            setReplyLikes((prev) => ({
+              ...prev,
+              [`${reviewId}-${i}`]: response.data.hasLiked,
+            }));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching reply likes:", error);
+      }
+    };
+
+    if (Object.keys(replies).length > 0) {
+      fetchReplyLikes();
+    }
+  }, [replies, token]);
 
   return (
     <Box
@@ -503,34 +800,46 @@ const SavingBlog = () => {
               >
                 Post as:
               </Typography>
-              <FormControl sx={{ mt: 1 }}>
-                <RadioGroup
-                  row
-                  defaultValue="public"
-                  name="anonymity-options"
-                  value={anonymous ? "anonymous" : "public"}
-                  onChange={(e) => setAnonymous(e.target.value === "anonymous")}
-                >
-                  <FormControlLabel
-                    value="anonymous"
-                    control={<Radio />}
-                    label="Anonymous"
-                    sx={{ color: "#351742" }}
-                  />
-                </RadioGroup>
-              </FormControl>
-
-              {/* Submit Button */}
-              <Button
-                variant="contained"
-                sx={{
-                  mt: 2,
-                  backgroundColor: "#351742",
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "1px",
                 }}
-                onClick={handleSubmit} // Call handleSubmit on click
               >
-                Submit
-              </Button>
+                <FormControl
+                  sx={{
+                    mt: 1,
+                  }}
+                >
+                  <RadioGroup
+                    row
+                    defaultValue="public"
+                    name="anonymity-options"
+                    value={anonymous ? "anonymous" : "public"}
+                    onChange={(e) =>
+                      setAnonymous(e.target.value === "anonymous")
+                    }
+                  >
+                    <FormControlLabel
+                      value="anonymous"
+                      control={<Radio />}
+                      label="Anonymous"
+                      sx={{ color: "#351742" }}
+                    />
+                  </RadioGroup>
+                </FormControl>
+
+                {/* Submit Button */}
+                <Button
+                  variant="contained"
+                  sx={buttonStyles.primary}
+                  onClick={handleSubmit} // Call handleSubmit on click
+                >
+                  Submit
+                </Button>
+              </div>
             </Box>
 
             <Box sx={{ mt: 4 }}>
@@ -595,20 +904,63 @@ const SavingBlog = () => {
                         </Box>
                       )}
                     </div>
-                    <Typography
-                      variant="body1"
+                    <Box
                       sx={{
-                        fontWeight: "bold",
-                        color: "#351742",
-                        top: "300px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                        mb: 1,
                       }}
                     >
-                      {comment.username || "Anonymous"}
-                    </Typography>
+                      <Avatar
+                        sx={{
+                          bgcolor: "#351742",
+                          width: 40,
+                          height: 40,
+                        }}
+                      >
+                        {comment.username
+                          ? comment.username[0].toUpperCase()
+                          : "A"}
+                      </Avatar>
+                      <Box>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#351742",
+                          }}
+                        >
+                          {comment.username || "Anonymous"}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "#666",
+                            display: "block",
+                            fontSize: "10px",
+                          }}
+                        >
+                          {moment(comment.created_at).fromNow()}
+                        </Typography>
+                      </Box>
+                    </Box>
                     <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
                       {comment.comment}
                     </Typography>
-
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      sx={{
+                        display: "flex",
+                        mt: 1,
+                        fontSize: "0.7rem",
+                        justifyContent: "end",
+                        marginRight: "20px",
+                      }}
+                    >
+                      {replyCounts[comment._id] || 0} replies
+                    </Typography>
                     {editMode === comment._id && (
                       <div
                         style={{
@@ -708,20 +1060,15 @@ const SavingBlog = () => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        gap: "1px",
+                        gap: "0px",
                         margin: "5px",
                       }}
                     >
-                      <Button
-                        startIcon={<ThumbUp />}
-                        sx={{ textTransform: "none" }}
-                        size="small"
-                      >
-                        Like ({comment.like_count || 0})
-                      </Button>
+                      <LikeButton comment={comment} />
+
                       <Button
                         startIcon={<Comment />}
-                        sx={{ textTransform: "none" }}
+                        sx={buttonStyles.action}
                         size="small"
                         onClick={() => {
                           handleToggleReplies(comment._id); // Toggle the visibility state
@@ -739,7 +1086,7 @@ const SavingBlog = () => {
                       </Button>
                       <Button
                         startIcon={<Comment />}
-                        sx={{ textTransform: "none" }}
+                        sx={buttonStyles.action}
                         size="small"
                         onClick={() => handleToggleReplyBox(comment._id)} // Toggle reply box visibility
                       >
@@ -781,8 +1128,7 @@ const SavingBlog = () => {
 
                           <Button
                             variant="contained"
-                            color="primary"
-                            sx={{ mt: 2 }}
+                            sx={buttonStyles.secondary}
                             onClick={() => handlePostReply(comment._id)}
                           >
                             Submit Reply
@@ -830,8 +1176,7 @@ const SavingBlog = () => {
                                         <Button
                                           size="small"
                                           variant="outlined"
-                                          color="primary"
-                                          sx={{ fontSize: "0.8rem" }}
+                                          sx={buttonStyles.outlined}
                                           onClick={() => {
                                             setEditModeReply(reply._id);
                                             setCurrentEditingIndex(index);
@@ -846,8 +1191,7 @@ const SavingBlog = () => {
                                         <Button
                                           size="small"
                                           variant="outlined"
-                                          color="secondary"
-                                          sx={{ fontSize: "0.8rem" }}
+                                          sx={buttonStyles.outlined}
                                           onClick={() =>
                                             handleDeleteReply(
                                               comment._id,
@@ -860,15 +1204,47 @@ const SavingBlog = () => {
                                       </Box>
                                     )}
                                   </div>
-                                  <Typography
-                                    variant="body1"
+                                  <Box
                                     sx={{
-                                      fontWeight: "bold",
-                                      color: "#351742",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 2,
+                                      mb: 1,
                                     }}
                                   >
-                                    {reply.username || "Anonymous"}
-                                  </Typography>
+                                    <Avatar
+                                      sx={{
+                                        bgcolor: "#00cac9",
+                                        width: 32,
+                                        height: 32,
+                                      }}
+                                    >
+                                      {reply.username
+                                        ? reply.username[0].toUpperCase()
+                                        : "A"}
+                                    </Avatar>
+                                    <Box>
+                                      <Typography
+                                        variant="body1"
+                                        sx={{
+                                          fontWeight: "bold",
+                                          color: "#351742",
+                                        }}
+                                      >
+                                        {reply.username || "Anonymous"}
+                                      </Typography>
+                                      <Typography
+                                        variant="caption"
+                                        sx={{
+                                          color: "#666",
+                                          display: "block",
+                                          fontSize: "10px",
+                                        }}
+                                      >
+                                        {moment(reply.created_at).fromNow()}
+                                      </Typography>
+                                    </Box>
+                                  </Box>
                                   <Typography
                                     variant="body2"
                                     sx={{ mt: 1, color: "#555" }}
@@ -885,14 +1261,12 @@ const SavingBlog = () => {
                                       gap: 2,
                                     }}
                                   >
-                                    <Button
-                                      startIcon={<ThumbUp />}
-                                      sx={{ textTransform: "none" }}
-                                      size="small"
-                                      fullWidth
-                                    >
-                                      Like ({reply.like_count || 0})
-                                    </Button>
+                                    <ReplyLikeButton
+                                      reviewId={comment._id}
+                                      replyIndex={index}
+                                      reply={reply}
+                                      sx={{ width: "100%" }}
+                                    />
                                   </Box>
                                 </div>
                                 {/* Edit Form */}

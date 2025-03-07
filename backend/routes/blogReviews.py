@@ -9,6 +9,7 @@ import logging
 from models.blogReviews import BlogReview, Reply  # Updated import from models folder
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from utils.filter import contains_bad_words, filter_bad_words
 
 
 router = APIRouter()
@@ -60,6 +61,20 @@ async def create_review(
         username = user.get("username", "Anonymous")
         display_username = format_username(username) if anonymous else username
         
+        # Check for bad words
+        if contains_bad_words(comment):
+            filtered_comment = filter_bad_words(comment)
+            # Notify admin and mark for review
+            db["flagged_content"].insert_one({
+                "original_text": comment,
+                "filtered_text": filtered_comment,
+                "type": "review",
+                "user_id": ObjectId(user_id),
+                "created_at": datetime.now(timezone.utc),
+                "reviewed": False
+            })
+            comment = filtered_comment
+
         blog_review = {
             "blog_id": blog_id,
             "comment": comment or "",
@@ -305,6 +320,20 @@ async def create_reply(
                 raise HTTPException(status_code=404, detail="User not found")
             username = format_username(username)
 
+        # Check for bad words in reply text
+        if contains_bad_words(reply_text):
+            filtered_reply = filter_bad_words(reply_text)
+            # Notify admin and mark for review
+            db["flagged_content"].insert_one({
+                "original_text": reply_text,
+                "filtered_text": filtered_reply,
+                "type": "reply",
+                "user_id": user_id,
+                "created_at": datetime.now(timezone.utc),
+                "reviewed": False
+            })
+            reply_text = filtered_reply
+
         # Create a new reply object
         reply = Reply(
             user_id=user_id,
@@ -312,7 +341,8 @@ async def create_reply(
             created_at=datetime.now(timezone.utc),
             updated_at=datetime.now(timezone.utc),
             anonymous=anonymous,
-            username=username
+            username=username,
+            like_count=0  # Initialize like count
         )
 
         # Ensure the review_id is an ObjectId when querying MongoDB
@@ -500,3 +530,159 @@ async def delete_reply(
 def is_admin(user_id: str) -> bool:
     # Implement your logic to check if the user is an admin
     return
+
+@router.post("/like/{review_id}")
+async def like_review(
+    review_id: str,
+    token: dict = Depends(get_current_user)
+):
+    try:
+        user_id = token["_id"]
+        
+        # Check if user already liked this review
+        existing_like = db["likes"].find_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "type": "review"
+        })
+        
+        if existing_like:
+            # Remove like
+            db["likes"].delete_one({"_id": existing_like["_id"]})
+            db["blog_reviews"].update_one(
+                {"_id": ObjectId(review_id)},
+                {"$inc": {"like_count": -1}}
+            )
+            return {"message": "Like removed"}
+        
+        # Add new like
+        db["likes"].insert_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "type": "review",
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        db["blog_reviews"].update_one(
+            {"_id": ObjectId(review_id)},
+            {"$inc": {"like_count": 1}}
+        )
+        
+        return {"message": "Review liked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/check-like/{review_id}")
+async def check_like(
+    review_id: str,
+    token: dict = Depends(get_current_user)
+):
+    try:
+        user_id = token["_id"]
+        
+        # Check if user has liked this review
+        existing_like = db["likes"].find_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "type": "review"
+        })
+        
+        return {"hasLiked": existing_like is not None}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Add new endpoint for reply counts
+@router.get("/reply-count/{review_id}")
+async def get_reply_count(review_id: str):
+    try:
+        review = db["blog_reviews"].find_one({"_id": ObjectId(review_id)})
+        if not review:
+            raise HTTPException(status_code=404, detail="Review not found")
+        
+        reply_count = len(review.get("replies", []))
+        return {"count": reply_count}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Add new endpoints for reply likes
+@router.post("/like_reply/{review_id}/{reply_index}")
+async def like_reply(
+    review_id: str,
+    reply_index: int,
+    token: dict = Depends(get_current_user)
+):
+    try:
+        user_id = token["_id"]
+        
+        # Check if user already liked this reply
+        existing_like = db["likes"].find_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "reply_index": reply_index,
+            "type": "reply"
+        })
+        
+        if existing_like:
+            # Remove like
+            db["likes"].delete_one({"_id": existing_like["_id"]})
+            
+            # Update the reply's like count in the blog review
+            db["blog_reviews"].update_one(
+                {"_id": ObjectId(review_id)},
+                {"$inc": {f"replies.{reply_index}.like_count": -1}}
+            )
+            return {
+                "message": "Like removed",
+                "hasLiked": False,
+                "like_count": await get_reply_like_count(review_id, reply_index)
+            }
+        
+        # Add new like
+        db["likes"].insert_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "reply_index": reply_index,
+            "type": "reply",
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        # Update the reply's like count
+        db["blog_reviews"].update_one(
+            {"_id": ObjectId(review_id)},
+            {"$inc": {f"replies.{reply_index}.like_count": 1}}
+        )
+        
+        return {
+            "message": "Reply liked successfully",
+            "hasLiked": True,
+            "like_count": await get_reply_like_count(review_id, reply_index)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/check_reply_like/{review_id}/{reply_index}")
+async def check_reply_like(
+    review_id: str,
+    reply_index: int,
+    token: dict = Depends(get_current_user)
+):
+    try:
+        user_id = token["_id"]
+        existing_like = db["likes"].find_one({
+            "user_id": ObjectId(user_id),
+            "review_id": ObjectId(review_id),
+            "reply_index": reply_index,
+            "type": "reply"
+        })
+        return {"hasLiked": existing_like is not None}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+async def get_reply_like_count(review_id: str, reply_index: int) -> int:
+    try:
+        review = db["blog_reviews"].find_one({"_id": ObjectId(review_id)})
+        if review and "replies" in review and reply_index < len(review["replies"]):
+            return review["replies"][reply_index].get("like_count", 0)
+        return 0
+    except Exception:
+        return 0

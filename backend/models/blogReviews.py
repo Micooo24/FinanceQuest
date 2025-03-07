@@ -10,6 +10,8 @@ class Reply(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))  
     anonymous: bool = False  # Whether the reply is anonymous
     username: Optional[str] = None  # The username for non-anonymous replies
+    like_count: int = 0  # Add this field
+    likes: List[str] = []  # Add this field to store user IDs who liked
 
     class Config:
         arbitrary_types_allowed = True
