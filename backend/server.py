@@ -7,6 +7,8 @@ from routes.trackers import router as trackers_router
 from routes.minibudget import router as minibudget_router
 from routes.minibudget_ai import router as minibudget_ai_router
 from routes import ai_analysis
+from routes import miniInvesting  
+from routes.miniInvest_ai import router as miniInvest_ai_router
 
 
 app = FastAPI()
@@ -34,4 +36,6 @@ app.include_router(blogReviews.router, prefix="/blogReview")
 app.include_router(minibudget_router, prefix="/minibudget")
 app.include_router(minibudget_ai_router, prefix="/minibudget_ai")
 app.include_router(ai_analysis.router, prefix="/ai")
+app.include_router(miniInvesting.router, prefix="/miniInvesting") 
+app.include_router(miniInvest_ai_router, prefix="/miniInvesting_ai")
  
