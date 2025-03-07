@@ -493,7 +493,7 @@ const Gameplay = () => {
           )}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
-            <Stats health={playerStats.health} pts={playerStats.points} level={playerStats.level} money={playerStats.money} />
+            <Stats pts={playerStats.points} money={playerStats.money} />
           </Box>
 
           <Box sx={{ position: 'absolute', top: 20, right: 20, zIndex: 100 }}>

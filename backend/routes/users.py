@@ -178,8 +178,6 @@ async def login(
         if not existing_stats:
             new_stats = {
                 "user_id": ObjectId(user_id),
-                "health": 100,
-                "level": 1,
                 "money": 5000,
                 "points": 0,
                 "location": {
@@ -426,8 +424,6 @@ async def google_login(request: Request):
         if not existing_stats:
             new_stats = {
                 "user_id": ObjectId(user_id),
-                "health": 100,
-                "level": 1,
                 "money": 5000,
                 "points": 0,
                 "location": {

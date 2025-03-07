@@ -1,19 +1,9 @@
 import React from 'react';
 import { FaHeart, FaCoins, FaStar, FaLevelUpAlt } from 'react-icons/fa';
 
-const Stats = ({ health, pts, level, money }) => {
+const Stats = ({  pts, money }) => {
   return (
     <div style={styles.statsContainer}>
-      <div style={styles.statItem}>
-        <FaHeart style={styles.statIcon} />
-        <span style={styles.statLabel}>Health:</span>
-        <span style={styles.statValue}>{health}%</span>
-      </div>
-      <div style={styles.statItem}>
-        <FaLevelUpAlt style={styles.statIcon} />
-        <span style={styles.statLabel}>Level:</span>
-        <span style={styles.statValue}>{level}</span>
-      </div>
       <div style={styles.statItem}>
         <FaCoins style={styles.statIcon} />
         <span style={styles.statLabel}>Money:</span>

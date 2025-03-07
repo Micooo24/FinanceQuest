@@ -19,8 +19,6 @@ class Coordinates(BaseModel):
     z: float
 
 class Stats(BaseModel):
-    health: int = 100
-    level: int = 1
     money: int = 5000
     points: int = 0
     location: Coordinates = Coordinates(x=0.0, y=0.0, z=0.0)
@@ -156,7 +154,6 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
     q1_outcome = {
         "rewards": rewards,
         "consequences": consequences,
-        "money": chosen_money,
         "points_earned": points_earned,
         "money_spent": chosen_money  # Added field
     }
