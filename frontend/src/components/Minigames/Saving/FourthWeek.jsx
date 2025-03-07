@@ -197,19 +197,19 @@ const handleContinue = async () => {
     ];
 
     const weeklyBalances = [
-        combinedBalanceHistory[7]?.balance || 0,
-        combinedBalanceHistory[14]?.balance || 0,
-        combinedBalanceHistory[21]?.balance || 0,
-        combinedBalanceHistory[28]?.balance || 0
+        combinedBalanceHistory[6]?.balance || 0,
+        combinedBalanceHistory[13]?.balance || 0,
+        combinedBalanceHistory[20]?.balance || 0,
+        combinedBalanceHistory[27]?.balance || 0
     ];
 
     const weeklyExpenses = [
-        combinedBalanceHistory[1].balance - combinedBalanceHistory[7].balance,
-        combinedBalanceHistory[8].balance - combinedBalanceHistory[14].balance,
-        combinedBalanceHistory[15].balance - combinedBalanceHistory[21].balance,
-        combinedBalanceHistory[22].balance - combinedBalanceHistory[28].balance
+        Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance),
+        Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance),
+        Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance),
+        Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[28].balance)
     ];
-
+    
     const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
     const chartData = {
         labels: Array.from({ length: 29 }, (_, i) => `Day ${i}`),

@@ -6,7 +6,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 function MiniBudget({ selectedJob }) {
   const [day, setDay] = useState(1);
-  const [balance, setBalance] = useState(70000);
+  const [balance, setBalance] = useState(5000);
   const [open, setOpen] = useState(false);
 
   const handleNextDay = () => {

@@ -11,9 +11,21 @@ const moderateScale = (size) => size + (scale - 1) * 0.5 * size;
 const screenWidth = width - moderateScale(40);
 
 const SummaryScreen = ({ route, navigation }) => {
-  const { finalBalance, stress } = route.params;
+  const { finalBalance, weeklyBalances } = route.params;
 
-  // Define analysis based on balance & stress
+  // Calculate weekly expenses
+  const weeklyExpenses = weeklyBalances.map((balance, index) => {
+    const previousBalance = index === 0 ? 5000 : weeklyBalances[index - 1];
+    return previousBalance - balance;
+  });
+
+  // Calculate total weekly expenses
+  const totalWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0);
+
+  // Calculate average weekly expenses
+  const averageWeeklyExpenses = totalWeeklyExpenses / weeklyExpenses.length;
+
+  // Define analysis based on balance
   let conclusion = "";
   let recommendation = "";
   let icon = "sentiment-satisfied";
@@ -37,10 +49,10 @@ const SummaryScreen = ({ route, navigation }) => {
   }
 
   const barData = {
-    labels: ["Starting", "Expenses", "Income", "Final"],
+    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
     datasets: [
       {
-        data: [7000, 7000 - finalBalance, finalBalance > 7000 ? finalBalance - 7000 : 0, finalBalance],
+        data: weeklyBalances,
       },
     ],
   };
@@ -60,10 +72,6 @@ const SummaryScreen = ({ route, navigation }) => {
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Final Balance</Text>
           <Text style={styles.balanceAmount}>₱{finalBalance.toLocaleString()}</Text>
-          <View style={styles.stressContainer}>
-            <Icon name="psychology" size={moderateScale(20)} color="#FF6B6B" />
-            <Text style={styles.stressText}>Final Stress Level: {stress}</Text>
-          </View>
         </View>
 
         <View style={styles.chartContainer}>
@@ -100,6 +108,26 @@ const SummaryScreen = ({ route, navigation }) => {
             <Text style={[styles.conclusion, {color: iconColor}]}>{conclusion}</Text>
           </View>
           <Text style={styles.recommendation}>💡 {recommendation}</Text>
+        </View>
+
+        <View style={styles.weeklySummaryContainer}>
+          <Text style={styles.weeklySummaryTitle}>Weekly Summary</Text>
+          {weeklyBalances.map((balance, index) => (
+            <View key={index} style={styles.weeklySummaryItem}>
+              <Text style={styles.weeklySummaryText}>Week {index + 1} Balance: ₱{balance.toLocaleString()}</Text>
+              <Text style={styles.weeklySummaryText}>Weekly Expenses: ₱{weeklyExpenses[index].toLocaleString()}</Text>
+            </View>
+          ))}
+        </View>
+
+        <View style={styles.totalExpensesContainer}>
+          <Text style={styles.totalExpensesTitle}>Total Weekly Expenses</Text>
+          <Text style={styles.totalExpensesAmount}>₱{totalWeeklyExpenses.toLocaleString()}</Text>
+        </View>
+
+        <View style={styles.averageExpensesContainer}>
+          <Text style={styles.averageExpensesTitle}>Average Weekly Expenses</Text>
+          <Text style={styles.averageExpensesAmount}>₱{averageWeeklyExpenses.toLocaleString()}</Text>
         </View>
 
         <TouchableOpacity 
@@ -160,15 +188,6 @@ const styles = StyleSheet.create({
     color: '#00cac9',
     marginBottom: moderateScale(12),
   },
-  stressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  stressText: {
-    fontSize: moderateScale(16),
-    color: '#FF6B6B',
-    marginLeft: moderateScale(8),
-  },
   chartContainer: {
     backgroundColor: '#2D2D2D',
     width: '100%',
@@ -211,6 +230,70 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
     color: '#BDBDBD',
     lineHeight: moderateScale(24),
+  },
+  weeklySummaryContainer: {
+    backgroundColor: '#2D2D2D',
+    width: '100%',
+    padding: moderateScale(20),
+    borderRadius: moderateScale(16),
+    marginBottom: moderateScale(24),
+    elevation: 5,
+  },
+  weeklySummaryTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#F9F6FF',
+    marginBottom: moderateScale(16),
+    textAlign: 'center',
+  },
+  weeklySummaryItem: {
+    marginBottom: moderateScale(12),
+  },
+  weeklySummaryText: {
+    fontSize: moderateScale(16),
+    color: '#BDBDBD',
+  },
+  totalExpensesContainer: {
+    backgroundColor: '#2D2D2D',
+    width: '100%',
+    padding: moderateScale(20),
+    borderRadius: moderateScale(16),
+    marginBottom: moderateScale(24),
+    elevation: 5,
+    alignItems: 'center',
+  },
+  totalExpensesTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#F9F6FF',
+    marginBottom: moderateScale(16),
+    textAlign: 'center',
+  },
+  totalExpensesAmount: {
+    fontSize: moderateScale(36),
+    fontWeight: 'bold',
+    color: '#FF5252',
+  },
+  averageExpensesContainer: {
+    backgroundColor: '#2D2D2D',
+    width: '100%',
+    padding: moderateScale(20),
+    borderRadius: moderateScale(16),
+    marginBottom: moderateScale(24),
+    elevation: 5,
+    alignItems: 'center',
+  },
+  averageExpensesTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#F9F6FF',
+    marginBottom: moderateScale(16),
+    textAlign: 'center',
+  },
+  averageExpensesAmount: {
+    fontSize: moderateScale(36),
+    fontWeight: 'bold',
+    color: '#FF5252',
   },
   button: {
     flexDirection: 'row',

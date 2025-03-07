@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, 
   Text, 
@@ -11,11 +11,14 @@ import {
 } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import week1Scenarios from './WeekScenarios/week1Scenarios';
 import week2Scenarios from './WeekScenarios/week2Scenarios';
 import week3Scenarios from './WeekScenarios/week3Scenarios';
 import week4Scenarios from './WeekScenarios/week4Scenarios';
 import JobSelection from './JobSelection';
+import baseURL from '../../../assets/common/baseurl';
 
 const { width, height } = Dimensions.get('window');
 // Calculate responsive sizes based on screen dimensions
@@ -25,22 +28,32 @@ const moderateScale = (size) => size + (scale - 1) * 0.5 * size;
 const GameScreen = ({ navigation }) => {
   const [day, setDay] = useState(1);
   const [balance, setBalance] = useState(5000);
-  const [stress, setStress] = useState(0);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [weeklyBalances, setWeeklyBalances] = useState([]);
+  const [result, setResult] = useState("");
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await AsyncStorage.getItem("userId");
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
 
   const handleSelectJob = (job) => {
     setSelectedJob(job);
-    // Set initial balance based on job pay
-    setBalance(job.pay);
+    // Keep initial balance at 5000 regardless of job selected
+    setBalance(5000);
   };
 
-  const handleDecision = (cost, stressChange) => {
+  const handleDecision = async (cost, result) => {
     let newBalance = balance - cost;
-    let newStress = stress + stressChange;
 
     if (newBalance < 0) {
       Alert.alert("Game Over!", "You ran out of money before payday!");
-      navigation.navigate("Summary", { finalBalance: 0, stress: newStress });
+      await saveMinibudget(0, weeklyBalances);
+      navigation.navigate("Summary", { finalBalance: 0, weeklyBalances });
       return;
     }
 
@@ -48,16 +61,47 @@ const GameScreen = ({ navigation }) => {
     if (day === 7 || day === 14 || day === 21 || day === 28) {
       newBalance += selectedJob.pay - selectedJob.totalDeductions;
       Alert.alert("Payday!", `You received ₱${selectedJob.pay - selectedJob.totalDeductions} after deductions.`);
+      setWeeklyBalances([...weeklyBalances, newBalance]);
     }
 
     if (day >= 28) {
-      navigation.navigate("Summary", { finalBalance: newBalance, stress: newStress });
+      await saveMinibudget(newBalance, [...weeklyBalances, newBalance]);
+      navigation.navigate("Summary", { finalBalance: newBalance, weeklyBalances: [...weeklyBalances, newBalance] });
       return;
     }
 
     setBalance(newBalance);
-    setStress(newStress);
+    setResult(result);
     setDay(day + 1);
+  };
+
+  const saveMinibudget = async (finalBalance, weeklyBalances) => {
+    const [firstweek, secondweek, thirdweek, fourthweek] = weeklyBalances;
+
+    // Calculate weekly expenses
+    const weeklyExpenses = [
+      5000 - firstweek,
+      firstweek - secondweek,
+      secondweek - thirdweek,
+      thirdweek - fourthweek
+    ];
+
+    // Calculate average weekly expenses
+    const averageWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
+
+    try {
+      await axios.post(`${baseURL}/minibudget/create-minibudget`, {
+        user_id: userId,
+        balance: finalBalance,
+        firstweek: firstweek || 0,
+        secondweek: secondweek || 0,
+        thirdweek: thirdweek || 0,
+        fourthweek: fourthweek || 0,
+        average: averageWeeklyExpenses || 0
+      });
+    } catch (error) {
+      console.error("Error saving minibudget:", error);
+    }
   };
 
   let currentScenario;
@@ -89,11 +133,6 @@ const GameScreen = ({ navigation }) => {
             <FontAwesome5 name="wallet" size={moderateScale(20)} color="#00cac9" />
             <Text style={styles.balanceText}>₱{balance.toLocaleString()}</Text>
           </View>
-          
-          <View style={styles.stressContainer}>
-            <Icon name="sentiment-dissatisfied" size={moderateScale(20)} color="#FF6B6B" />
-            <Text style={styles.stressText}>Stress: {stress}</Text>
-          </View>
         </View>
         
         <View style={styles.jobInfoContainer}>
@@ -109,22 +148,23 @@ const GameScreen = ({ navigation }) => {
             <TouchableOpacity 
               key={index} 
               style={styles.decisionButton} 
-              onPress={() => handleDecision(option.cost, option.stressChange)}
+              onPress={() => handleDecision(option.cost, option.result)}
             >
               <View style={styles.decisionContent}>
                 <Text style={styles.decisionText}>{option.text}</Text>
                 <View style={styles.decisionCost}>
                   <Text style={styles.costText}>₱{option.cost}</Text>
-                  {option.stressChange !== 0 && (
-                    <Text style={option.stressChange > 0 ? styles.stressIncrease : styles.stressDecrease}>
-                      Stress {option.stressChange > 0 ? '+' : ''}{option.stressChange}
-                    </Text>
-                  )}
                 </View>
               </View>
             </TouchableOpacity>
           ))}
         </View>
+
+        {result && (
+          <View style={styles.resultContainer}>
+            <Text style={styles.resultText}>{result}</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -166,16 +206,6 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(16),
     fontWeight: 'bold',
     color: '#00cac9',
-    marginLeft: moderateScale(8),
-  },
-  stressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  stressText: {
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-    color: '#FF6B6B',
     marginLeft: moderateScale(8),
   },
   jobInfoContainer: {
@@ -240,13 +270,16 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(14),
     fontWeight: 'bold',
   },
-  stressIncrease: {
-    color: '#FF6B6B',
-    fontSize: moderateScale(14),
+  resultContainer: {
+    backgroundColor: '#2D2D2D',
+    borderRadius: moderateScale(15),
+    padding: moderateScale(20),
+    marginTop: moderateScale(20),
   },
-  stressDecrease: {
-    color: '#4CAF50',
-    fontSize: moderateScale(14),
+  resultText: {
+    fontSize: moderateScale(18),
+    color: '#F9F6FF',
+    textAlign: 'center',
   },
 });
 
