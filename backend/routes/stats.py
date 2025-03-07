@@ -157,7 +157,8 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
         "rewards": rewards,
         "consequences": consequences,
         "money": chosen_money,
-        "points_earned": points_earned
+        "points_earned": points_earned,
+        "money_spent": chosen_money  # Added field
     }
     update_fields["q1_outcome"] = q1_outcome
 
@@ -169,8 +170,7 @@ async def q1_decision(request: Q1DecisionRequest, current_user: dict = Depends(g
         "message": "Q1 decision processed successfully",
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q1_outcome": q1_outcome
-    }
-    
+    }  
 # Grocery selection
 @router.put("/decision/grocery_selection")
 async def grocery_selection(request: GrocerySelectionRequest, current_user: dict = Depends(get_current_user)):
@@ -212,7 +212,7 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
     sq1_outcome = {
         "rewards": rewards,
         "consequences": consequences,
-        "money": request.total_spent,
+        "money_spent": request.total_spent,  # Changed field
         "points_earned": points_earned
     }
     
@@ -231,7 +231,8 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
         "new_points": new_points,
         "sq1_outcome": sq1_outcome
     }
-
+    
+    
 @router.put("/purchase/medal")
 async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -316,7 +317,7 @@ async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(g
     q2_outcome = {
         "rewards": rewards,
         "consequences": consequences,
-        "money": request.deposit,
+        "money_spent": request.deposit,  # Changed field
         "points_earned": points_earned
     }
     update_fields["q2_outcome"] = q2_outcome
@@ -330,7 +331,7 @@ async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(g
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q2_outcome": q2_outcome
     }
-
+    
 @router.put("/decision/sq2")
 async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -357,10 +358,10 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         consequences = []
         chosen_money = 0
     elif request.decision == "withdraw":
-        if "q2_outcome" not in stats or "money" not in stats["q2_outcome"]:
+        if "q2_outcome" not in stats or "money_spent" not in stats["q2_outcome"]:
             raise HTTPException(status_code=400, detail="No deposit amount found from Q2 decision")
         
-        deposit_amount = stats["q2_outcome"]["money"]
+        deposit_amount = stats["q2_outcome"]["money_spent"]
         new_money = stats["money"] + deposit_amount
         points_earned = -5
         update_fields["money"] = new_money
@@ -378,7 +379,7 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
     sq2_outcome = {
         "rewards": rewards,
         "consequences": consequences,
-        "money": chosen_money,
+        "money_spent": chosen_money,  # Changed field
         "points_earned": points_earned
     }
     update_fields["sq2_outcome"] = sq2_outcome
