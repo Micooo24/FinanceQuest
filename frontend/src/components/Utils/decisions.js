@@ -75,3 +75,39 @@ export const sq2Decision = async (decision, updateStatsCallback) => {
     console.error('Error processing SQ2 decision:', error);
   }
 };
+
+export const q3BaristaDecision = async (decision, updateStatsCallback) => {
+  const authToken = localStorage.getItem('authToken');
+  try {
+    const response = await axios.put(
+      'http://127.0.0.1:8000/stats/decision/q3/barista',
+      { decision },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    updateStatsCallback(response.data.updatedStats);
+  } catch (error) {
+    console.error('Error processing Q3 barista decision:', error);
+  }
+};
+
+export const q3CrewDecision = async (decision, updateStatsCallback) => {
+  const authToken = localStorage.getItem('authToken');
+  try {
+    const response = await axios.put(
+      'http://127.0.0.1:8000/stats/decision/q3/crew',
+      { decision },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    updateStatsCallback(response.data.updatedStats);
+  } catch (error) {
+    console.error('Error processing Q3 crew decision:', error);
+  }
+};

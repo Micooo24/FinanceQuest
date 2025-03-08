@@ -391,67 +391,123 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         "sq2_outcome": sq2_outcome
     }
 
+@router.put("/decision/q3/barista")
+async def q3_barista_decision(request: Q3DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+
+    if request.decision not in ["yes", "no"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'yes' or 'no'.")
+
+    update_fields = {
+        "q3_decision": "barista" if request.decision == "yes" else "no job",
+        "q3_done": True
+    }
+
+    if request.decision == "yes":
+        new_money = stats["money"] + 100
+        points_earned = 15
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] + points_earned
+        rewards = [
+            "Gains customer service & teamwork skills",
+            "Opportunity to earn extra through tips",
+            "Hands-on experience in food service"
+        ]
+        consequences = [
+            "Physically demanding (long hours of standing)",
+            "Stressful during peak hours"
+        ]
+    else:
+        new_money = stats["money"]
+        points_earned = 0
+        rewards = []
+        consequences = [
+            "No additional income, financial struggles ahead",
+            "Missed opportunity to develop work experience",
+            "Fewer networking and career-building chances",
+            "Risk of financial dependency or borrowing money"
+        ]
+
+    q3_outcome = {
+        "rewards": rewards,
+        "consequences": consequences,
+        "money_earned": new_money - stats["money"],
+        "points_earned": points_earned
+    }
+    update_fields["q3_outcome"] = q3_outcome
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "Q3 barista decision processed successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
+        "q3_outcome": q3_outcome
+    }
 
 
-# @router.put("/decision/q3")
-# async def q3_decision(request: Q3DecisionRequest, current_user: dict = Depends(get_current_user)):
-#     user_id = current_user["_id"]
-#     stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
-#     if stats is None:
-#         raise HTTPException(status_code=404, detail="Stats not found for the current user")
+@router.put("/decision/q3/crew")
+async def q3_crew_decision(request: Q3DecisionRequest, current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+
+    if request.decision not in ["yes", "no"]:
+        raise HTTPException(status_code=400, detail="Invalid decision. Must be 'yes' or 'no'.")
+
+    update_fields = {
+        "q3_decision": "crew" if request.decision == "yes" else "no job",
+        "q3_done": True
+    }
+
+    if request.decision == "yes":
+        new_money = stats["money"] + 150
+        points_earned = 10
+        update_fields["money"] = new_money
+        update_fields["points"] = stats["points"] + points_earned
+        rewards = [
+            "Stable income with regular shifts",
+            "Opportunities for promotion within the company",
+            "Develops teamwork and problem-solving skills"
+        ]
+        consequences = [
+            "Physically demanding tasks (lifting, long hours)",
+            "Workplace pressure from customers and management"
+        ]
+    else:
+        new_money = stats["money"]
+        points_earned = 0
+        rewards = []
+        consequences = [
+            "No stable income, future expenses will be harder to manage",
+            "Limited work experience, affecting career growth",
+            "Lack of financial security and independence",
+            "Increased risk of falling behind in personal development"
+        ]
+
+    q3_outcome = {
+        "rewards": rewards,
+        "consequences": consequences,
+        "money_earned": new_money - stats["money"],
+        "points_earned": points_earned
+    }
+    update_fields["q3_outcome"] = q3_outcome
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "Q3 crew decision processed successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
+        "q3_outcome": q3_outcome
+    }
     
-#     if request.decision not in ["barista", "freelancer"]:
-#         raise HTTPException(status_code=400, detail="Invalid decision. Must be 'barista' or 'freelancer'.")
-
-#     update_fields = {
-#         "q3_decision": request.decision,
-#         "q3_done": True
-#     }
-
-#     if request.decision == "barista":
-#         new_money = stats["money"] + 100
-#         update_fields["money"] = new_money
-#         update_fields["points"] = stats["points"] + 15
-#         rewards = [
-#             "Gains customer service & teamwork skills",
-#             "Opportunity to earn extra through tips",
-#             "Hands-on experience in food service"
-#         ]
-#         consequences = [
-#             "Physically demanding (long hours of standing)",
-#             "Stressful during peak hours"
-#         ]
-#     elif request.decision == "freelancer":
-#         new_money = stats["money"] + 150
-#         update_fields["money"] = new_money
-#         update_fields["points"] = stats["points"] + 10
-#         rewards = [
-#             "Flexible schedule, no commute",
-#             "Builds digital and writing skills",
-#             "Potential to scale up earnings"
-#         ]
-#         consequences = [
-#             "Unstable income, may not get clients regularly",
-#             "Requires strong self-discipline and time management"
-#         ]
-
-#     q3_outcome = {
-#         "rewards": rewards,
-#         "consequences": consequences
-#     }
-#     update_fields["q3_outcome"] = q3_outcome
-
-#     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
-#     updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
-#     updated_stats["_id"] = str(updated_stats["_id"])
-
-#     return {
-#         "message": "Q3 decision processed successfully",
-#         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
-#         "q3_outcome": q3_outcome
-#     }
-
-
 
 #     # Leaderboard routes
 # @router.get("/leaderboard/medals", response_model=List[LeaderboardEntry])

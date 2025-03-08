@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
+import { q3CrewDecision } from "../../Utils/decisions"; // Adjust the import path as necessary
 
-const Modal9F = ({ onChoose }) => {
+const Modal9F = ({ onChoose, updateStatsCallback }) => {
   const [showModal, setShowModal] = useState(true);
 
-  const handleClose = (option) => {
+  const handleClose = async (option) => {
     setShowModal(false);
     if (onChoose) {
       onChoose(option);
+    }
+    if (option === "keepGoing") {
+      await q3CrewDecision("yes", updateStatsCallback);
+    } else if (option === "quitJob") {
+      await q3CrewDecision("no", updateStatsCallback);
     }
   };
 
