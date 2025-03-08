@@ -63,7 +63,7 @@ const Modal3 = ({ onContinue }) => {
           </Typography>
 
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>
-            "I need to make sure I have enough food for at least a week… but I also need to save enough for other expenses."
+              "Good day, ma’am! Welcome to the Bank. How may I assist you today?"
           </Typography>
 
           <Button variant="h6" sx={{ color: '#000', fontFamily: "'Cinzel', serif", fontWeight: 'bold' }} onClick={handleClose}>

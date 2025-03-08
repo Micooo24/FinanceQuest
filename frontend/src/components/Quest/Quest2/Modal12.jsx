@@ -166,6 +166,7 @@ const Modal12 = ({ onContinue }) => {
             />
             <TextField
               fullWidth
+              label="Birthdate"
               type="date"
               name="birthDate"
               value={formData.birthDate}
@@ -196,7 +197,7 @@ const Modal12 = ({ onContinue }) => {
             />
             <TextField
               fullWidth
-              label="Email (if available)"
+              label="Email (optional)"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -214,29 +215,14 @@ const Modal12 = ({ onContinue }) => {
 
             <TextField
               fullWidth
-              label="Mother’s Maiden Name (for security verification)"
+              label="Mother’s Name (for security verification)"
               name="motherMaidenName"
               value={formData.motherMaidenName}
               onChange={handleChange}
               error={!!errors.motherMaidenName}
               helperText={errors.motherMaidenName}
               sx={{ mt: 2, mb: 2 }}
-            />
-
-            <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>Account Preferences:</Typography>
-            <FormControlLabel control={<Checkbox name="onlineBanking" checked={formData.onlineBanking} onChange={handleChange} />} label="Enroll in Online Banking" />
-            <FormControlLabel control={<Checkbox name="atmCard" checked={formData.atmCard} onChange={handleChange} />} label="Request ATM Card" />
-
-            <TextField
-              fullWidth
-              label="Initial Deposit Amount (₱)"
-              name="initialDeposit"
-              value={formData.initialDeposit}
-              onChange={handleChange}
-              error={!!errors.initialDeposit}
-              helperText={errors.initialDeposit}
-              sx={{ mt: 2, mb: 2 }}
-            />
+            />     
 
             <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: '#000' }}>
               I confirm that the information provided above is correct and that I agree to the terms and conditions of the Piso Debit Account.

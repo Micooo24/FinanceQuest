@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
 
-const Modal1 = ({ onContinue }) => {
+const Modal1 = ({ onContinue }) => { // Use onContinue instead of onClose
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
     setShowModal(false);
-    onContinue();
+    onContinue(); // Move to the next modal
   };
 
   useEffect(() => {
@@ -44,30 +44,42 @@ const Modal1 = ({ onContinue }) => {
           <Typography
             variant="h6"
             sx={{
-              position: 'absolute',
-              top: '0px',
-              left: '120px',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              fontFamily: "'Cinzel', serif",
-              fontSize: '18px',
-              width: '25%',
-              fontWeight: 'bold',
-              color: '#000',
-              transform: 'translate(-50%, -50%)',
-              border: '2px solid rgba(0, 0, 0, 0.8)',
+                position: 'absolute',
+                top: '0px',
+                left: '120px',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                padding: '5px 10px',
+                borderRadius: '5px',
+                fontFamily: "'Cinzel', serif",
+                fontSize: '18px',
+                width: '25%',
+                fontWeight: 'bold',
+                color: '#000',
+                transform: 'translate(-50%, -50%)',
+                border: '2px solid rgba(0, 0, 0, 0.8)',
             }}
           >
-            🎓 Quest2 - Student Debit Card
+           🎓 Quest 3 - Finding Part-Time Job
           </Typography>
-
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>
-            ✅ Open a Piso Debit Card to manage money better. <br />
-            ✅ Learn how to use a debit card for budgeting and safe transactions. <br />
-            ✅ Take the first step toward financial independence. <br />
-          </Typography>
-
+                      "Earning Your First Income"
+                    </Typography>
+          
+                    <Typography variant="h6" sx={{ color: '#000', mb: 1, fontFamily: "'Cinzel', serif", fontWeight: 'bold' }}>
+                      Main Goals: 
+                    </Typography>
+          
+                    <Box sx={{ textAlign: 'left', display: 'inline-block', mb: 2 }}>
+                      <Typography variant="body1" sx={{ color: '#000', fontFamily: "'Fraunces', serif", fontSize: "18px" }}>
+                        <ul>
+                          <li>  Learn how to find and apply for a part-time job.</li>
+                          <li>  Understand how to balance work and studies.</li>
+                          <li>  Manage your earnings wisely to achieve financial stability.</li> 
+                        </ul>
+                      </Typography>
+                    </Box>
+          
+<br />
           <Button variant="h6" sx={{ color: '#000', fontFamily: "'Cinzel', serif", fontWeight: 'bold' }} onClick={handleClose}>
             Continue
           </Button>

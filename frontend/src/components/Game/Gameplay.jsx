@@ -261,8 +261,10 @@ import { onPointerMove, onMouseClick } from './Interaction/helper';
 import StatsJS from 'stats.js';
 import Quest1 from '../Quest/Quest1/Quest1';
 import Quest2 from '../Quest/Quest2/Quest2';
+import Quest3 from '../Quest/Quest3/Quest3';
 import SideQuest1 from '../Quest/SideQuest/SideQuest1';
 import Modal6RentDecision from '../Quest/Quest1/Modal6';
+import FinancialTips from "./FinancialTips";
 // import { toggleSystemNarrationModal } from './Interaction/NPC4Interaction';  
 
 // MUI Imports
@@ -398,6 +400,8 @@ const Gameplay = () => {
   ];  
 
   return (
+
+    
     <Box
       ref={mountRef}
       sx={{
@@ -448,9 +452,11 @@ const Gameplay = () => {
           <Typography variant="h2" color="rgba(94, 2, 94, 0.9)" sx={{ mb: 2, fontSize: 100 , fontFamily: "'Oi', serif",}}>
             FINANCE QUEST
           </Typography>
-          <Button variant="h6" sx={{ mt: 2, fontFamily: "'Fraunces', serif" }} onClick={startGame}>
-            Begin Adventure
+          <Button variant="h6" sx={{ mt: 2, mb: 5 ,fontFamily: "'Fraunces', serif", color: "#000" }} onClick={startGame}>
+            Start Quest
           </Button>
+
+          <FinancialTips />
         </Box>
       )}
 
@@ -491,6 +497,17 @@ const Gameplay = () => {
               />
             </>
           )}
+          {playerStats.q2_done && !playerStats.q3_done && (
+            <>
+              <Quest3 
+                onComplete={() => setPlayerStats((prevStats) => ({ ...prevStats, q3_done: true }))}
+                setPlayerStats={setPlayerStats}
+                characterPosition={characterPosition} 
+                fetchPlayerStats={fetchPlayerStats}
+              />
+              </>
+            )}
+
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats pts={playerStats.points} money={playerStats.money} />
@@ -527,6 +544,7 @@ const Gameplay = () => {
 };
 
 export default Gameplay;
+
 
 // import React, { useEffect, useRef, useState, useContext } from 'react';
 // import * as THREE from 'three';

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
 
-const Modal1 = ({ onContinue }) => {
+const Modal6 = ({ onContinue }) => {
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
@@ -29,7 +29,7 @@ const Modal1 = ({ onContinue }) => {
             position: 'absolute',
             top: '70%',
             left: '50%',
-            transform: 'translate(-50%, -70%)',
+            transform: 'translate(-50%, -40%)',
             width: '80%',
             maxWidth: '100%',
             minWidth: '600px',
@@ -52,21 +52,21 @@ const Modal1 = ({ onContinue }) => {
               borderRadius: '5px',
               fontFamily: "'Cinzel', serif",
               fontSize: '18px',
-              width: '25%',
+              width: '15%',
               fontWeight: 'bold',
               color: '#000',
               transform: 'translate(-50%, -50%)',
-              border: '2px solid rgba(0, 0, 0, 0.8)',
+              border: '2px solid rgba(0, 0, 0, 0.8)'
             }}
           >
-            🎓 Quest2 - Student Debit Card
+            💬 System
           </Typography>
 
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>
-            ✅ Open a Piso Debit Card to manage money better. <br />
-            ✅ Learn how to use a debit card for budgeting and safe transactions. <br />
-            ✅ Take the first step toward financial independence. <br />
-          </Typography>
+                "Quest Unlocked – Finding a Part-Time Job!"<br></br>
+                📝 Task to Complete: Apply for and secure a part-time job that fits your schedule and skills.
+            </Typography>
+            
 
           <Button variant="h6" sx={{ color: '#000', fontFamily: "'Cinzel', serif", fontWeight: 'bold' }} onClick={handleClose}>
             Continue
@@ -77,4 +77,4 @@ const Modal1 = ({ onContinue }) => {
   );
 };
 
-export default Modal1;
+export default Modal6;

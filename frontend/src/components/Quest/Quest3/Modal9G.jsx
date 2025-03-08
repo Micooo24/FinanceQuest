@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Fade, Backdrop, Modal } from '@mui/material';
 
-const Modal1 = ({ onContinue }) => {
+const Modal9G = ({ onContinue }) => {
   const [showModal, setShowModal] = useState(true);
 
   const handleClose = () => {
@@ -29,7 +29,7 @@ const Modal1 = ({ onContinue }) => {
             position: 'absolute',
             top: '70%',
             left: '50%',
-            transform: 'translate(-50%, -70%)',
+            transform: 'translate(-50%, -40%)',
             width: '80%',
             maxWidth: '100%',
             minWidth: '600px',
@@ -41,31 +41,18 @@ const Modal1 = ({ onContinue }) => {
             border: '2px solid rgba(0, 0, 0, 0.8)',
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              position: 'absolute',
-              top: '0px',
-              left: '120px',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              fontFamily: "'Cinzel', serif",
-              fontSize: '18px',
-              width: '25%',
-              fontWeight: 'bold',
-              color: '#000',
-              transform: 'translate(-50%, -50%)',
-              border: '2px solid rgba(0, 0, 0, 0.8)',
-            }}
-          >
-            🎓 Quest2 - Student Debit Card
-          </Typography>
+          
 
           <Typography variant="body1" sx={{ color: '#000', mb: 2, fontFamily: "'Fraunces', serif", fontSize: "20px" }}>
-            ✅ Open a Piso Debit Card to manage money better. <br />
-            ✅ Learn how to use a debit card for budgeting and safe transactions. <br />
-            ✅ Take the first step toward financial independence. <br />
+          ✔ Pros: <br />
+            ✅ Steady income and company benefits (e.g., discounts on meals). <br />
+            ✅ Team-oriented work environment. <br />
+            ✅ Experience in multitasking and efficiency. <br /> <br />
+            ⚠ Cons: <br />
+            ❌ Physically demanding (standing, lifting, working under pressure). <br />
+            ❌ Shift work may interfere with study time. <br />
+            ❌ Customer interactions can be stressful. <br />
+
           </Typography>
 
           <Button variant="h6" sx={{ color: '#000', fontFamily: "'Cinzel', serif", fontWeight: 'bold' }} onClick={handleClose}>
@@ -77,4 +64,4 @@ const Modal1 = ({ onContinue }) => {
   );
 };
 
-export default Modal1;
+export default Modal9G;
