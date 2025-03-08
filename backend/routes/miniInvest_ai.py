@@ -59,14 +59,75 @@ async def analyze_miniInvest(user_id: str):
         latest_entry = convert_to_string(user_answers.dict())
         formatted_data = json.dumps(latest_entry, indent=2)
 
-        # Construct AI prompt
-        prompt = f"""
-        Here is the user's miniInvest data:
-        {formatted_data}
-
-        ALL DATA PROVIDED ARE NON-EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY.
+        # Group answers by category and track specific responses
+        category_analysis = {}
+        response_patterns = []
         
-        Provide 5 sentences, First is the introduction containing the user's performance, Second is the user's strengths, Third is the user's weaknesses, Fourth is the suggestion for improvements and fifth is the what and who to contact for further assistance.
+        if "answers" in latest_entry:
+            for answer in latest_entry["answers"]:
+                category = answer.get("category", "Unknown")
+                if category not in category_analysis:
+                    category_analysis[category] = {
+                        "total": 0,
+                        "correct": 0,
+                        "responses": []
+                    }
+                
+                category_analysis[category]["total"] += 1
+                is_correct = answer.get("is_correct", False)
+                if is_correct:
+                    category_analysis[category]["correct"] += 1
+                
+                # Track detailed response data
+                category_analysis[category]["responses"].append({
+                    "question": answer.get("question"),
+                    "selected_answer": answer.get("selected_index"),
+                    "correct_answer": answer.get("correct_index"),
+                    "is_correct": is_correct,
+                    "explanation": answer.get("explanation")
+                })
+                
+                # Add to response patterns
+                response_patterns.append({
+                    "category": category,
+                    "timing": answer.get("timestamp"),
+                    "accuracy": is_correct
+                })
+
+        # Update AI prompt for more detailed analysis
+        prompt = f"""
+        Analyze the user's investment knowledge based on this assessment data:
+        {json.dumps(category_analysis, indent=2)}
+
+        Response patterns: {json.dumps(response_patterns, indent=2)}
+
+        Provide a natural, conversational analysis that includes:
+
+        Investment Basics:
+        - Score and pattern analysis
+        - Specific concepts the user understands well
+        - Concepts needing improvement
+        - Personalized learning recommendations
+        
+        Risk Management:
+        - Score and pattern analysis
+        - Strong risk management concepts
+        - Risk areas needing attention
+        - Targeted improvement strategies
+        
+        Market Analysis:
+        - Score and pattern analysis
+        - Market concepts well understood
+        - Areas for deeper market knowledge
+        - Specific learning resources
+        
+        Overall Assessment:
+        - Knowledge patterns across categories
+        - Learning style insights based on response patterns
+        - Actionable next steps
+        - Suggested learning resources
+
+        Format the response in a clear, conversational style without headings or special characters.
         """
         
         # logger.info(f"AI Prompt: {prompt}")  # Log the AI prompt

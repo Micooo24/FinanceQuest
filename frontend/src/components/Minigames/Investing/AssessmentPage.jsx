@@ -5,44 +5,195 @@ import { Link } from "react-router-dom";
 import "./InvestingMinigame.css";
 import axios from "axios";
 
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Font,
+  PDFViewer,
+  pdf,
+} from "@react-pdf/renderer";
+import tuplogo from "/assets/TUPLogo.png";
+import fqlogo from "/assets/financial.jpg";
+import { renderToString } from "react-dom/server";
+
 const questions = {
   level1: [
+    // Investment Basics Category (4 questions)
     {
-      question: "Which is a better investment strategy?",
+      category: "Investment Basics",
+      question: "What is diversification in investing?",
       options: [
-        "Investing in high-risk stocks without research",
-        "Diversifying your portfolio across different assets",
+        "Putting all money in one stock",
+        "Spreading investments across different assets",
+        "Only investing in high-risk options",
+        "Keeping all money in savings",
       ],
-      answer: 1, // index of the correct option
-      tip: "Diversification reduces the risk of major losses and provides a better return over time.",
-      explanation:
-        "Diversifying your portfolio helps balance potential gains and losses, offering a safer and more stable approach.",
+      answer: 1,
+      tip: "Think about not putting all eggs in one basket",
+      explanation: "Diversification reduces risk by spreading investments",
     },
     {
-      question: "Why should you track your net worth regularly?",
+      category: "Investment Basics",
+      question: "Which investment typically has the lowest risk?",
       options: [
-        "To monitor financial progress and make adjustments",
-        "To know how much money you can spend immediately",
+        "Cryptocurrency",
+        "Government bonds",
+        "Penny stocks",
+        "Forex trading",
       ],
-      answer: 0,
-      tip: "Tracking net worth helps you assess your overall financial health.",
+      answer: 1,
+      tip: "Government-backed securities are generally safer",
       explanation:
-        "Regularly reviewing your net worth allows you to evaluate financial progress and adjust plans as needed.",
+        "Government bonds are backed by the full faith of the government",
     },
     {
-      question: "why should you know the investment interest?",
+      category: "Investment Basics",
+      question: "What is compound interest?",
       options: [
-        "To monitor financial progress and make adjustments",
-        "To know how much money you can spend immediately",
+        "Interest only on principal",
+        "Interest earned on interest",
+        "Fixed monthly payment",
+        "One-time payment",
       ],
-      answer: 0,
-      tip: "Tracking net worth helps you assess your overall financial health.",
+      answer: 1,
+      tip: "Think about growth over time",
       explanation:
-        "Regularly reviewing your net worth allows you to evaluate financial progress and adjust plans as needed.",
+        "Compound interest is interest earned on both principal and accumulated interest",
     },
-    
+    {
+      category: "Investment Basics",
+      question: "What is a mutual fund?",
+      options: [
+        "Individual stock purchase",
+        "Pooled investment vehicle",
+        "Bank savings account",
+        "Government bond",
+      ],
+      answer: 1,
+      tip: "Think about collective investing",
+      explanation:
+        "Mutual funds pool money from multiple investors to invest in various securities",
+    },
+    // Risk Management Category (4 questions)
+    {
+      category: "Risk Management",
+      question: "What is the purpose of an emergency fund?",
+      options: [
+        "To invest in stocks",
+        "For vacation savings",
+        "For unexpected expenses",
+        "For regular bills",
+      ],
+      answer: 2,
+      tip: "Think about unexpected situations",
+      explanation:
+        "Emergency funds provide financial security for unexpected events",
+    },
+    {
+      category: "Risk Management",
+      question: "What is risk tolerance?",
+      options: [
+        "Maximum investment amount",
+        "Ability to handle losses",
+        "Minimum return required",
+        "Investment timeline",
+      ],
+      answer: 1,
+      tip: "Think about comfort with losses",
+      explanation:
+        "Risk tolerance measures how much investment loss you can handle",
+    },
+    {
+      category: "Risk Management",
+      question: "What is portfolio rebalancing?",
+      options: [
+        "Adding new investments",
+        "Removing investments",
+        "Maintaining target allocations",
+        "Closing accounts",
+      ],
+      answer: 2,
+      tip: "Think about maintaining balance",
+      explanation:
+        "Rebalancing keeps your investment mix aligned with your goals",
+    },
+    {
+      category: "Risk Management",
+      question: "What is asset allocation?",
+      options: [
+        "Buying single stocks",
+        "Distributing investments",
+        "Selling all assets",
+        "Borrowing money",
+      ],
+      answer: 1,
+      tip: "Think about investment distribution",
+      explanation:
+        "Asset allocation is the strategic distribution of investments",
+    },
+    // Market Analysis Category (4 questions)
+    {
+      category: "Market Analysis",
+      question: "What is a bull market?",
+      options: [
+        "Market is falling",
+        "Market is rising",
+        "Market is closed",
+        "Market is stable",
+      ],
+      answer: 1,
+      tip: "Think about upward trends",
+      explanation: "Bull market indicates rising market prices and optimism",
+    },
+    {
+      category: "Market Analysis",
+      question: "What is market volatility?",
+      options: [
+        "Market closing time",
+        "Price fluctuations",
+        "Trading volume",
+        "Market opening",
+      ],
+      answer: 1,
+      tip: "Think about price changes",
+      explanation:
+        "Volatility measures the rate and magnitude of price changes",
+    },
+    {
+      category: "Market Analysis",
+      question: "What is a P/E ratio?",
+      options: [
+        "Profit to expense",
+        "Price to earnings",
+        "Performance evaluation",
+        "Portfolio efficiency",
+      ],
+      answer: 1,
+      tip: "Think about stock valuation",
+      explanation: "P/E ratio compares stock price to company earnings",
+    },
+    {
+      category: "Market Analysis",
+      question: "What is market capitalization?",
+      options: [
+        "Company debt",
+        "Total company value",
+        "Annual profit",
+        "Employee count",
+      ],
+      answer: 1,
+      tip: "Think about company worth",
+      explanation: "Market cap is total value of company's outstanding shares",
+    },
   ],
 };
+
+// Update timer configuration
+const questionTimer = 10; // 10 seconds per question
 
 const InvestingPage = () => {
   //Game start Variables
@@ -59,143 +210,198 @@ const InvestingPage = () => {
   // Timers
   const [secondsLeft, setSecondsLeft] = useState(7);
   const [showContent, setShowContent] = useState(false);
-
   const [howToPlayTimeLeft, setHowToPlayTimeLeft] = useState(600); // Timer for How to Play section
   const [showHowToPlay, setShowHowToPlay] = useState(true); // Controls whether the How to Play section is shown
-
   const threeMinutesTimer = 120; // 5 minutes in seconds
   const [timeLeft, setTimeLeft] = useState(threeMinutesTimer);
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState([]); // Initialize as empty array
+  const [questionStartTime, setQuestionStartTime] = useState(Date.now()); // Track start time for new question
   let timer; // Declare the timer variable at the top of your component or relevant scope
-  
+
+  // Add new state for randomized questions
+  const [randomizedQuestions, setRandomizedQuestions] = useState([]);
+
+  // Function to shuffle array
+  const shuffleArray = (array) => {
+    let currentIndex = array.length,
+      randomIndex;
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+    return array;
+  };
+
+  // Initialize randomized questions
+  useEffect(() => {
+    // Create a copy of the questions and shuffle them
+    const shuffledQuestions = shuffleArray(
+      [...questions.level1]
+        .map((q) => ({
+          ...q,
+          // Shuffle the options and keep track of the original answer index
+          options: shuffleArray(
+            [...q.options].map((opt, i) => ({ text: opt, originalIndex: i }))
+          ),
+        }))
+        .map((q) => {
+          // Update the answer index based on the shuffled options
+          const newAnswerIndex = q.options.findIndex(
+            (opt) => opt.originalIndex === q.answer
+          );
+          return {
+            ...q,
+            answer: newAnswerIndex,
+            options: q.options.map((opt) => opt.text),
+          };
+        })
+    );
+    setRandomizedQuestions(shuffledQuestions);
+  }, []);
+
   const handleAnswer = (selectedIndex) => {
+    const answerTime = new Date().getTime() - questionStartTime;
     setSelectedIndex(selectedIndex);
-    setIsButtonDisabled(true); // Disable buttons for 3 seconds
+    setIsButtonDisabled(true);
 
-    // Update selectedAnswers state
-    setSelectedAnswers((prevAnswers) => {
-        const updatedAnswers = [...prevAnswers];
-        updatedAnswers[currentQuestionIndex] = {
-            question: currentQuestion.question,
-            selected_index: selectedIndex,
-            is_correct: selectedIndex === currentQuestion.answer,
-            timestamp: new Date().toISOString(),
-        };
-        return updatedAnswers;
-    });
+    // Create the answer object with all necessary properties
+    const newAnswer = {
+      question: currentQuestion.question,
+      category: currentQuestion.category,
+      selected_index: selectedIndex,
+      correct_index: currentQuestion.answer,
+      is_correct: selectedIndex === currentQuestion.answer,
+      explanation:
+        selectedIndex === currentQuestion.answer
+          ? currentQuestion.explanation
+          : `Incorrect. ${currentQuestion.tip}`,
+      response_time: answerTime / 1000,
+      confidence_level:
+        answerTime < 5000 ? "high" : answerTime < 15000 ? "medium" : "low",
+      timestamp: new Date().toISOString(),
+    };
 
-    // Set feedback based on the answer
+    // Update selectedAnswers immutably
+    setSelectedAnswers((prev) => [...prev, newAnswer]);
+
+    // Show both the selected answer and correct answer
     if (selectedIndex === currentQuestion.answer) {
-        setPoints((prevPoints) => prevPoints + 1); // Increase points on correct answer
-        setFeedback({
-            type: "correct",
-            message: currentQuestion.explanation, // Show explanation on correct answer
-        });
+      setPoints((prevPoints) => prevPoints + 1);
+      setFeedback({
+        type: "correct",
+        message: currentQuestion.explanation,
+      });
     } else {
-        setFeedback({
-            type: "incorrect",
-            message: currentQuestion.tip, // Show tip on incorrect answer
-        });
+      setFeedback({
+        type: "incorrect",
+        message: `${currentQuestion.tip} (Correct answer: ${String.fromCharCode(
+          65 + currentQuestion.answer
+        )})`,
+      });
     }
 
-    // Disable buttons for 3 seconds, show feedback, then proceed to next question
+    // Rest of the timing logic remains the same
     setTimeout(() => {
-        setIsButtonDisabled(false); // Enable buttons after 3 seconds
-        setFeedback(null); // Hide the feedback temporarily
-        setSelectedIndex(null); // Reset the selected index (clear classes)
+      setIsButtonDisabled(false); // Enable buttons after 3 seconds
+      setFeedback(null); // Hide the feedback temporarily
+      setSelectedIndex(null); // Reset the selected index (clear classes)
 
-        // Show feedback for 5 seconds
-        setTimeout(() => {
-            setCurrentQuestionIndex((prevIndex) => {
-                if (prevIndex + 1 < questions.level1.length) {
-                    return prevIndex + 1;
-                } else {
-                    setGameOver(true); // Set game over state
-                    return prevIndex;
-                }
-            });
-        }, 50); // Delay before showing the next question
+      // Show feedback for 5 seconds
+      setTimeout(() => {
+        setCurrentQuestionIndex((prevIndex) => {
+          if (prevIndex + 1 < randomizedQuestions.length) {
+            return prevIndex + 1;
+          } else {
+            setGameOver(true); // Set game over state
+            return prevIndex;
+          }
+        });
+      }, 50); // Delay before showing the next question
     }, 3000); // Delay before showing feedback and enabling the next question
-};
+  };
 
-// Save answers when gameOver changes
-useEffect(() => {
+  // Save answers when gameOver changes
+  useEffect(() => {
     if (gameOver) {
-        saveUserAnswers(selectedAnswers);
+      saveUserAnswers(selectedAnswers);
     }
-}, [gameOver]);
+  }, [gameOver]);
 
-const saveUserAnswers = async (userAnswers) => {
+  const saveUserAnswers = async (userAnswers) => {
     try {
-        const userId = localStorage.getItem('userId'); // Retrieve userId from local storage
-        if (!userId) {
-            console.error("User ID not found in localStorage");
-            return;
-        }
+      const userId = localStorage.getItem("userId"); // Retrieve userId from local storage
+      if (!userId) {
+        console.error("User ID not found in localStorage");
+        return;
+      }
 
-        const payload = {
-            user_id: userId,
-            answers: userAnswers,
-        };
+      const payload = {
+        user_id: userId,
+        answers: userAnswers,
+      };
 
-        console.log('Payload:', JSON.stringify(payload, null, 2)); // Log the payload to verify its structure
+      console.log("Payload:", JSON.stringify(payload, null, 2)); // Log the payload to verify its structure
 
-        // Save user answers
-        const saveResponse = await axios.post('http://localhost:8000/miniInvesting/save-answers', payload);
-        console.log(saveResponse.data.message);
+      // Save user answers
+      const saveResponse = await axios.post(
+        "http://localhost:8000/miniInvesting/save-answers",
+        payload
+      );
+      console.log(saveResponse.data.message);
 
-        // Only proceed to analyze miniInvest if the save was successful
-        if (saveResponse.status === 200) {
-            const analyzeResponse = await axios.post(`http://localhost:8000/miniInvesting_ai/analyze-miniInvest/${userId}`);
-            console.log('Analysis:', analyzeResponse.data.analysis);
-
-          // Fetch the latest AI analysis after the analysis is completed
-          fetchAiAnalysis(userId);
-        } else {
-            console.error('Failed to save user answers');
-        }
-
+      // Only proceed to analyze miniInvest if the save was successful
+      if (saveResponse.status === 200) {
+        const analyzeResponse = await axios.post(
+          `http://localhost:8000/miniInvesting_ai/analyze-miniInvest/${userId}`
+        );
+        console.log("Analysis:", analyzeResponse.data.analysis);
+        // Fetch the latest AI analysis after the analysis is completed
+        fetchAiAnalysis(userId);
+      } else {
+        console.error("Failed to save user answers");
+      }
     } catch (error) {
-        console.error('Error:', error);
+      console.error("Error:", error);
     }
-};
+  };
 
-
-const fetchAiAnalysis = async (userId) => {
-  try {
-    const response = await axios.get(`http://localhost:8000/miniInvesting_ai/get-miniInvest-analysis/${userId}`);
-    if (response.data && response.data.analysis) {
-      setAiAnalysis(response.data.analysis);
-    } else {
-      console.error('No analysis data found in response');
+  const fetchAiAnalysis = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/miniInvesting_ai/get-miniInvest-analysis/${userId}`
+      );
+      if (response.data && response.data.analysis) {
+        setAiAnalysis(response.data.analysis);
+      } else {
+        console.error("No analysis data found in response");
+      }
+    } catch (error) {
+      console.error("Error fetching AI analysis:", error);
     }
-  } catch (error) {
-    console.error('Error fetching AI analysis:', error);
-  }
-};
+  };
 
-useEffect(() => {
-  if (gameOver) {
-    // Calculate results and update state
-
-    // Set result message based on points
-    if (points >= 10) {
-      setResultMessage("Winner! Congratulations!");
-    } else {
-      setResultMessage("The score is too low");
+  useEffect(() => {
+    if (gameOver) {
+      // Calculate results and update state
+      // Set result message based on points
+      if (points >= 10) {
+        setResultMessage("Winner! Congratulations!");
+      } else {
+        setResultMessage("The score is too low");
+      }
+      // Fetch AI analysis
+      const userId = localStorage.getItem("userId");
+      fetchAiAnalysis(userId);
+      // Clean up the timer if the component unmounts
+      return () => clearTimeout(timer);
     }
-
-    // Fetch AI analysis
-    const userId = localStorage.getItem('userId');
-    fetchAiAnalysis(userId);
-
-    // Clean up the timer if the component unmounts
-    return () => clearTimeout(timer);
-  }
-}, [gameOver, points, navigate]);
-
+  }, [gameOver, points, navigate]);
 
   // loading Timer
   useEffect(() => {
@@ -216,7 +422,6 @@ useEffect(() => {
       const timer = setInterval(() => {
         setHowToPlayTimeLeft((prev) => prev - 1);
       }, 10000);
-
       return () => clearInterval(timer);
     } else if (howToPlayTimeLeft === 0) {
       setShowHowToPlay(false); // Hide "How to Play" after 1 minute
@@ -237,7 +442,6 @@ useEffect(() => {
     if (containerRef.current) {
       observer.observe(containerRef.current);
     }
-
     return () => {
       if (containerRef.current) {
         observer.unobserve(containerRef.current);
@@ -257,10 +461,11 @@ useEffect(() => {
 
   // Load the first question when the timer starts
   useEffect(() => {
-    if (currentQuestionIndex < questions.level1.length && !gameOver) {
-      setCurrentQuestion(questions.level1[currentQuestionIndex]);
+    if (currentQuestionIndex < randomizedQuestions.length && !gameOver) {
+      setCurrentQuestion(randomizedQuestions[currentQuestionIndex]);
+      setQuestionStartTime(Date.now()); // Reset start time for new question
     }
-  }, [currentQuestionIndex, gameOver]);
+  }, [currentQuestionIndex, gameOver, randomizedQuestions]);
 
   // Timer and game logic
   useEffect(() => {
@@ -268,33 +473,507 @@ useEffect(() => {
       setGameOver(true); // If time runs out, end the game
       return;
     }
-
     const interval = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
     }, 1000); // 1 second interval
-
     return () => clearInterval(interval);
   }, [timeLeft, gameOver]);
 
   useEffect(() => {
     if (gameOver) {
       // Calculate results and update state
-  
       // Set result message based on points
       if (points >= 10) {
         setResultMessage("Winner! Congratulations!");
       } else {
         setResultMessage("The score is too low");
       }
-  
       // Fetch AI analysis
-      const userId = localStorage.getItem('userId');
+      const userId = localStorage.getItem("userId");
       fetchAiAnalysis(userId);
-  
       // Clean up the timer if the component unmounts
       return () => clearTimeout(timer);
     }
   }, [gameOver, points, navigate]);
+
+  const getCategoryPerformance = () => {
+    const categoryStats = {};
+
+    try {
+      // Map questions to their categories for easier lookup
+      const questionsByCategory = {};
+      questions.level1.forEach((q) => {
+        if (!questionsByCategory[q.category]) {
+          questionsByCategory[q.category] = [];
+        }
+        questionsByCategory[q.category].push(q);
+      });
+
+      // Initialize stats for all categories
+      Object.keys(questionsByCategory).forEach((category) => {
+        categoryStats[category] = {
+          correct: 0,
+          total: questionsByCategory[category].length,
+        };
+      });
+
+      // Process answered questions
+      if (selectedAnswers && selectedAnswers.length > 0) {
+        selectedAnswers.forEach((answer) => {
+          if (answer && answer.category && answer.is_correct !== undefined) {
+            if (answer.is_correct) {
+              categoryStats[answer.category].correct += 1;
+            }
+          }
+        });
+      }
+
+      return categoryStats;
+    } catch (error) {
+      console.error("Error in getCategoryPerformance:", error);
+      // Fallback to default stats
+      return {
+        "Investment Basics": { correct: 0, total: 4 },
+        "Risk Management": { correct: 0, total: 4 },
+        "Market Analysis": { correct: 0, total: 4 },
+      };
+    }
+  };
+
+  const generatePDF = () => {
+    try {
+      // Ensure we have answers before generating PDF
+      if (!selectedAnswers || selectedAnswers.length === 0) {
+        console.error("No answers available");
+        alert("Please complete the assessment first");
+        return null;
+      }
+
+      const categoryPerformance = getCategoryPerformance();
+
+      if (
+        !categoryPerformance ||
+        Object.keys(categoryPerformance).length === 0
+      ) {
+        console.error("No category performance data available");
+        return null;
+      }
+
+      // Filter out any invalid answers
+      const validAnswers = selectedAnswers.filter(
+        (answer) =>
+          answer &&
+          answer.question &&
+          answer.selected_index !== undefined &&
+          answer.correct_index !== undefined &&
+          answer.response_time !== undefined
+      );
+
+      if (validAnswers.length === 0) {
+        console.error("No valid answers available");
+        return null;
+      }
+
+      const commonHeader = (title) => (
+        <View style={styles.header}>
+          <Image style={styles.logo} src={tuplogo} />
+          <Text style={styles.heading}>{title}</Text>
+          <Image style={styles.logo} src={fqlogo} />
+        </View>
+      );
+
+      return (
+        <Document>
+          {/* Page 1: Summary and Performance */}
+          <Page style={styles.page} size="A4">
+            <Watermark />
+            {commonHeader("INVESTMENT ASSESSMENT REPORT - PERFORMANCE")}
+
+            {/* User Details and Summary */}
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <View style={styles.section}>
+                <Text style={styles.heading}>User Details</Text>
+                <Text style={styles.text}>
+                  User ID: {localStorage.getItem("userId")}
+                </Text>
+                <Text style={styles.text}>
+                  Date: {new Date().toLocaleDateString()}
+                </Text>
+                <Text style={styles.text}>
+                  Time: {new Date().toLocaleTimeString()}
+                </Text>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.heading}>Assessment Summary</Text>
+                <Text style={styles.text}>
+                  Total Questions: {questions.level1.length}
+                </Text>
+                <Text style={styles.text}>Correct Answers: {points}</Text>
+                <Text style={styles.text}>
+                  Accuracy:{" "}
+                  {Math.round((points / questions.level1.length) * 100)}%
+                </Text>
+              </View>
+            </View>
+
+            {/* Category Performance */}
+            <View style={styles.section}>
+              <Text style={styles.heading}>Category Performance</Text>
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Category</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Score</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Performance</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Status</Text>
+                  </View>
+                </View>
+                {Object.entries(getCategoryPerformance()).map(
+                  ([category, stats]) => (
+                    <View key={category} style={styles.tableRow}>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>{category}</Text>
+                      </View>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>
+                          {stats.correct}/{stats.total}
+                        </Text>
+                      </View>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>
+                          {Math.round((stats.correct / stats.total) * 100)}%
+                        </Text>
+                      </View>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>
+                          {stats.correct / stats.total >= 0.5
+                            ? "PASS"
+                            : "NEEDS IMPROVEMENT"}
+                        </Text>
+                      </View>
+                    </View>
+                  )
+                )}
+              </View>
+            </View>
+
+            {/* Question Analysis */}
+            <View style={styles.section}>
+              <Text style={styles.heading}>Question Analysis</Text>
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <View style={{ ...styles.tableCol, width: "35%" }}>
+                    <Text style={styles.tableCell}>Question</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "15%" }}>
+                    <Text style={styles.tableCell}>Your Answer</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "15%" }}>
+                    <Text style={styles.tableCell}>Correct Answer</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "15%" }}>
+                    <Text style={styles.tableCell}>Time</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "20%" }}>
+                    <Text style={styles.tableCell}>Status</Text>
+                  </View>
+                </View>
+                {validAnswers.map((answer, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <View style={{ ...styles.tableCol, width: "35%" }}>
+                      <Text style={styles.tableCell}>
+                        {answer.question || "N/A"}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tableCol, width: "15%" }}>
+                      <Text style={styles.tableCell}>
+                        {answer.selected_index !== undefined
+                          ? String.fromCharCode(65 + answer.selected_index)
+                          : "N/A"}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tableCol, width: "15%" }}>
+                      <Text style={styles.tableCell}>
+                        {answer.correct_index !== undefined
+                          ? String.fromCharCode(65 + answer.correct_index)
+                          : "N/A"}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tableCol, width: "15%" }}>
+                      <Text style={styles.tableCell}>
+                        {answer.response_time
+                          ? `${answer.response_time.toFixed(1)}s`
+                          : "N/A"}
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tableCol, width: "20%" }}>
+                      <Text
+                        style={{
+                          ...styles.tableCell,
+                          color: answer.is_correct ? "#008000" : "#FF0000",
+                        }}
+                      >
+                        {answer.is_correct ? "CORRECT" : "INCORRECT"}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
+          </Page>
+
+          {/* Page 2: Feedback Analysis */}
+          <Page style={styles.page} size="A4">
+            <Watermark />
+            {commonHeader("INVESTMENT ASSESSMENT REPORT - FEEDBACK")}
+
+            <View style={styles.section}>
+              {/* Investment Basics Analysis */}
+              <View style={{ marginBottom: 30 }}>
+                <Text style={styles.subheading}>
+                  Investment Basics Analysis
+                </Text>
+                <Text style={styles.text}>
+                  {aiAnalysis
+                    ?.split("\n\n")
+                    .find((section) =>
+                      section.toLowerCase().includes("investment basics")
+                    )
+                    ?.replace("Investment Basics:", "")
+                    ?.trim() || "No analysis available"}
+                </Text>
+              </View>
+
+              {/* Risk Management Analysis */}
+              <View style={{ marginBottom: 30 }}>
+                <Text style={styles.subheading}>Risk Management Analysis</Text>
+                <Text style={styles.text}>
+                  {aiAnalysis
+                    ?.split("\n\n")
+                    .find((section) =>
+                      section.toLowerCase().includes("risk management")
+                    )
+                    ?.replace("Risk Management:", "")
+                    ?.replace("AI Analysis:", "")
+                    ?.trim() || "No analysis available"}
+                </Text>
+              </View>
+
+              {/* Market Analysis */}
+              <View style={{ marginBottom: 30 }}>
+                <Text style={styles.subheading}>Market Analysis Feedback</Text>
+                <Text style={styles.text}>
+                  {aiAnalysis
+                    ?.split("\n\n")
+                    .find((section) =>
+                      section.toLowerCase().includes("market analysis")
+                    )
+                    ?.replace("Market Analysis:", "")
+                    ?.replace("AI Analysis:", "")
+                    ?.trim() || "No analysis available"}
+                </Text>
+              </View>
+            </View>
+          </Page>
+
+          {/* Page 3: Detailed Category Analysis */}
+          <Page style={styles.page} size="A4">
+            <Watermark />
+            {commonHeader("INVESTMENT ASSESSMENT REPORT - DETAILED ANALYSIS")}
+
+            <View style={styles.section}>
+              <Text style={styles.heading}>
+                Category-wise Performance Breakdown
+              </Text>
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <View style={{ ...styles.tableCol, width: "30%" }}>
+                    <Text style={styles.tableCell}>Category</Text>
+                  </View>
+                  <View style={{ ...styles.tableCol, width: "70%" }}>
+                    <Text style={styles.tableCell}>Analysis</Text>
+                  </View>
+                </View>
+                {[
+                  "Investment Basics",
+                  "Risk Management",
+                  "Market Analysis",
+                ].map((category) => {
+                  const categoryAnalysis = aiAnalysis
+                    ?.split("\n\n")
+                    .find((section) =>
+                      section.toLowerCase().includes(category.toLowerCase())
+                    );
+                  return (
+                    <View key={category} style={styles.tableRow}>
+                      <View style={{ ...styles.tableCol, width: "30%" }}>
+                        <Text style={styles.tableCell}>{category}</Text>
+                      </View>
+                      <View style={{ ...styles.tableCol, width: "70%" }}>
+                        <Text style={styles.tableCell}>
+                          {categoryAnalysis
+                            ?.replace(`${category}:`, "")
+                            .replace("AI Analysis:", "")
+                            .trim()}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </Page>
+        </Document>
+      );
+    } catch (error) {
+      console.error("Error generating PDF content:", error);
+      return null;
+    }
+  };
+
+  // Update handleDownloadPDF to handle errors
+  const handleDownloadPDF = async () => {
+    try {
+      const pdfContent = generatePDF();
+      if (!pdfContent) {
+        alert("Unable to generate PDF: No performance data available");
+        return;
+      }
+
+      const blob = await pdf(pdfContent).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `investment-assessment-${new Date()
+        .toLocaleDateString()
+        .replace(/\//g, "-")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Error generating PDF. Please try again.");
+    }
+  };
+
+  Font.register({
+    family: "Lilita One",
+    src: "https://fonts.gstatic.com/s/lilitaone/v6/i7dPIFZ9Zz-WBtRtedDbUEY.ttf",
+  });
+
+  Font.register({
+    family: "Roboto",
+    src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Me5Q.ttf",
+  });
+
+  Font.register({
+    family: "Lora",
+    src: "/assets/fonts/Lora-Medium.ttf",
+    fontWeight: "normal",
+    format: "truetype",
+  });
+
+  const styles = StyleSheet.create({
+    page: {
+      padding: 20,
+      fontFamily: "Roboto",
+      position: "relative",
+    },
+    header: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    logo: {
+      width: 50,
+      height: 50,
+    },
+    heading: {
+      fontSize: 18,
+      fontFamily: "Lilita One",
+      color: "black",
+    },
+    section: {
+      marginBottom: 20,
+    },
+    text: {
+      fontSize: 12,
+      color: "#351742",
+    },
+    table: {
+      display: "table",
+      width: "auto",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderColor: "#351742",
+      borderRightWidth: 0,
+      borderBottomWidth: 0,
+    },
+    tableRow: {
+      flexDirection: "row",
+    },
+    tableCol: {
+      width: "25%",
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderColor: "#351742",
+      borderLeftWidth: 0,
+      borderTopWidth: 0,
+    },
+    tableCell: {
+      margin: 5,
+      fontSize: 10,
+      color: "#351742",
+    },
+    watermarkContainer: {
+      position: "absolute",
+      width: "100%",
+      height: "100%",
+      zIndex: -1,
+    },
+    watermarkText: {
+      fontSize: 30,
+      color: "rgba(200, 200, 200, 0.3)",
+      position: "absolute",
+    },
+    subheading: {
+      fontSize: 16,
+      fontFamily: "Lilita One",
+      color: "#351742",
+      marginBottom: 10,
+    },
+  });
+
+  const Watermark = () => (
+    <View style={styles.watermarkContainer}>
+      {[...Array(10)].map((_, row) =>
+        [...Array(5)].map((_, col) => (
+          <Text
+            key={`${row}-${col}`}
+            style={{
+              ...styles.watermarkText,
+              top: row * 100,
+              left: col * 150,
+              transform: "rotate(-45deg)",
+            }}
+          >
+            FinanceQuest
+          </Text>
+        ))
+      )}
+    </View>
+  );
 
   return (
     <div
@@ -370,7 +1049,7 @@ useEffect(() => {
                   <h1>HOW TO PLAY</h1>
 
                   <p>
-                    • Answer All the Questions, 10 seconds per question.
+                    • Answer All the Questions, 10 seconds per question. (
                     <br />
                     • The passing score is at least 50%.
                     <br />
@@ -409,7 +1088,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="game-questions-container">
-                <div className="points">Points: {points}/21</div>
+                <div className="points">Points: {points}/12</div>
                 <div className="indicators">
                   {["green", "yellow", "red", "blue", "purple"].map(
                     (color, index) => (
@@ -430,7 +1109,7 @@ useEffect(() => {
                         width: "100vw",
                         padding: "20px",
                         margin: "0",
-                        backgroundColor: "#00cac9", // Parang Blue-Green background
+                        backgroundColor: "white", // Parang Blue-Green background
                         borderRadius: "0",
                         textAlign: "center",
                         display: "flex",
@@ -488,8 +1167,8 @@ useEffect(() => {
                           further!
                         </p>
 
-                           {/* Display AI analysis */}
-                           {aiAnalysis && (
+                        {/* Display AI analysis */}
+                        {aiAnalysis && (
                           <div
                             style={{
                               marginTop: "20px",
@@ -497,11 +1176,73 @@ useEffect(() => {
                               backgroundColor: "#351742",
                               borderRadius: "10px",
                               color: "#fff",
-                              textAlign: "left",
                             }}
                           >
-                            <h3>AI Analysis</h3>
-                            <p>{aiAnalysis}</p>
+                            <h3>Category Performance Analysis</h3>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "20px",
+                              }}
+                            >
+                              {[
+                                "Investment Basics",
+                                "Risk Management",
+                                "Market Analysis",
+                              ].map((category) => {
+                                const categoryAnalysis = aiAnalysis
+                                  .split("\n\n")
+                                  .find((section) =>
+                                    section
+                                      .toLowerCase()
+                                      .includes(category.toLowerCase())
+                                  );
+
+                                return (
+                                  <div
+                                    key={category}
+                                    style={{
+                                      backgroundColor: "#5e3967",
+                                      padding: "15px",
+                                      borderRadius: "8px",
+                                      border: "2px solid #00cac9",
+                                    }}
+                                  >
+                                    <h4
+                                      style={{
+                                        color: "#00cac9",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
+                                      {category}
+                                    </h4>
+                                    <div
+                                      style={{
+                                        fontSize: "0.9rem",
+                                        lineHeight: "1.4",
+                                      }}
+                                    >
+                                      {categoryAnalysis
+                                        ?.split("\n")
+                                        .map((line, index) => (
+                                          <p
+                                            key={index}
+                                            style={{
+                                              marginBottom: "8px",
+                                              color: line.includes("score:")
+                                                ? "#ffd700"
+                                                : "#fff",
+                                            }}
+                                          >
+                                            {line}
+                                          </p>
+                                        ))}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
                         )}
                       </div>
@@ -509,11 +1250,8 @@ useEffect(() => {
                       <div
                         style={{
                           display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "flex-start",
                           gap: "20px",
-                          marginTop: "20px",
+                          justifyContent: "center",
                         }}
                       >
                         <div>
@@ -541,8 +1279,8 @@ useEffect(() => {
                               paddingAngle={5}
                               label
                             >
-                              <Cell key="Correct" fill="yellow" />
-                              <Cell key="Incorrect" fill="#ff6f61" />
+                              <Cell key="Correct" fill="green" />
+                              <Cell key="Incorrect" fill="red" />
                             </Pie>
                             <Legend />
                             <Tooltip />
@@ -590,6 +1328,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   Correct Answers
@@ -598,6 +1337,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   {points}
@@ -608,6 +1348,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   Incorrect Answers
@@ -616,6 +1357,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   {questions.level1.length - points}
@@ -626,6 +1368,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   Accuracy Rate
@@ -634,6 +1377,7 @@ useEffect(() => {
                                   style={{
                                     padding: "10px",
                                     border: "1px solid #351742",
+                                    color: "black",
                                   }}
                                 >
                                   {Math.round(
@@ -647,72 +1391,120 @@ useEffect(() => {
                         </div>
                       </div>
 
-                      <Link
-                        to="/About_Page_Investing"
-                        style={{ textDecoration: "none", marginTop: "20px" }}
+                      <div className="performance-charts">
+                        {/* Existing PieChart and Summary Table */}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "20px",
+                          justifyContent: "center",
+                        }}
                       >
-                        <button
+                        <div
                           style={{
-                            padding: "15px 30px",
-                            backgroundColor: "#ff69b4",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "10px",
-                            cursor: "pointer",
-                            fontSize: "1.2rem",
-                            fontFamily: "'Comic Sans MS', cursive, sans-serif",
-                            boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
-                            margin: "20px",
+                            display: "flex",
+                            gap: "20px",
+                            justifyContent: "center",
                           }}
                         >
-                          Home
-                        </button>
-                      </Link>
+                          <button
+                            onClick={handleDownloadPDF}
+                            style={{
+                              padding: "15px 30px",
+                              backgroundColor: "#4CAF50",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                              fontSize: "1.2rem",
+                              fontFamily:
+                                "'Comic Sans MS', cursive, sans-serif",
+                              boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                              margin: "20px",
+                            }}
+                          >
+                            Download Assessment Report
+                          </button>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "20px",
+                          justifyContent: "center",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <Link
+                          to="/About_Page_Investing"
+                          style={{ textDecoration: "none" }}
+                        >
+                          <button
+                            style={{
+                              padding: "15px 30px",
+                              backgroundColor: "#4CAF50",
+                              color: "#fff",
+                              border: "none",
+                              borderRadius: "10px",
+                              cursor: "pointer",
+                              fontSize: "1.2rem",
+                              fontFamily:
+                                "'Comic Sans MS', cursive, sans-serif",
+                              boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+                              margin: "20px",
+                            }}
+                          >
+                            Home
+                          </button>
+                        </Link>
+                      </div>
                     </div>
                   ) : (
                     // Show current question if the game isn't over
                     currentQuestion && (
                       <div>
-                        <p>{currentQuestion.question}</p> {/* Only show once */}
-                        <div className="game-option">
-                          <button
-                            onClick={() => handleAnswer(0)}
-                            className={
-                              selectedIndex === 0 &&
-                              selectedIndex === currentQuestion.answer
-                                ? "correct"
-                                : selectedIndex === 0
-                                ? "incorrect"
-                                : ""
-                            }
-                            disabled={isButtonDisabled} // Disable button when answer is selected
-                          >
-                            A. {currentQuestion.options[0]}
-                          </button>
-                          <button
-                            onClick={() => handleAnswer(1)}
-                            className={
-                              selectedIndex === 1 &&
-                              selectedIndex === currentQuestion.answer
-                                ? "correct"
-                                : selectedIndex === 1
-                                ? "incorrect"
-                                : ""
-                            }
-                            disabled={isButtonDisabled} // Disable button when answer is selected
-                          >
-                            B. {currentQuestion.options[1]}
-                          </button>
+                        <div style={{ marginBottom: "10px", color: "#FFD700" }}>
+                          Category: {currentQuestion.category}
+                        </div>
+                        <p>{currentQuestion.question}</p>
+                        <div
+                          className="game-option"
+                          style={{
+                            top: "50px",
+                            bottom: "20px",
+                            marginTop: "20px",
+                          }}
+                        >
+                          {currentQuestion?.options.map((option, index) => (
+                            <button
+                              key={index}
+                              onClick={() => handleAnswer(index)}
+                              className={`
+                                ${
+                                  selectedIndex === index
+                                    ? selectedIndex === currentQuestion.answer
+                                      ? "correct"
+                                      : "incorrect"
+                                    : ""
+                                }
+                                ${
+                                  selectedIndex !== null &&
+                                  index === currentQuestion.answer
+                                    ? "show-correct"
+                                    : ""
+                                }
+                            `}
+                              disabled={isButtonDisabled}
+                            >
+                              {String.fromCharCode(65 + index)}. {option}
+                            </button>
+                          ))}
                         </div>
                       </div>
                     )
-                  )}
-
-                  {/* Display feedback */}
-                  {feedback && (
-                    <div className={`feedback ${feedback.type}`}>
-                      <p>{feedback.message}</p>
-                    </div>
                   )}
                 </div>
               </div>

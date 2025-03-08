@@ -334,7 +334,7 @@
   margin-bottom: 2vh;
   font-size: 20px;
   cursor: pointer;
-  margin: 10px;
+  margin: 3px;
   transition: all 0.3s ease;
   background-position: center;
 }
@@ -345,11 +345,19 @@
 
 .game-option button.correct {
   border-color: green;
+  background-color: rgba(0, 255, 0, 0.2);
 }
 
 .game-option button.incorrect {
   border-color: red;
+  background-color: rgba(255, 0, 0, 0.2);
 }
+
+.game-option button.show-correct {
+  border-color: green;
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
 .game-option button:disabled {
   cursor: not-allowed;
   background-color: transparent;

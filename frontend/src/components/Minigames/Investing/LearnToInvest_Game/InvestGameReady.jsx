@@ -315,7 +315,7 @@ const InvestGameReady = () => {
           });
           timeElapsed = 0; // Reset timeElapsed
         }
-      }, 1000); // Update every second
+      }, 10); // Update every second
 
       return () => clearInterval(gameTimer); // Cleanup on component unmount or screen change
     }
@@ -453,7 +453,7 @@ const InvestGameReady = () => {
             width: "100vw", // Full viewport width
             padding: "20px",
             marginBottom: "0", // No additional margin
-            backgroundColor: "#00cac9", // Parang Blue-Green background
+            backgroundColor: "white", // Parang Blue-Green background
             borderRadius: "15px", // Rounded corners for a playful look
             textAlign: "center", // Centering text horizontally
             display: "flex", // Flexbox for centering content
@@ -465,7 +465,7 @@ const InvestGameReady = () => {
         >
           <h1
             style={{
-              color: "#fff",
+              color: "black",
               fontSize: "2.5rem",
               marginBottom: "20px",
               fontFamily: "'Comic Sans MS', cursive, sans-serif",
@@ -477,7 +477,7 @@ const InvestGameReady = () => {
           <p
             style={{
               fontSize: "1.5rem",
-              color: "#fff",
+              color: "black",
               marginBottom: "20px",
               fontFamily: "'Comic Sans MS', cursive, sans-serif",
             }}
@@ -487,7 +487,7 @@ const InvestGameReady = () => {
           <p
             style={{
               fontSize: "1.5rem",
-              color: "#fff",
+              color: "black",
               marginBottom: "30px",
               fontFamily: "'Comic Sans MS', cursive, sans-serif",
             }}

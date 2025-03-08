@@ -44,6 +44,7 @@ import moment from "moment"; // Make sure to install moment: npm install moment
 const InvestingBlog = () => {
   const blogId = "12345"; // Declare blogId here
   const token = localStorage.getItem("authToken"); // Get the token from local storage
+  const currentUser = localStorage.getItem("email");
   //create
   const [comment, setComment] = useState("");
   const [anonymous, setAnonymous] = useState(false);
@@ -69,6 +70,8 @@ const InvestingBlog = () => {
   const [userLikes, setUserLikes] = useState({});
   const [replyCounts, setReplyCounts] = useState({});
   const [replyLikes, setReplyLikes] = useState({}); // Add new state for reply likes
+  const [isCommentAuthor, setIsCommentAuthor] = useState({});
+  const [isReplyAuthor, setIsReplyAuthor] = useState({});
 
   const buttonStyles = {
     primary: {
@@ -641,6 +644,38 @@ const InvestingBlog = () => {
     }
   }, [replies, token]);
 
+  const checkCommentAuthor = async (commentUserId) => {
+    try {
+      const email = await fetchUserEmail(commentUserId);
+      return email === currentUser;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const checkAuthorship = async () => {
+      const authorshipMap = {};
+      const replyAuthorshipMap = {};
+
+      for (const comment of comments) {
+        authorshipMap[comment._id] = await checkCommentAuthor(comment.user_id);
+
+        // Check replies if they exist
+        const commentReplies = replies[comment._id] || [];
+        for (const reply of commentReplies) {
+          replyAuthorshipMap[`${comment._id}-${reply._id}`] =
+            await checkCommentAuthor(reply.user_id);
+        }
+      }
+
+      setIsCommentAuthor(authorshipMap);
+      setIsReplyAuthor(replyAuthorshipMap);
+    };
+
+    checkAuthorship();
+  }, [comments, replies]);
+
   const getTipContent = (index) => {
     const tipsContent = [
       "Set clear and measurable financial goals to guide your investment decisions.",
@@ -656,6 +691,29 @@ const InvestingBlog = () => {
     ];
     return tipsContent[index] || "";
   };
+
+  useEffect(() => {
+    const checkAuthorship = async () => {
+      const authorshipMap = {};
+      const replyAuthorshipMap = {};
+
+      for (const comment of comments) {
+        authorshipMap[comment._id] = await checkCommentAuthor(comment.user_id);
+
+        // Check replies if they exist
+        const commentReplies = replies[comment._id] || [];
+        for (const reply of commentReplies) {
+          replyAuthorshipMap[`${comment._id}-${reply._id}`] =
+            await checkCommentAuthor(reply.user_id);
+        }
+      }
+
+      setIsCommentAuthor(authorshipMap);
+      setIsReplyAuthor(replyAuthorshipMap);
+    };
+
+    checkAuthorship();
+  }, [comments, replies]);
 
   return (
     <Box
@@ -847,548 +905,529 @@ const InvestingBlog = () => {
               >
                 Comments
               </Typography>
-              {comments.map((comment) => {
-                const commentUserId = comment.user_id;
-                const isAuthor = async (commentUserId, currentUserId) => {
-                  const email = await fetchUserEmail(commentUserId);
-                  return email === currentUserId;
-                };
-
-                const isAuthorReply = async (replytUserId, currentUserId) => {
-                  const email = await fetchUserEmail(replytUserId);
-                  return email === currentUserId;
-                };
-
-                return (
-                  <Box
-                    key={comment.comment_id}
-                    sx={{
-                      mt: 2,
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      padding: 2,
-                      backgroundColor: "#f9f9f9",
+              {comments.map((comment) => (
+                <Box
+                  key={comment.comment_id}
+                  sx={{
+                    mt: 2,
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    padding: 2,
+                    backgroundColor: "#f9f9f9",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "start",
+                      justifyContent: "end",
                     }}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "start",
-                        justifyContent: "end",
-                      }}
-                    >
-                      {isAuthor && (
-                        <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                            onClick={() => {
-                              setEditMode(comment._id);
-                              setEditedComment(comment.comment); // Set initial value
-                              setAnonymousEdit(comment.anonymous); // Set initial anonymous state
-                            }}
-                          >
-                            <Edit fontSize="small" />
-                          </Button>
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => handleDelete(comment._id)}
-                          >
-                            <Delete fontSize="small" />
-                          </Button>
-                        </Box>
-                      )}
-                    </div>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 2,
-                        mb: 1,
-                      }}
-                    >
-                      <Avatar
-                        sx={{
-                          bgcolor: "#351742",
-                          width: 40,
-                          height: 40,
-                        }}
-                      >
-                        {comment.username
-                          ? comment.username[0].toUpperCase()
-                          : "A"}
-                      </Avatar>
-                      <Box>
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            fontWeight: "bold",
-                            color: "#351742",
+                    {isCommentAuthor[comment._id] && (
+                      <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            setEditMode(comment._id);
+                            setEditedComment(comment.comment); // Set initial value
+                            setAnonymousEdit(comment.anonymous); // Set initial anonymous state
                           }}
                         >
-                          {comment.username || "Anonymous"}
-                        </Typography>
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "#666",
-                            display: "block",
-                            fontSize: "10px",
-                          }}
+                          <Edit fontSize="small" />
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => handleDelete(comment._id)}
                         >
-                          {moment(comment.created_at).fromNow()}
-                        </Typography>
+                          <Delete fontSize="small" />
+                        </Button>
                       </Box>
-                    </Box>
-                    <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
-                      {comment.comment}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
+                    )}
+                  </div>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      mb: 1,
+                    }}
+                  >
+                    <Avatar
                       sx={{
-                        display: "flex",
-                        mt: 1,
-                        fontSize: "0.7rem",
-                        justifyContent: "end",
-                        marginRight: "20px",
+                        bgcolor: "#351742",
+                        width: 40,
+                        height: 40,
                       }}
                     >
-                      {replyCounts[comment._id] || 0} replies
-                    </Typography>
-                    {editMode === comment._id && (
-                      <div
-                        style={{
-                          background: "white",
-                          padding: "10px",
-                          margin: "5px",
-                          borderRadius: "5px",
+                      {comment.username
+                        ? comment.username[0].toUpperCase()
+                        : "A"}
+                    </Avatar>
+                    <Box>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#351742",
                         }}
                       >
-                        <Box sx={{ mt: 2 }}>
-                          <TextField
-                            label="Edit Comment"
-                            fullWidth
-                            multiline
-                            rows={3}
-                            value={editedComment}
-                            onChange={(e) => setEditedComment(e.target.value)}
-                            sx={{
-                              background: "white",
-                            }}
-                          />
-                          <div
-                            style={{
-                              display: "flex",
-                              placeContent: "space-between center", // Correct syntax for place-content
-                              margin: "10px",
-                              gap: "50px",
-                            }}
-                          >
-                            <FormControl
-                              component="fieldset"
-                              sx={{ mt: 2, index: 2 }}
-                            >
-                              <FormLabel component="legend">
-                                Anonymous
-                              </FormLabel>
-                              <RadioGroup
-                                row
-                                value={anonymousEdit ? "yes" : "no"}
-                                onChange={(e) =>
-                                  setAnonymousEdit(e.target.value === "yes")
-                                }
-                              >
-                                <FormControlLabel
-                                  value="yes"
-                                  control={<Radio />}
-                                  label="Yes"
-                                />
-                                <FormControlLabel
-                                  value="no"
-                                  control={<Radio />}
-                                  label="No"
-                                />
-                              </RadioGroup>
-                            </FormControl>
-                            <div
-                              style={{
-                                index: 3,
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Button
-                                variant="contained"
-                                sx={{
-                                  mt: 2,
-                                  color: "green",
-                                  border: "1px solid green",
-                                  background: "none",
-                                }}
-                                onClick={() => handleEditSubmit(comment._id)}
-                              >
-                                <Check fontSize="small" />
-                              </Button>
-                              <Button
-                                variant="outlined"
-                                sx={{
-                                  mt: 2,
-                                  ml: 2,
-                                  color: "red",
-                                  border: "1px solid red",
-                                }}
-                                onClick={() => setEditMode(null)}
-                              >
-                                <Close fontSize="small" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Box>
-                      </div>
-                    )}
-
-                    <hr />
+                        {comment.username || "Anonymous"}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "#666",
+                          display: "block",
+                          fontSize: "10px",
+                        }}
+                      >
+                        {moment(comment.created_at).fromNow()}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="body2" sx={{ mt: 1, color: "#555" }}>
+                    {comment.comment}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{
+                      display: "flex",
+                      mt: 1,
+                      fontSize: "0.7rem",
+                      justifyContent: "end",
+                      marginRight: "20px",
+                    }}
+                  >
+                    {replyCounts[comment._id] || 0} replies
+                  </Typography>
+                  {editMode === comment._id && (
                     <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "0px",
+                        background: "white",
+                        padding: "10px",
                         margin: "5px",
+                        borderRadius: "5px",
                       }}
                     >
-                      <LikeButton comment={comment} />
-
-                      <Button
-                        startIcon={<Comment />}
-                        sx={buttonStyles.action}
-                        size="small"
-                        onClick={() => {
-                          handleToggleReplies(comment._id); // Toggle the visibility state
-                          if (!visibleReplies[comment._id]) {
-                            fetchReplies(comment._id); // Fetch replies only when showing
-                          }
-                        }}
-                        disabled={loadingReplies[comment?._id]}
-                      >
-                        {loadingReplies[comment?._id]
-                          ? "Loading..."
-                          : visibleReplies[comment._id]
-                          ? "Hide Replies"
-                          : "Show Replies"}
-                      </Button>
-                      <Button
-                        startIcon={<Comment />}
-                        sx={buttonStyles.action}
-                        size="small"
-                        onClick={() => handleToggleReplyBox(comment._id)} // Toggle reply box visibility
-                      >
-                        {visibleReplyBox[comment._id]
-                          ? "Hide Reply Box"
-                          : "Reply"}
-                      </Button>
-                    </div>
-                    {visibleReplyBox[comment._id] && (
                       <Box sx={{ mt: 2 }}>
                         <TextField
-                          label="Write your reply"
+                          label="Edit Comment"
                           fullWidth
                           multiline
                           rows={3}
-                          value={replyText}
-                          onChange={(e) => setReplyText(e.target.value)}
-                          sx={{ background: "white" }}
+                          value={editedComment}
+                          onChange={(e) => setEditedComment(e.target.value)}
+                          sx={{
+                            background: "white",
+                          }}
                         />
                         <div
                           style={{
                             display: "flex",
-                            alignContent: "center",
-                            justifyContent: "space-between",
+                            placeContent: "space-between center", // Correct syntax for place-content
                             margin: "10px",
-                            gap: 5,
+                            gap: "50px",
                           }}
                         >
-                          <FormControlLabel
-                            control={
-                              <Radio
-                                checked={anonymous}
-                                onChange={() => setAnonymous(!anonymous)} // Toggle state
-                                sx={{ color: "#351742" }}
-                              />
-                            }
-                            label="Anonymous"
-                          />
-
-                          <Button
-                            variant="contained"
-                            sx={buttonStyles.secondary}
-                            onClick={() => handlePostReply(comment._id)}
+                          <FormControl
+                            component="fieldset"
+                            sx={{ mt: 2, index: 2 }}
                           >
-                            Submit Reply
-                          </Button>
-                        </div>
-                      </Box>
-                    )}
-
-                    {visibleReplies[comment._id] && (
-                      <ul>
-                        {replies[comment._id] && (
-                          <Box
-                            sx={{
-                              mt: 2,
-                              pl: 3,
-                              borderLeft: "2px solid #ddd",
+                            <FormLabel component="legend">Anonymous</FormLabel>
+                            <RadioGroup
+                              row
+                              value={anonymousEdit ? "yes" : "no"}
+                              onChange={(e) =>
+                                setAnonymousEdit(e.target.value === "yes")
+                              }
+                            >
+                              <FormControlLabel
+                                value="yes"
+                                control={<Radio />}
+                                label="Yes"
+                              />
+                              <FormControlLabel
+                                value="no"
+                                control={<Radio />}
+                                label="No"
+                              />
+                            </RadioGroup>
+                          </FormControl>
+                          <div
+                            style={{
+                              index: 3,
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
                             }}
                           >
-                            {replies[comment._id].map((reply, index) => (
-                              <Box key={reply._id} sx={{ mt: 2 }}>
+                            <Button
+                              variant="contained"
+                              sx={{
+                                mt: 2,
+                                color: "green",
+                                border: "1px solid green",
+                                background: "none",
+                              }}
+                              onClick={() => handleEditSubmit(comment._id)}
+                            >
+                              <Check fontSize="small" />
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              sx={{
+                                mt: 2,
+                                ml: 2,
+                                color: "red",
+                                border: "1px solid red",
+                              }}
+                              onClick={() => setEditMode(null)}
+                            >
+                              <Close fontSize="small" />
+                            </Button>
+                          </div>
+                        </div>
+                      </Box>
+                    </div>
+                  )}
+
+                  <hr />
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "0px",
+                      margin: "5px",
+                    }}
+                  >
+                    <LikeButton comment={comment} />
+
+                    <Button
+                      startIcon={<Comment />}
+                      sx={buttonStyles.action}
+                      size="small"
+                      onClick={() => {
+                        handleToggleReplies(comment._id); // Toggle the visibility state
+                        if (!visibleReplies[comment._id]) {
+                          fetchReplies(comment._id); // Fetch replies only when showing
+                        }
+                      }}
+                      disabled={loadingReplies[comment?._id]}
+                    >
+                      {loadingReplies[comment?._id]
+                        ? "Loading..."
+                        : visibleReplies[comment._id]
+                        ? "Hide Replies"
+                        : "Show Replies"}
+                    </Button>
+                    <Button
+                      startIcon={<Comment />}
+                      sx={buttonStyles.action}
+                      size="small"
+                      onClick={() => handleToggleReplyBox(comment._id)} // Toggle reply box visibility
+                    >
+                      {visibleReplyBox[comment._id]
+                        ? "Hide Reply Box"
+                        : "Reply"}
+                    </Button>
+                  </div>
+                  {visibleReplyBox[comment._id] && (
+                    <Box sx={{ mt: 2 }}>
+                      <TextField
+                        label="Write your reply"
+                        fullWidth
+                        multiline
+                        rows={3}
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        sx={{ background: "white" }}
+                      />
+                      <div
+                        style={{
+                          display: "flex",
+                          alignContent: "center",
+                          justifyContent: "space-between",
+                          margin: "10px",
+                          gap: 5,
+                        }}
+                      >
+                        <FormControlLabel
+                          control={
+                            <Radio
+                              checked={anonymous}
+                              onChange={() => setAnonymous(!anonymous)} // Toggle state
+                              sx={{ color: "#351742" }}
+                            />
+                          }
+                          label="Anonymous"
+                        />
+
+                        <Button
+                          variant="contained"
+                          sx={buttonStyles.secondary}
+                          onClick={() => handlePostReply(comment._id)}
+                        >
+                          Submit Reply
+                        </Button>
+                      </div>
+                    </Box>
+                  )}
+
+                  {visibleReplies[comment._id] && (
+                    <ul>
+                      {replies[comment._id] && (
+                        <Box
+                          sx={{
+                            mt: 2,
+                            pl: 3,
+                            borderLeft: "2px solid #ddd",
+                          }}
+                        >
+                          {replies[comment._id].map((reply, index) => (
+                            <Box key={reply._id} sx={{ mt: 2 }}>
+                              <div
+                                style={{
+                                  border: "0px solid black",
+                                  padding: "15px",
+                                  borderRadius: "10px",
+                                  margin: "10px",
+                                  background: "#ededed",
+                                }}
+                              >
                                 <div
                                   style={{
-                                    border: "0px solid black",
-                                    padding: "15px",
-                                    borderRadius: "10px",
-                                    margin: "10px",
-                                    background: "#ededed",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "end",
                                   }}
                                 >
+                                  {isReplyAuthor[
+                                    `${comment._id}-${reply._id}`
+                                  ] && (
+                                    <Box
+                                      sx={{
+                                        mt: 1,
+                                        display: "flex",
+                                        gap: 1,
+                                      }}
+                                    >
+                                      <Button
+                                        size="small"
+                                        variant="outlined"
+                                        sx={buttonStyles.outlined}
+                                        onClick={() => {
+                                          setEditModeReply(reply._id);
+                                          setCurrentEditingIndex(index);
+                                          setEditedReply(reply.reply_text);
+                                          setAnonymousEdit_reply(
+                                            reply.anonymous
+                                          );
+                                        }}
+                                      >
+                                        <Edit fontSize="small" />
+                                      </Button>
+                                      <Button
+                                        size="small"
+                                        variant="outlined"
+                                        sx={buttonStyles.outlined}
+                                        onClick={() =>
+                                          handleDeleteReply(comment._id, index)
+                                        }
+                                      >
+                                        <Delete fontSize="small" />
+                                      </Button>
+                                    </Box>
+                                  )}
+                                </div>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 2,
+                                    mb: 1,
+                                  }}
+                                >
+                                  <Avatar
+                                    sx={{
+                                      bgcolor: "#00cac9",
+                                      width: 32,
+                                      height: 32,
+                                    }}
+                                  >
+                                    {reply.username
+                                      ? reply.username[0].toUpperCase()
+                                      : "A"}
+                                  </Avatar>
+                                  <Box>
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        fontWeight: "bold",
+                                        color: "#351742",
+                                      }}
+                                    >
+                                      {reply.username || "Anonymous"}
+                                    </Typography>
+                                    <Typography
+                                      variant="caption"
+                                      sx={{
+                                        color: "#666",
+                                        display: "block",
+                                        fontSize: "10px",
+                                      }}
+                                    >
+                                      {moment(reply.created_at).fromNow()}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ mt: 1, color: "#555" }}
+                                >
+                                  {reply.reply_text}
+                                </Typography>
+                                <hr />
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    mt: 1,
+                                    gap: 2,
+                                  }}
+                                >
+                                  <ReplyLikeButton
+                                    reviewId={comment._id}
+                                    replyIndex={index}
+                                    reply={reply}
+                                    sx={{ width: "100%" }}
+                                  />
+                                </Box>
+                              </div>
+                              {/* Edit Form */}
+                              {editModeReply === reply._id &&
+                                currentEditingIndex === index && (
                                   <div
                                     style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "end",
+                                      background: "white",
+                                      padding: "10px",
+                                      margin: "5px",
+                                      borderRadius: "5px",
                                     }}
                                   >
-                                    {isAuthorReply && (
-                                      <Box
+                                    <Box sx={{ mt: 2 }}>
+                                      <TextField
+                                        label="Edit Reply"
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        value={editedReply}
+                                        onChange={(e) =>
+                                          setEditedReply(e.target.value)
+                                        }
                                         sx={{
-                                          mt: 1,
+                                          background: "white",
+                                        }}
+                                      />
+                                      <div
+                                        style={{
                                           display: "flex",
-                                          gap: 1,
+                                          placeContent: "space-between center", // Correct syntax for place-content
+                                          margin: "10px",
+                                          gap: "50px",
                                         }}
                                       >
-                                        <Button
-                                          size="small"
-                                          variant="outlined"
-                                          sx={buttonStyles.outlined}
-                                          onClick={() => {
-                                            setEditModeReply(reply._id);
-                                            setCurrentEditingIndex(index);
-                                            setEditedReply(reply.reply_text);
-                                            setAnonymousEdit_reply(
-                                              reply.anonymous
-                                            );
-                                          }}
+                                        <FormControl
+                                          component="fieldset"
+                                          sx={{ mt: 2 }}
                                         >
-                                          <Edit fontSize="small" />
-                                        </Button>
-                                        <Button
-                                          size="small"
-                                          variant="outlined"
-                                          sx={buttonStyles.outlined}
-                                          onClick={() =>
-                                            handleDeleteReply(
-                                              comment._id,
-                                              index
-                                            )
-                                          }
-                                        >
-                                          <Delete fontSize="small" />
-                                        </Button>
-                                      </Box>
-                                    )}
-                                  </div>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 2,
-                                      mb: 1,
-                                    }}
-                                  >
-                                    <Avatar
-                                      sx={{
-                                        bgcolor: "#00cac9",
-                                        width: 32,
-                                        height: 32,
-                                      }}
-                                    >
-                                      {reply.username
-                                        ? reply.username[0].toUpperCase()
-                                        : "A"}
-                                    </Avatar>
-                                    <Box>
-                                      <Typography
-                                        variant="body1"
-                                        sx={{
-                                          fontWeight: "bold",
-                                          color: "#351742",
-                                        }}
-                                      >
-                                        {reply.username || "Anonymous"}
-                                      </Typography>
-                                      <Typography
-                                        variant="caption"
-                                        sx={{
-                                          color: "#666",
-                                          display: "block",
-                                          fontSize: "10px",
-                                        }}
-                                      >
-                                        {moment(reply.created_at).fromNow()}
-                                      </Typography>
-                                    </Box>
-                                  </Box>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{ mt: 1, color: "#555" }}
-                                  >
-                                    {reply.reply_text}
-                                  </Typography>
-                                  <hr />
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      mt: 1,
-                                      gap: 2,
-                                    }}
-                                  >
-                                    <ReplyLikeButton
-                                      reviewId={comment._id}
-                                      replyIndex={index}
-                                      reply={reply}
-                                      sx={{ width: "100%" }}
-                                    />
-                                  </Box>
-                                </div>
-                                {/* Edit Form */}
-                                {editModeReply === reply._id &&
-                                  currentEditingIndex === index && (
-                                    <div
-                                      style={{
-                                        background: "white",
-                                        padding: "10px",
-                                        margin: "5px",
-                                        borderRadius: "5px",
-                                      }}
-                                    >
-                                      <Box sx={{ mt: 2 }}>
-                                        <TextField
-                                          label="Edit Reply"
-                                          fullWidth
-                                          multiline
-                                          rows={3}
-                                          value={editedReply}
-                                          onChange={(e) =>
-                                            setEditedReply(e.target.value)
-                                          }
-                                          sx={{
-                                            background: "white",
-                                          }}
-                                        />
+                                          <FormLabel component="legend">
+                                            Anonymous
+                                          </FormLabel>
+                                          <RadioGroup
+                                            row
+                                            value={
+                                              anonymousEdit_reply ? "yes" : "no"
+                                            }
+                                            onChange={(e) =>
+                                              setAnonymousEdit_reply(
+                                                e.target.value === "yes"
+                                              )
+                                            }
+                                          >
+                                            <FormControlLabel
+                                              value="yes"
+                                              control={<Radio />}
+                                              label="Yes"
+                                            />
+                                            <FormControlLabel
+                                              value="no"
+                                              control={<Radio />}
+                                              label="No"
+                                            />
+                                          </RadioGroup>
+                                        </FormControl>
                                         <div
                                           style={{
+                                            index: 3,
                                             display: "flex",
-                                            placeContent:
-                                              "space-between center", // Correct syntax for place-content
-                                            margin: "10px",
-                                            gap: "50px",
+                                            justifyContent: "center",
+                                            alignItems: "center",
                                           }}
                                         >
-                                          <FormControl
-                                            component="fieldset"
-                                            sx={{ mt: 2 }}
+                                          <Button
+                                            variant="contained"
+                                            color="primary"
+                                            sx={{
+                                              mt: 2,
+                                              color: "green",
+                                              border: "1px solid green",
+                                              background: "none",
+                                            }}
+                                            onClick={() =>
+                                              handleEditReply(
+                                                comment._id,
+                                                index
+                                              )
+                                            }
                                           >
-                                            <FormLabel component="legend">
-                                              Anonymous
-                                            </FormLabel>
-                                            <RadioGroup
-                                              row
-                                              value={
-                                                anonymousEdit_reply
-                                                  ? "yes"
-                                                  : "no"
-                                              }
-                                              onChange={(e) =>
-                                                setAnonymousEdit_reply(
-                                                  e.target.value === "yes"
-                                                )
-                                              }
-                                            >
-                                              <FormControlLabel
-                                                value="yes"
-                                                control={<Radio />}
-                                                label="Yes"
-                                              />
-                                              <FormControlLabel
-                                                value="no"
-                                                control={<Radio />}
-                                                label="No"
-                                              />
-                                            </RadioGroup>
-                                          </FormControl>
-                                          <div
-                                            style={{
-                                              index: 3,
-                                              display: "flex",
-                                              justifyContent: "center",
-                                              alignItems: "center",
+                                            <Check fontSize="small" />
+                                          </Button>
+                                          <Button
+                                            variant="outlined"
+                                            color="secondary"
+                                            sx={{
+                                              mt: 2,
+                                              ml: 2,
+                                              color: "red",
+                                              border: "1px solid red",
+                                            }}
+                                            onClick={() => {
+                                              setEditModeReply(null);
+                                              setCurrentEditingIndex(null);
                                             }}
                                           >
-                                            <Button
-                                              variant="contained"
-                                              color="primary"
-                                              sx={{
-                                                mt: 2,
-                                                color: "green",
-                                                border: "1px solid green",
-                                                background: "none",
-                                              }}
-                                              onClick={() =>
-                                                handleEditReply(
-                                                  comment._id,
-                                                  index
-                                                )
-                                              }
-                                            >
-                                              <Check fontSize="small" />
-                                            </Button>
-                                            <Button
-                                              variant="outlined"
-                                              color="secondary"
-                                              sx={{
-                                                mt: 2,
-                                                ml: 2,
-                                                color: "red",
-                                                border: "1px solid red",
-                                              }}
-                                              onClick={() => {
-                                                setEditModeReply(null);
-                                                setCurrentEditingIndex(null);
-                                              }}
-                                            >
-                                              <Close fontSize="small" />
-                                            </Button>
-                                          </div>
+                                            <Close fontSize="small" />
+                                          </Button>
                                         </div>
-                                      </Box>
-                                    </div>
-                                  )}
-                              </Box>
-                            ))}
-                          </Box>
-                        )}
-                      </ul>
-                    )}
-                  </Box>
-                );
-              })}
+                                      </div>
+                                    </Box>
+                                  </div>
+                                )}
+                            </Box>
+                          ))}
+                        </Box>
+                      )}
+                    </ul>
+                  )}
+                </Box>
+              ))}
             </Box>
           </Box>
         </Box>
