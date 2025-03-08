@@ -61,11 +61,73 @@ def generate_otp():
 def send_verification_email(email: str, otp: int):
     subject = "Email Verification"
     body = f"""
-    <html>
-        <body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email Verification</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #351742; /* Dark Purple */
+                color: #ffffff;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }}
+            .email-container {{
+                background-color: #5e3967; /* Light Purple */
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                text-align: center;
+                max-width: 400px;
+                width: 100%;
+                animation: fadeIn 1s ease-in-out;
+            }}
+            .email-container h2 {{
+                color: #00cac9; /* Parang Blue Green */
+                font-size: 2.5em;
+                margin: 20px 0;
+                animation: bounce 1.5s infinite;
+            }}
+            .email-container p {{
+                font-size: 1.2em;
+                margin: 10px 0;
+            }}
+            @keyframes fadeIn {{
+                from {{
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }}
+                to {{
+                    opacity: 1;
+                    transform: translateY(0);
+                }}
+            }}
+            @keyframes bounce {{
+                0%, 20%, 50%, 80%, 100% {{
+                    transform: translateY(0);
+                }}
+                40% {{
+                    transform: translateY(-20px);
+                }}
+                60% {{
+                    transform: translateY(-10px);
+                }}
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
             <p>Please use the following OTP to verify your email:</p>
             <h2>{otp}</h2>
-        </body>
+        </div>
+    </body>
     </html>
     """
 
@@ -82,5 +144,4 @@ def send_verification_email(email: str, otp: int):
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to send email")
-
    
