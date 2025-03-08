@@ -10,8 +10,10 @@ const npcPosition = new  THREE.Vector3(-14.046558652575328, 0.2, -6.194845344820
 
 const npc6Position = new THREE.Vector3(-7.764510595057404, 0.2, 8.341813689568157);
 
-const fast_foodPosition = new THREE.Vector3(-22.621940543130382, 0.5, -5.377313070970168);
-const coffee_shopPosition = new THREE.Vector3(-7.206849473974556, 0.5, 9.401782377917066);
+const fast_foodPosition = new THREE.Vector3(-21.189163987877485, 0.5, -4.928802163568273);
+
+
+const coffee_shopPosition = new THREE.Vector3(8.5836958462589, 0.5, 11.187607315187366);
 
 const checkProximityToNPC4 = (characterPosition) => {
   const distanceToNPC4 = characterPosition.distanceTo(npc4Position);

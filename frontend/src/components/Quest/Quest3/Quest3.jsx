@@ -28,7 +28,7 @@ import Modal11 from './Modal11';
 import Modal12 from './Modal12';
 import Modal13 from './Modal13';
 import Modal14 from './Modal14';
-import { checkProximityToNPC6 } from '../../Utils/proximity'; // Adjust the import path as needed
+import { checkProximityToNPC6, checkProximitytoFastFood, checkProximitytoCoffeeShop } from '../../Utils/proximity'; // Adjust the import path as needed
 import { toast } from 'react-hot-toast';
 import { Button } from '@mui/material';
 
@@ -37,14 +37,19 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
   const [isCloseToMark, setIsCloseToMark] = useState(false);
   const [showGoToMarkButton, setShowGoToMarkButton] = useState(false);
   const [modal2Completed, setModal2Completed] = useState(false);
+  const [jobSelected, setJobSelected] = useState(false); // New state variable
+  const [selectedJob, setSelectedJob] = useState(''); // New state variable
+  const [isCloseToFastFood, setIsCloseToFastFood] = useState(false); // New state variable
+  const [isCloseToCoffeeShop, setIsCloseToCoffeeShop] = useState(false); // New state variable
+  const [showGoToJobButton, setShowGoToJobButton] = useState(true); // New state variable
 
   const handleNextModal = () => {
     setCurrentModal((prev) => (parseInt(prev) + 1).toString());
   };
 
   const handleJobSelection = (choice) => {
-    if (choice === 'cafe') setCurrentModal('8');
-    else setCurrentModal('9');
+    setJobSelected(true); // Set jobSelected to true when a job is selected
+    setSelectedJob(choice); // Set the selected job
   };
 
   const handleInvestmentChoice = (choice) => {
@@ -60,6 +65,28 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
       setShowGoToMarkButton(false); // Hide the button permanently
     } else {
       toast.error('You are not close enough to the mark.');
+    }
+  };
+
+  const handleGoToJobLocation = () => {
+    if (selectedJob === 'cafe') {
+      if (checkProximitytoCoffeeShop(characterPosition)) {
+        setIsCloseToCoffeeShop(true);
+        toast.success('You are close enough to the coffee shop.');
+        setCurrentModal('8');
+        setShowGoToJobButton(false); // Hide the button
+      } else {
+        toast.error('You are not close enough to the coffee shop.');
+      }
+    } else if (selectedJob === 'fastFood') {
+      if (checkProximitytoFastFood(characterPosition)) {
+        setIsCloseToFastFood(true);
+        toast.success('You are close enough to the fast food.');
+        setCurrentModal('9');
+        setShowGoToJobButton(false); // Hide the button
+      } else {
+        toast.error('You are not close enough to the fast food.');
+      }
     }
   };
 
@@ -85,6 +112,30 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
     }
   }, [currentModal, characterPosition, isCloseToMark]);
 
+  useEffect(() => {
+    if (selectedJob === 'cafe' && isCloseToCoffeeShop) {
+      setCurrentModal('8');
+    } else if (selectedJob === 'fastFood' && isCloseToFastFood) {
+      setCurrentModal('9');
+    }
+  }, [selectedJob, isCloseToCoffeeShop, isCloseToFastFood]);
+
+  useEffect(() => {
+    if (selectedJob === 'cafe') {
+      if (checkProximitytoCoffeeShop(characterPosition)) {
+        setIsCloseToCoffeeShop(true);
+      } else {
+        setIsCloseToCoffeeShop(false);
+      }
+    } else if (selectedJob === 'fastFood') {
+      if (checkProximitytoFastFood(characterPosition)) {
+        setIsCloseToFastFood(true);
+      } else {
+        setIsCloseToFastFood(false);
+      }
+    }
+  }, [characterPosition, selectedJob]);
+
   const handleModal2Continue = () => {
     setModal2Completed(true);
     setShowGoToMarkButton(true); // Show the button after Modal 2 is completed
@@ -93,7 +144,6 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
 
   return (
     <>
-
       {currentModal === '1' && <Modal1 onContinue={handleNextModal} />}
       {currentModal === '2' && <Modal2 onContinue={handleModal2Continue} />}
       {modal2Completed && showGoToMarkButton && (
@@ -121,6 +171,26 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
       {currentModal === '5' && <Modal5 onContinue={handleNextModal} />}
       {currentModal === '6' && <Modal6 onContinue={handleNextModal} />}
       {currentModal === '7' && <Modal7 onChoose={handleJobSelection} />}
+      {jobSelected && showGoToJobButton && (
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleGoToJobLocation}
+          sx={{ 
+            position: 'fixed', 
+            bottom: 100, 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+            minWidth: 'auto', 
+            padding: '8px',
+            color: '#fff',
+            backgroundColor: '#1976d2',
+          }}
+        >
+          {selectedJob === 'cafe' ? 'Go to Cafe' : 'Go to Fast Food'}
+        </Button>
+      )}
       {currentModal === '8' && <Modal8 onContinue={() => setCurrentModal('8A')} />}
       {currentModal === '8A' && <Modal8A onContinue={() => setCurrentModal('8B')} />}
       {currentModal === '8B' && <Modal8B onContinue={() => setCurrentModal('8C')} />}
