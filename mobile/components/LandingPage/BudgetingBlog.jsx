@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -49,15 +50,18 @@ const BudgetingBlog = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#8F7BE8" barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity 
-          style={styles.backButton} 
+          style={styles.backButtonContainer} 
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrow-back" size={24} color="white" />
+          <View style={styles.backButton}>
+            <Icon name="arrow-back" size={32} color="#FFFAFA" />
+          </View>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mastering Budgeting</Text>
-        <View style={{ width: 24 }} />
+        <View style={{ flex: 1 }} />
+        <View style={{ width: 50 }} />
       </View>
 
       <ScrollView 
@@ -104,7 +108,7 @@ const BudgetingBlog = () => {
             <Card key={index} style={styles.tipCard}>
               <Card.Content style={styles.tipContent}>
                 <View style={styles.tipIconContainer}>
-                  <Icon name={tip.icon} size={28} color="#472751" />
+                  <Icon name={tip.icon} size={28} color="#8F7BE8" />
                 </View>
                 <View style={styles.tipTextContainer}>
                   <Text style={styles.tipTitle}>{tip.title}</Text>
@@ -185,23 +189,31 @@ const BudgetingBlog = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F7',
+    backgroundColor: '#FFFAFA',
+    paddingTop: StatusBar.currentHeight || 0,
   },
   header: {
-    backgroundColor: '#472751',
-    height: 60,
+    backgroundColor: '#8F7BE8',
+    height: 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
+    elevation: 4,
+  },
+  backButtonContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContainer: {
     flex: 1,
@@ -230,7 +242,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginTop: 24,
     marginBottom: 12,
   },
@@ -241,15 +253,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   quoteCard: {
-    backgroundColor: '#E8E1F0',
+    backgroundColor: 'rgba(143, 123, 232, 0.1)',
     marginVertical: 20,
     borderLeftWidth: 4,
-    borderLeftColor: '#8C2FC7',
+    borderLeftColor: '#8F7BE8',
   },
   quote: {
     fontSize: 18,
     fontStyle: 'italic',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 8,
   },
   quoteAuthor: {
@@ -260,6 +272,7 @@ const styles = StyleSheet.create({
   tipCard: {
     marginBottom: 12,
     elevation: 2,
+    backgroundColor: '#FFFAFA',
   },
   tipContent: {
     flexDirection: 'row',
@@ -269,7 +282,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#E8E1F0',
+    backgroundColor: 'rgba(143, 123, 232, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -280,7 +293,7 @@ const styles = StyleSheet.create({
   tipTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 4,
   },
   tipDescription: {
@@ -291,7 +304,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   methodItem: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFAFA',
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
@@ -300,7 +313,7 @@ const styles = StyleSheet.create({
   methodTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 4,
   },
   methodDescription: {
@@ -310,17 +323,17 @@ const styles = StyleSheet.create({
   conclusionCard: {
     marginTop: 24,
     marginBottom: 40,
-    backgroundColor: '#472751',
+    backgroundColor: '#8F7BE8',
   },
   conclusionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFAFA',
     marginBottom: 8,
   },
   conclusionText: {
     fontSize: 15,
-    color: 'white',
+    color: '#FFFAFA',
     lineHeight: 22,
   },
 });

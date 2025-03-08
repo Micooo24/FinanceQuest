@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -68,15 +69,18 @@ const SavingBlog = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#8F7BE8" barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity 
-          style={styles.backButton} 
+          style={styles.backButtonContainer} 
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrow-back" size={24} color="white" />
+          <View style={styles.backButton}>
+            <Icon name="arrow-back" size={32} color="#FFFAFA" />
+          </View>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Avoiding Financial Mistakes</Text>
-        <View style={{ width: 24 }} />
+        <View style={{ width: 50 }} />
       </View>
 
       <ScrollView 
@@ -107,7 +111,7 @@ const SavingBlog = () => {
             <Card key={index} style={styles.mistakeCard}>
               <Card.Content style={styles.mistakeContent}>
                 <View style={styles.mistakeIconContainer}>
-                  <Icon name={mistake.icon} size={28} color="#FF5252" />
+                  <Icon name={mistake.icon} size={28} color="#8F7BE8" />
                 </View>
                 <View style={styles.mistakeTextContainer}>
                   <Text style={styles.mistakeTitle}>{mistake.title}</Text>
@@ -149,27 +153,27 @@ const SavingBlog = () => {
           
           <View style={styles.tipsContainer}>
             <View style={styles.tipRow}>
-              <Icon name="coffee" size={24} color="#472751" />
+              <Icon name="coffee" size={24} color="#8F7BE8" />
               <Text style={styles.tipText}>Make coffee at home instead of buying it daily</Text>
             </View>
             
             <View style={styles.tipRow}>
-              <Icon name="restaurant" size={24} color="#472751" />
+              <Icon name="restaurant" size={24} color="#8F7BE8" />
               <Text style={styles.tipText}>Cook more meals at home and limit eating out</Text>
             </View>
             
             <View style={styles.tipRow}>
-              <Icon name="shopping-cart" size={24} color="#472751" />
+              <Icon name="shopping-cart" size={24} color="#8F7BE8" />
               <Text style={styles.tipText}>Make a shopping list and stick to it</Text>
             </View>
             
             <View style={styles.tipRow}>
-              <Icon name="subscriptions" size={24} color="#472751" />
+              <Icon name="subscriptions" size={24} color="#8F7BE8" />
               <Text style={styles.tipText}>Review and cancel unused subscriptions</Text>
             </View>
             
             <View style={styles.tipRow}>
-              <Icon name="lightbulb" size={24} color="#472751" />
+              <Icon name="lightbulb" size={24} color="#8F7BE8" />
               <Text style={styles.tipText}>Use energy-efficient appliances and habits</Text>
             </View>
           </View>
@@ -193,23 +197,38 @@ const SavingBlog = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F7',
+    backgroundColor: '#FFFAFA',
+    paddingTop: StatusBar.currentHeight || 0,
   },
   header: {
-    backgroundColor: '#472751',
-    height: 60,
+    backgroundColor: '#8F7BE8',
+    height: 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
+    elevation: 4,
+  },
+  backButtonContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backButton: {
-    padding: 8,
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFAFA',
+    textAlign: 'center',
+    flex: 1,
   },
   scrollContainer: {
     flex: 1,
@@ -238,7 +257,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginTop: 24,
     marginBottom: 12,
   },
@@ -251,6 +270,7 @@ const styles = StyleSheet.create({
   mistakeCard: {
     marginBottom: 12,
     elevation: 2,
+    backgroundColor: '#FFFAFA',
   },
   mistakeContent: {
     flexDirection: 'row',
@@ -260,7 +280,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#FFEBEE',
+    backgroundColor: 'rgba(143, 123, 232, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -271,7 +291,7 @@ const styles = StyleSheet.create({
   mistakeTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 4,
   },
   mistakeDescription: {
@@ -279,15 +299,15 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   quoteCard: {
-    backgroundColor: '#E8E1F0',
+    backgroundColor: 'rgba(143, 123, 232, 0.1)',
     marginVertical: 20,
     borderLeftWidth: 4,
-    borderLeftColor: '#8C2FC7',
+    borderLeftColor: '#8F7BE8',
   },
   quote: {
     fontSize: 18,
     fontStyle: 'italic',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 8,
   },
   quoteAuthor: {
@@ -299,16 +319,18 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   strategyItem: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFAFA',
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
     elevation: 1,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   strategyTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginBottom: 4,
   },
   strategyContent: {
@@ -334,17 +356,17 @@ const styles = StyleSheet.create({
   conclusionCard: {
     marginTop: 24,
     marginBottom: 40,
-    backgroundColor: '#472751',
+    backgroundColor: '#8F7BE8',
   },
   conclusionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFAFA',
     marginBottom: 8,
   },
   conclusionText: {
     fontSize: 15,
-    color: 'white',
+    color: '#FFFAFA',
     lineHeight: 22,
   }
 });

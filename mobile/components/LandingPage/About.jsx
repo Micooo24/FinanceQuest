@@ -6,7 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
-  Image
+  Image,
+  StatusBar
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -18,15 +19,18 @@ const About = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#8F7BE8" barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity 
-          style={styles.backButton} 
+          style={styles.backButtonContainer} 
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrow-back" size={24} color="white" />
+          <View style={styles.backButton}>
+            <Icon name="arrow-back" size={28} color="#FFFAFA" />
+          </View>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>About Us</Text>
-        <View style={{ width: 24 }} />
+        <View style={{ width: 50 }} />
       </View>
 
       <ScrollView 
@@ -41,7 +45,7 @@ const About = () => {
         <Card style={styles.section}>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <FontAwesome5 name="eye" size={24} color="#472751" />
+              <FontAwesome5 name="eye" size={24} color="#8F7BE8" />
               <Text style={styles.sectionTitle}>Our Vision</Text>
             </View>
             <Text style={styles.sectionText}>
@@ -53,7 +57,7 @@ const About = () => {
         <Card style={styles.section}>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <FontAwesome5 name="bullseye" size={24} color="#472751" />
+              <FontAwesome5 name="bullseye" size={24} color="#8F7BE8" />
               <Text style={styles.sectionTitle}>Our Mission</Text>
             </View>
             <Text style={styles.sectionText}>
@@ -65,7 +69,7 @@ const About = () => {
         <Card style={styles.section}>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <FontAwesome5 name="info-circle" size={24} color="#472751" />
+              <FontAwesome5 name="info-circle" size={24} color="#8F7BE8" />
               <Text style={styles.sectionTitle}>About The App</Text>
             </View>
             <Text style={styles.sectionText}>
@@ -77,7 +81,7 @@ const About = () => {
         <Card style={styles.section}>
           <Card.Content>
             <View style={styles.sectionHeader}>
-              <FontAwesome5 name="users" size={24} color="#472751" />
+              <FontAwesome5 name="users" size={24} color="#8F7BE8" />
               <Text style={styles.sectionTitle}>Our Team</Text>
             </View>
             <Text style={styles.sectionText}>
@@ -98,29 +102,44 @@ const About = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F7',
+    backgroundColor: '#FFFAFA',
+    paddingTop: StatusBar.currentHeight || 0,
   },
   header: {
-    backgroundColor: '#472751',
-    height: 60,
+    backgroundColor: '#8F7BE8',
+    height: 70,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
+    elevation: 4,
+  },
+  backButtonContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backButton: {
-    padding: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFAFA',
+    textAlign: 'center',
+    flex: 1,
   },
   scrollContainer: {
     flex: 1,
   },
   heroSection: {
-    backgroundColor: '#472751',
+    backgroundColor: '#8F7BE8',
     padding: 30,
     alignItems: 'center',
     borderBottomLeftRadius: 30,
@@ -129,12 +148,12 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#FFFAFA',
     marginBottom: 8,
   },
   tagline: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontStyle: 'italic',
   },
   section: {
@@ -142,6 +161,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 12,
     elevation: 3,
+    backgroundColor: '#FFFAFA',
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -151,13 +173,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#472751',
+    color: '#8F7BE8',
     marginLeft: 10,
   },
   sectionText: {
-    fontSize: 15,
+    fontSize: 16,
     color: '#333',
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: 16,
   },
   footer: {
@@ -166,7 +188,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
-    color: '#777',
+    color: '#8F7BE8',
     marginBottom: 4,
   },
 });

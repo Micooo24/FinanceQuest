@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import { Card } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -44,15 +45,20 @@ const Blog = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="#8F7BE8" barStyle="light-content" />
       <View style={styles.header}>
         <TouchableOpacity 
-          style={styles.backButton} 
+          style={styles.backButtonContainer} 
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrow-back" size={24} color="white" />
+          <View style={styles.backButton}>
+            <Icon name="arrow-back" size={32} color="#FFFAFA" />
+          </View>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Finance Quest Blog</Text>
-        <View style={{ width: 24 }} />
+        <View style={{ width: 50 }}/>
+        
+         {/* Spacer to balance layout */}
       </View>
 
       <ScrollView 
@@ -84,7 +90,7 @@ const Blog = () => {
                   <Icon
                     name="arrow-upward"
                     size={24}
-                    color="#8c2fc7"
+                    color="#8F7BE8"
                     style={{
                       transform: [{ rotate: index % 2 === 0 ? '45deg' : '-45deg' }]
                     }}
@@ -105,23 +111,45 @@ const Blog = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'linear-gradient(135deg, #5e3967, #351742)',
+    backgroundColor: '#FFFAFA',
+    paddingTop: StatusBar.currentHeight || 0,
   },
   header: {
-    backgroundColor: '#472751',
-    height: 60,
+    backgroundColor: '#8F7BE8',
+    height: 80, // Increased height
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
+    elevation: 8, // Increased elevation
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  backButtonContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backButton: {
-    padding: 8,
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Semi-transparent background
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 24, // Increased font size
+    fontWeight: '900', // Extra bold
+    color: '#FFFAFA',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    flex: 1,
   },
   scrollContainer: {
     flex: 1,
@@ -129,11 +157,14 @@ const styles = StyleSheet.create({
   introContainer: {
     padding: 20,
     alignItems: 'center',
+    backgroundColor: 'rgba(143, 123, 232, 0.05)', // Very light purple background
+    margin: 16,
+    borderRadius: 15,
   },
   introTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'white',
+    color: '#8F7BE8',
     textAlign: 'center',
   },
   blogContainer: {
@@ -142,12 +173,14 @@ const styles = StyleSheet.create({
   },
   blogCard: {
     width: '90%',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFAFA',
     padding: 16,
     borderRadius: 10,
     marginBottom: 16,
     alignItems: 'center',
     elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)', // Light purple border
   },
   blogImage: {
     width: 150,
@@ -165,17 +198,17 @@ const styles = StyleSheet.create({
   blogTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#331540',
+    color: '#8F7BE8',
     marginBottom: 8,
   },
   blogSummary: {
     fontSize: 14,
-    color: '#451d6b',
+    color: '#666',
     marginBottom: 8,
   },
   blogDate: {
     fontSize: 12,
-    color: '#8c2fc7',
+    color: '#8F7BE8',
   },
 });
 

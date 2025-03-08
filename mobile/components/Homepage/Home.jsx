@@ -153,7 +153,9 @@ const Home = () => {
         <Animated.View style={[styles.drawer, { transform: [{ translateX: slideAnimation }] }]}>
           <View style={styles.drawerHeader}>
             <Icon name="attach-money" size={40 * scale} color="#8F7BE8" />
-            <Text style={styles.drawerTitle}>Financial Quest</Text>
+            <TouchableOpacity onPress={() => setMenuOpen(false)}>
+              <Text style={styles.drawerTitle}>Financial Quest</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.drawerContent}>
             <TouchableOpacity style={styles.drawerItem} onPress={() => {
@@ -163,7 +165,7 @@ const Home = () => {
               <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
               <Text style={styles.drawerItemText}>Games</Text>
             </TouchableOpacity>
-    
+
             <TouchableOpacity style={styles.drawerItem} onPress={() => {
               setMenuOpen(false);
               navigation.navigate('Blog');
@@ -189,6 +191,7 @@ const Home = () => {
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
         </Animated.View>
+
     
         {/* Welcome Banner */}
         <View style={styles.welcomeBanner}>
