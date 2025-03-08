@@ -116,6 +116,12 @@ const Home = () => {
     }
   };
 
+  console.log("Username:", username);
+  console.log("Popular Games:", popularGames);
+  console.log("Menu Open:", menuOpen);
+  console.log("Scale:", scale);
+  console.log("Navigation:", navigation);
+  
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -124,77 +130,66 @@ const Home = () => {
       </View>
     );
   }
-
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#FFFAFA" barStyle="dark-content" />
-      
-      {/* Header with burger menu */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => setMenuOpen(true)}>
-          <Icon name="menu" size={28 * scale} color="#8F7BE8" />
-        </TouchableOpacity>
-        <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>Home</Text>
-        </View>
-        <View style={{width: 28 * scale}} /> {/* Empty view for balanced layout */}
-      </View>
-      
-      {/* Sliding Menu */}
-      <Animated.View style={[styles.drawer, { transform: [{ translateX: slideAnimation }] }]}>
-        <View style={styles.drawerHeader}>
-          <Icon name="attach-money" size={40 * scale} color="#8F7BE8" />
-          <Text style={styles.drawerTitle}>Financial Quest</Text>
-        </View>
-        <View style={styles.drawerContent}>
-          <TouchableOpacity style={styles.drawerItem} onPress={() => {
-            setMenuOpen(false);
-            navigation.navigate('GameFeatures');
-          }}>
-            <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
-            <Text style={styles.drawerItemText}>Games</Text>
+  
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {/* Header with burger menu */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => setMenuOpen(true)}>
+            <Icon name="menu" size={28 * scale} color="#8F7BE8" />
           </TouchableOpacity>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>Home</Text>
+          </View>
+          <View style={{ width: 28 * scale }}>
+            <Text>{""}</Text> 
+          </View>
+        </View>
+    
+        {/* Sliding Menu */}
+        <Animated.View style={[styles.drawer, { transform: [{ translateX: slideAnimation }] }]}>
+          <View style={styles.drawerHeader}>
+            <Icon name="attach-money" size={40 * scale} color="#8F7BE8" />
+            <Text style={styles.drawerTitle}>Financial Quest</Text>
+          </View>
+          <View style={styles.drawerContent}>
+            <TouchableOpacity style={styles.drawerItem} onPress={() => {
+              setMenuOpen(false);
+              navigation.navigate('GameFeatures');
+            }}>
+              <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
+              <Text style={styles.drawerItemText}>Games</Text>
+            </TouchableOpacity>
+    
+            <TouchableOpacity style={styles.drawerItem} onPress={() => {
+              setMenuOpen(false);
+              navigation.navigate('Blog');
+            }}>
+              <Icon name="book" size={24 * scale} color="#8F7BE8" />
+              <Text style={styles.drawerItemText}>Blogs</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.drawerItem} onPress={() => {
+              setMenuOpen(false);
+              navigation.navigate('About');
+            }}>
+              <Icon name="info" size={24 * scale} color="#8F7BE8" />
+              <Text style={styles.drawerItemText}>About</Text>
+            </TouchableOpacity>
+          </View>
           
-          <TouchableOpacity style={styles.drawerItem} onPress={() => {
+          <TouchableOpacity style={styles.logoutButton} onPress={() => {
             setMenuOpen(false);
-            navigation.navigate('Blog');
+            logout();
           }}>
-            <Icon name="book" size={24 * scale} color="#8F7BE8" />
-            <Text style={styles.drawerItemText}>Blogs</Text>
+            <Icon name="logout" size={24 * scale} color="#FFFAFA" />
+            <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.drawerItem} onPress={() => {
-            setMenuOpen(false);
-            navigation.navigate('About');
-          }}>
-            <Icon name="info" size={24 * scale} color="#8F7BE8" />
-            <Text style={styles.drawerItemText}>About</Text>
-          </TouchableOpacity>
-        </View>
-        
-        <TouchableOpacity style={styles.logoutButton} onPress={() => {
-          setMenuOpen(false);
-          logout();
-        }}>
-          <Icon name="logout" size={24 * scale} color="#FFFAFA" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-      </Animated.View>
-      
-      {/* Overlay when menu is open */}
-      {menuOpen && (
-        <TouchableOpacity 
-          style={styles.overlay} 
-          activeOpacity={1} 
-          onPress={() => setMenuOpen(false)}
-        />
-      )}
-      
-      <ScrollView 
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
-      >
+        </Animated.View>
+    
         {/* Welcome Banner */}
         <View style={styles.welcomeBanner}>
           <LottieView
@@ -205,13 +200,13 @@ const Home = () => {
           />
           <View style={styles.welcomeContent}>
             <Text style={styles.welcomeText}>Welcome back,</Text>
-            <Text style={styles.usernameText}>{username}!</Text>
+            <Text style={styles.usernameText}>{username || "Guest"}!</Text>
             <Text style={styles.welcomeSubtext}>
               Continue your financial journey today.
             </Text>
           </View>
         </View>
-
+    
         {/* Games Section */}
         <View style={styles.gamesSection}>
           <View style={styles.sectionHeader}>
@@ -226,13 +221,13 @@ const Home = () => {
             showsHorizontalScrollIndicator={false} 
             style={styles.gamesScrollView}
           >
-            {popularGames.map(game => (
+            {popularGames.map((game, index) => (
               <TouchableOpacity 
-                key={game.id} 
+                key={game.id || index} 
                 style={styles.gameCard}
                 onPress={() => navigation.navigate(game.screen)}
               >
-                <View style={[styles.gameIconContainer, {backgroundColor: game.color}]}>
+                <View style={[styles.gameIconContainer, { backgroundColor: game.color }]}>
                   <Icon name={game.icon} size={26 * scale} color="#FFFAFA" />
                 </View>
                 <LottieView
@@ -241,11 +236,11 @@ const Home = () => {
                   loop
                   style={styles.lottieAnimation}
                 />
-                <Text style={styles.gameTitle}>{game.title}</Text>
-                <Text style={styles.gameDescription}>{game.description}</Text>
+                <Text style={styles.gameTitle}>{game.title ?? "Untitled Game"}</Text>
+                <Text style={styles.gameDescription}>{game.description ?? "No description available"}</Text>
                 <View style={styles.playButtonContainer}>
                   <TouchableOpacity 
-                    style={[styles.playButton, {backgroundColor: game.color}]}
+                    style={[styles.playButton, { backgroundColor: game.color }]}
                     onPress={() => navigation.navigate(game.screen)}
                   >
                     <Icon name="play-arrow" size={18 * scale} color="#FFFAFA" />
@@ -256,37 +251,7 @@ const Home = () => {
             ))}
           </ScrollView>
         </View>
-
-        {/* Space at bottom to avoid content being hidden behind nav bar */}
-        <View style={{height: 30 * scale}} />
       </ScrollView>
-
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNavBar}>
-        <TouchableOpacity 
-          style={styles.navButton} 
-          onPress={() => navigation.navigate('GameFeatures')}
-        >
-          <Icon name="sports-esports" size={24 * scale} color="#8F7BE8" />
-          <Text style={styles.navButtonText}>Games</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navButton}
-          onPress={() => navigation.navigate('Blog')}
-        >
-          <Icon name="book" size={24 * scale} color="#8F7BE8" />
-          <Text style={styles.navButtonText}>Blogs</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navButton}
-          onPress={() => navigation.navigate('About')}
-        >
-          <Icon name="info" size={24 * scale} color="#8F7BE8" />
-          <Text style={styles.navButtonText}>About</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
@@ -295,6 +260,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#FFFAFA',
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -403,7 +371,7 @@ const styles = StyleSheet.create({
     fontSize: 18 * scale,
     fontFamily: 'Poppins-Bold',
     marginLeft: 10,
-    fontweight: 'bold',
+    fontWeight: 'bold', // Fixed typo: 'fontweight' -> 'fontWeight'
   },
   container: {
     flex: 1,
