@@ -32,6 +32,8 @@ const Modal11 = ({ onChoose }) => {
             transform: "translate(-50%, -55%)",
             width: "85%",
             maxWidth: "600px",
+            maxHeight: "80vh", // Set maximum height
+            overflowY: "auto", // Enable vertical scrolling
             borderRadius: 5,
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             textAlign: "center",

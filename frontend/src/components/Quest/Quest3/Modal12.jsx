@@ -14,34 +14,34 @@ const Modal12 = ({ onBack, onComplete }) => {
   };
 
   return (
-<Modal
-  open={showModal}
-  onClose={handleClose}
-  closeAfterTransition
-  slots={{ backdrop: Backdrop }}
-  slotProps={{
-    backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } },
-  }}
->
-  <Fade in={showModal}>
-    <Box
-      sx={{
-        position: "absolute",
-        top: "55%",
-        left: "50%",
-        transform: "translate(-50%, -55%)",
-        width: "85%",
-        maxWidth: "1000px",
-        borderRadius: 5,
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
-        textAlign: "center",
-        p: 4,
-        boxShadow: "0px 4px 10px rgba(140, 47, 199, 0.1)",
-        border: "2px solid rgba(0, 0, 0, 0.8)",
-        maxHeight: "80vh", // Limit height to 80% of the viewport
-        overflowY: "auto", // Enable scrolling
+    <Modal
+      open={showModal}
+      onClose={handleClose}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } },
       }}
     >
+      <Fade in={showModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "55%",
+            left: "50%",
+            transform: "translate(-50%, -55%)",
+            width: "85%",
+            maxWidth: "1000px",
+            borderRadius: 5,
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            textAlign: "center",
+            p: 4,
+            boxShadow: "0px 4px 10px rgba(140, 47, 199, 0.1)",
+            border: "2px solid rgba(0, 0, 0, 0.8)",
+            maxHeight: "80vh", // Limit height to 80% of the viewport
+            overflowY: "auto", // Enable scrolling
+          }}
+        >
           <Typography
             variant="h6"
             sx={{
@@ -89,9 +89,7 @@ const Modal12 = ({ onBack, onComplete }) => {
               >
                 ✅ Compound interest is like a snowball rolling down a hill—it starts small, but as it moves, it grows bigger and bigger on its own.
                 <br />
-                ✅ When you invest money, you earn interest (extra money). But instead of just earning inters of proper banking. 
-                <br />
-                ✅ This lesson introduces key banking insights to help you make the most out of your money.est on your original money, you also earn interest on the interest you’ve already gained.
+                ✅ When you invest money, you earn interest (extra money). But instead of just earning interest on your original money, you also earn interest on the interest you’ve already gained.
                 <br />
               </Typography>
 
@@ -114,13 +112,10 @@ const Modal12 = ({ onBack, onComplete }) => {
                 -    Year 2: You earn 8% of ₱1,080, which is ₱86.40—so now you have ₱1,166.40. <br />
                 -    Year 3: You earn 8% of ₱1,166.40, which is ₱93.31—now you have ₱1,259.71. <br />
                 -    After 10 years, instead of just getting ₱1,800 (if interest didn’t compound), you’d actually have ₱2,159 because the interest kept growing on itself. <br />
-                </Typography>
+              </Typography>
             </Box>
 
             <Box sx={{ flex: 1 }}>
-             
-
-                <Box sx={{ flex: 1 }}>
               <Typography
                 sx={{
                   fontSize: "15px",
@@ -133,7 +128,6 @@ const Modal12 = ({ onBack, onComplete }) => {
                 }}
               >
                 💡 Why does this matter?
-
               </Typography>
 
               <Typography
@@ -154,25 +148,22 @@ const Modal12 = ({ onBack, onComplete }) => {
                 <br />
               </Typography>
             </Box>
-            
-              
-            </Box>
-            
           </Box>
+
           <Typography
-                sx={{
-                  mt: 2,
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "2px solid rgba(0, 0, 0, 0.8)",
-                  color: "#000",
-                }}
-              >
-                💡 Tip: The best way to take advantage of compound interest is to invest and leave it alone—the longer it stays, the bigger it grows.
-              </Typography>
+            sx={{
+              mt: 2,
+              fontSize: "14px",
+              fontWeight: "bold",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              padding: "10px",
+              borderRadius: "5px",
+              border: "2px solid rgba(0, 0, 0, 0.8)",
+              color: "#000",
+            }}
+          >
+            💡 Tip: The best way to take advantage of compound interest is to invest and leave it alone—the longer it stays, the bigger it grows.
+          </Typography>
 
           <Button
             variant="contained"

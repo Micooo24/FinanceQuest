@@ -38,6 +38,8 @@ const Modal13 = ({ onBack, onComplete }) => {
             p: 4,
             boxShadow: "0px 4px 10px rgba(140, 47, 199, 0.1)",
             border: "2px solid rgba(0, 0, 0, 0.8)",
+            maxHeight: "80vh", // Limit height to 80% of the viewport
+            overflowY: "auto", // Enable scrolling
           }}
         >
           <Typography

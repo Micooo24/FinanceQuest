@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react"; 
-import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material"; 
+import React, { useState, useEffect } from "react";
+import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
 
-const Modal10 = ({ onContinue }) => { 
+const Modal10 = ({ onContinue }) => {
   const [showModal, setShowModal] = useState(true);
 
-  const handleContinue = () => { 
-    setShowModal(false); 
-    onContinue(); 
+  const handleContinue = () => {
+    setShowModal(false);
+    onContinue();
   };
 
-  useEffect(() => { 
-    document.documentElement.style.overflow = showModal ? "hidden" : "auto"; 
+  useEffect(() => {
+    document.documentElement.style.overflow = showModal ? "hidden" : "auto";
   }, [showModal]);
 
-  return ( 
-    <Modal 
-      open={showModal} 
-      onClose={() => setShowModal(false)} 
-      closeAfterTransition 
-      slots={{ backdrop: Backdrop }} 
-      slotProps={{ backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } } }} 
+  return (
+    <Modal
+      open={showModal}
+      onClose={() => setShowModal(false)}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{ backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } } }}
     >
       <Fade in={showModal}>
         <Box
@@ -30,6 +30,8 @@ const Modal10 = ({ onContinue }) => {
             transform: "translate(-50%, -60%)",
             width: "85%",
             maxWidth: "1000px",
+            maxHeight: "80vh", // Set maximum height
+            overflowY: "auto", // Enable vertical scrolling
             borderRadius: 5,
             backgroundColor: "rgba(255, 255, 255, 0.9)",
             textAlign: "center",
@@ -54,7 +56,6 @@ const Modal10 = ({ onContinue }) => {
           >
             🎉 Bonus Quest Completed!
             ✔ New Lesson Unlocked: Future Investments
-
           </Typography>
 
           <Box sx={{ display: "flex", flexDirection: "row", gap: 3, mt: 3 }}>
@@ -71,11 +72,8 @@ const Modal10 = ({ onContinue }) => {
                 }}
               >
                 Investing isn’t just about making money—it’s about building financial security, growing wealth, and preparing for the future. Many people hesitate to invest, thinking it’s complicated or risky, but the right investment strategies can help you maximize your earnings while managing risks. This lesson introduces key investment insights to help you make smart financial decisions and grow your money over time.
-
               </Typography>
-
             </Box>
-
           </Box>
 
           <Button
