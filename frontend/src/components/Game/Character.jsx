@@ -146,7 +146,7 @@ const loadCharacter = (vehicleLayer, onLoad, camera, initialPosition, onPosition
         default:
           break;
       }
-      if (debugMode) console.log(`Character position: x:${character.position.x}, y:${character.position.y}, z:${character.position.z}`);
+       console.log(`Character position: x:${character.position.x}, y:${character.position.y}, z:${character.position.z}`);
     };
 
     // Handle key up events

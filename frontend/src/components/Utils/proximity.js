@@ -8,6 +8,11 @@ const npc7Position = new THREE.Vector3(-4.565246672190189, 0.5, -21.978682238028
 
 const npcPosition = new  THREE.Vector3(-14.046558652575328, 0.2, -6.1948453448203065);
 
+const npc6Position = new THREE.Vector3(-7.764510595057404, 0.2, 8.341813689568157);
+
+const fast_foodPosition = new THREE.Vector3(-22.621940543130382, 0.5, -5.377313070970168);
+const coffee_shopPosition = new THREE.Vector3(-7.206849473974556, 0.5, 9.401782377917066);
+
 const checkProximityToNPC4 = (characterPosition) => {
   const distanceToNPC4 = characterPosition.distanceTo(npc4Position);
   return distanceToNPC4 < 5; // Adjust the distance threshold as needed
@@ -23,6 +28,21 @@ const checkProximityToNPC = (characterPosition) => {
   return distanceToNPC < 5; // Adjust the distance threshold as needed
 };
 
+const checkProximityToNPC6 = (characterPosition) => {
+  const distanceToNPC6 = characterPosition.distanceTo(npc6Position);
+  return distanceToNPC6 < 5; // Adjust the distance threshold as needed
+};
+
+const checkProximitytoFastFood = (characterPosition) => {
+  const distanceToFastFood = characterPosition.distanceTo(fast_foodPosition);
+  return distanceToFastFood < 5;
+};
+
+const checkProximitytoCoffeeShop = (characterPosition) => {
+  const distanceToCoffeeShop = characterPosition.distanceTo(coffee_shopPosition);
+  return distanceToCoffeeShop < 5;
+}
+
 
     
-export { checkProximityToNPC4, checkProximityToNPC7, checkProximityToNPC };
+export { checkProximityToNPC4, checkProximityToNPC7, checkProximityToNPC, checkProximityToNPC6, checkProximitytoFastFood, checkProximitytoCoffeeShop };
