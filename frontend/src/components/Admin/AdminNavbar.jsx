@@ -17,8 +17,11 @@ import {
   Logout,
   Home
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; // Added toast import
 
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
   const handleLogout = () => {
@@ -86,10 +89,10 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
               onClick={() => setActiveSection(item.text)}
               sx={{ padding: "10px 16px"}}
             >
-              <ListItemIcon sx={{ color: "#331540", minWidth: "40px" , backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center",}}>
+              <ListItemIcon sx={{ color: "#331540", minWidth: "40px", backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
                 {item.icon}
               </ListItemIcon>
-              {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem", ml: 2 , fontFamily: "'Lora'" }} />}
+              {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem", ml: 2, fontFamily: "'Lora'" }} />}
             </ListItem>
           ))}
         </List>
@@ -100,12 +103,20 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
         <ListItem
           button
           onClick={handleLogout}
-          sx={{ mb: 5 }}
+          sx={{ 
+            mb: 5,
+            cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.2)'
+            },
+            borderRadius: '8px',
+            transition: 'all 0.2s ease-in-out'
+          }}
         >
-          <ListItemIcon sx={{ color: "#331540", minWidth: "40px" , backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center",}}>
+          <ListItemIcon sx={{ color: "#331540", minWidth: "40px", backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
             <Logout />
           </ListItemIcon>
-          {expanded && <ListItemText primary="Logout" sx={{ fontSize: "0.9rem" , ml: 2 }} />}
+          {expanded && <ListItemText primary="Logout" sx={{ fontSize: "0.9rem", ml: 2 }} />}
         </ListItem>
       </List>
     </Box>
