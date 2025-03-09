@@ -4,6 +4,7 @@ import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
 import fqlogo from "/assets/TUPLogo.png";
 
+// Register fonts
 Font.register({
   family: "Roboto",
   src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Me5Q.ttf",
@@ -22,10 +23,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#bfbfbf",
     marginBottom: 10,
+    borderCollapse: "collapse", // Add this line to collapse borders
   },
   tableRow: { flexDirection: "row" },
   tableCol: {
-    width: "25%",
+    width: "33%",
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "#bfbfbf",
@@ -63,7 +65,7 @@ const Watermark = () => (
   </View>
 );
 
-const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, expensesData, billsData, savingsData, aiAnalysis }) => {
+const SavingsReport = ({ balance, weeklyBalances, weeklyExpenses, aiFeedback }) => {
   const [userDetails, setUserDetails] = useState({ username: "", email: "" });
   
   // Fetch user details from localStorage
@@ -90,13 +92,15 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
+  const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
+
   return (
     <Document>
       <Page style={styles.page}>
         <Watermark />
         <View style={styles.header}>
           <Image style={styles.logo} src={tuplogo} />
-          <Text style={styles.heading}>FINANCE TRACKER REPORT</Text>
+          <Text style={styles.heading}>FINANCEQUEST REPORT</Text>
           <Image style={styles.logo} src={fqlogo} />
         </View>
 
@@ -113,44 +117,38 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
 
           <View style={styles.section}>
             <Text style={styles.heading}>Financial Summary</Text>
-            <Text style={styles.text}>Total Income: ₱{(totalIncome || 0).toLocaleString()}</Text>
-            <Text style={styles.text}>Total Expenses: ₱{(totalExpenses || 0).toLocaleString()}</Text>
-            <Text style={styles.text}>Savings: ₱{(totalsavings || 0).toLocaleString()}</Text>
+            <Text style={styles.text}>Remaining Balance: ₱{(balance || 0).toLocaleString()}</Text>
+            <Text style={styles.text}>Average Weekly Expenses: ₱{(avgWeeklyExpenses || 0).toLocaleString()}</Text>
           </View>
         </View>
         
-        {/* Financial Data Tables */}
-        {[{ title: "Income Data", data: incomeData }, { title: "Needs Data", data: expensesData }, { title: "Wants Data", data: billsData }, { title: "Savings Data", data: savingsData }].map((section, idx) => (
-          <View key={idx} style={styles.section} wrap={false}>
-            <Text style={{ ...styles.heading, textAlign: "left" }}>{section.title}</Text>
-            <View style={styles.table}>
-              <View style={styles.tableRow}>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Category</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Expected</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Actual</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Done</Text></View>
-              </View>
-              {section.data.map((item, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.category}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.expected || 0).toLocaleString()}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.actual || 0).toLocaleString()}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.done ? "Completed" : "Pending"}</Text></View>
-                </View>
-              ))}
+        {/* Weekly Balances and Expenses */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>Weekly Balances and Expenses</Text>
+          <View style={styles.table}>
+            <View style={styles.tableRow}>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>Week</Text></View>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>Balance</Text></View>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>Expenses</Text></View>
             </View>
+            {weeklyBalances.map((balance, index) => (
+              <View key={index} style={styles.tableRow}>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>{`Week ${index + 1}`}</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(balance || 0).toLocaleString()}</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(weeklyExpenses[index] || 0).toLocaleString()}</Text></View>
+              </View>
+            ))}
           </View>
-        ))}
-
-             {/* AI Analysis */}
-             <View style={styles.section}>
-          <Text style={styles.heading}>FinanceQuest Feedback</Text>
-          <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.5, marginBottom: 0 }]}>{aiAnalysis}</Text>
         </View>
 
+        {/* AI Analysis */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>FinanceQuest Feedback</Text>
+          <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.5, marginBottom: 0 }]}>{aiFeedback}</Text>
+        </View>
       </Page>
     </Document>
   );
 };
 
-export default TrackerReport;
+export default SavingsReport;
