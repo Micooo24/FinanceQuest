@@ -15,29 +15,30 @@ import {
   Modal,
   Button
 } from "@mui/material";
-import { Delete, RestoreFromTrash, ExpandMore, ExpandLess, DeleteForever } from "@mui/icons-material";
+import { Delete, RestoreFromTrash, ExpandMore, ExpandLess, DeleteForever , Warning } from "@mui/icons-material";
 
 const Feedbacks = () => {
   const [comments, setComments] = useState([]);
   const [deletedComments, setDeletedComments] = useState([]);
   const [expandedUsers, setExpandedUsers] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+
+  const blogIds = ["123", "1234", "12345", "123456"];
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/blogReview/get_comments/12345");
-        const fetchedComments = response.data.comments;
-
-        // Retrieve deleted comments from localStorage
+        const requests = blogIds.map(id => axios.get(`http://localhost:8000/blogReview/get_comments/${id}`));
+        const responses = await Promise.all(requests);
+        const allComments = responses.flatMap(response => response.data.comments || []);
         const savedDeletedComments = JSON.parse(localStorage.getItem("deletedComments")) || [];
-        setDeletedComments(savedDeletedComments);
-
-        // Filter out deleted comments from the main list
-        const remainingComments = fetchedComments.filter(
-          (comment) => !savedDeletedComments.some((deleted) => deleted._id === comment._id)
+        const filteredComments = allComments.filter(comment =>
+          !savedDeletedComments.some(deleted => deleted._id === comment._id)
         );
-        setComments(remainingComments);
+
+        setComments(filteredComments);
+        setDeletedComments(savedDeletedComments);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
@@ -47,38 +48,42 @@ const Feedbacks = () => {
   }, []);
 
   const handleToggleExpand = (username) => {
-    setExpandedUsers((prev) => ({
+    setExpandedUsers(prev => ({
       ...prev,
       [username]: !prev[username]
     }));
   };
 
   const handleDelete = (commentId) => {
-    const commentToDelete = comments.find(comment => comment._id === commentId);
-    if (!commentToDelete) return;
-
-    const updatedDeletedComments = [...deletedComments, commentToDelete];
-    setDeletedComments(updatedDeletedComments);
-    localStorage.setItem("deletedComments", JSON.stringify(updatedDeletedComments));
-
-    setComments(comments.filter(comment => comment._id !== commentId));
+    setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
+    setDeletedComments(prevDeleted => {
+      const deletedComment = comments.find(comment => comment._id === commentId);
+      if (!deletedComment) return prevDeleted;
+      const updatedDeleted = [...prevDeleted, deletedComment];
+      localStorage.setItem("deletedComments", JSON.stringify(updatedDeleted));
+      return updatedDeleted;
+    });
   };
 
   const handleRestore = (commentId) => {
-    const commentToRestore = deletedComments.find(comment => comment._id === commentId);
-    if (!commentToRestore) return;
+    setDeletedComments(prevDeleted => {
+      const restoredComment = prevDeleted.find(comment => comment._id === commentId);
+      if (!restoredComment) return prevDeleted;
 
-    setComments([...comments, commentToRestore]);
+      setComments(prevComments => [...prevComments, restoredComment]);
 
-    const updatedDeletedComments = deletedComments.filter(comment => comment._id !== commentId);
-    setDeletedComments(updatedDeletedComments);
-    localStorage.setItem("deletedComments", JSON.stringify(updatedDeletedComments));
+      const updatedDeleted = prevDeleted.filter(comment => comment._id !== commentId);
+      localStorage.setItem("deletedComments", JSON.stringify(updatedDeleted));
+      return updatedDeleted;
+    });
   };
 
   const handlePermanentDelete = (commentId) => {
-    const updatedDeletedComments = deletedComments.filter(comment => comment._id !== commentId);
-    setDeletedComments(updatedDeletedComments);
-    localStorage.setItem("deletedComments", JSON.stringify(updatedDeletedComments));
+    setDeletedComments(prevDeleted => {
+      const updatedDeleted = prevDeleted.filter(comment => comment._id !== commentId);
+      localStorage.setItem("deletedComments", JSON.stringify(updatedDeleted));
+      return updatedDeleted;
+    });
   };
 
   const toggleModal = () => {
@@ -92,55 +97,63 @@ const Feedbacks = () => {
   }, {});
 
   return (
-    <div style={{ padding: "20px", color: "#fff", fontFamily: "'Fraunces'", width: "1000px", margin: "auto" }}>
-      <Typography variant="h4" sx={{ marginBottom: "20px", fontFamily: "'Fraunces'", fontWeight: "bold" }}>
-        Feedbacks on Blog Post
-      </Typography>
-
-      {/* Recycle Bin Button */}
-      <IconButton onClick={toggleModal} sx={{ position: "fixed", top: 20, right: 20, color: "#fff", fontSize: "2rem" }}>
+    <div style={{ padding: "20px", color: "#451d6b", fontFamily: "'Fraunces'", width: "1000px", margin: "auto" }}>
+      <IconButton onClick={toggleModal} sx={{ position: "absolute", top: 125, right: 80, color: "#451d6b" }}>
         <RestoreFromTrash />
       </IconButton>
 
       <TableContainer component={Paper} sx={{ backgroundColor: "#B2A5FF", borderRadius: "8px" }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#C5BAFF", color: "#000" }}>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Username</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}></TableCell>
+            <TableRow sx={{ backgroundColor: "#C5BAFF" }}>
+              <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'" }}>Username</TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", textAlign: "right" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(groupedComments).map((username) => (
               <React.Fragment key={username}>
                 <TableRow sx={{ backgroundColor: "#DAD2FF", borderRadius: "8px" }}>
-                  <TableCell sx={{ fontFamily: "'Lilita One'", cursor: "pointer" }} onClick={() => handleToggleExpand(username)}>
-                    {username} {expandedUsers[username] ? <ExpandLess /> : <ExpandMore />}
+                  <TableCell sx={{ fontFamily: "'Lilita One'" }}>
+                    {username}
                   </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell sx={{ textAlign: "right" }}>
+                    <IconButton onClick={() => handleToggleExpand(username)}>
+                      {expandedUsers[username] ? <ExpandLess /> : <ExpandMore />}
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>
                     <Collapse in={expandedUsers[username]} timeout="auto" unmountOnExit>
-                      <Box sx={{ marginLeft: 4, backgroundColor: "#EDE7FF", padding: "10px", borderRadius: "8px" }}>
-                        {groupedComments[username].map((comment) => (
-                          <Box key={comment._id} sx={{ marginBottom: "8px", padding: "8px", backgroundColor: "#F4F0FF", borderRadius: "5px" }}>
-                            <Typography variant="body1" sx={{ fontFamily: "'Lilita One'" }}>{comment.comment}</Typography>
-                            <Typography variant="body2" sx={{ fontFamily: "'Lilita One'", color: "gray" }}>
-                              Likes: {comment.like_count} | Anonymous: {comment.anonymous ? "Yes" : "No"}
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: "'Lilita One'", color: "gray" }}>
-                              Created At: {new Date(comment.created_at).toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" sx={{ fontFamily: "'Lilita One'", color: "gray" }}>
-                              Updated At: {new Date(comment.updated_at).toLocaleString()}
-                            </Typography>
-                            <IconButton onClick={() => handleDelete(comment._id)} color="error">
-                              <Delete />
-                            </IconButton>
-                          </Box>
-                        ))}
-                      </Box>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow sx={{ backgroundColor: "#EDE7FF" }}>
+                            <TableCell>Comment</TableCell>
+                            <TableCell sx={{ textAlign: "right" }}>Actions</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {groupedComments[username].map((comment) => (
+                            <TableRow key={comment._id} sx={{ backgroundColor: "#F4F0FF" }}>
+                              <TableCell>
+                                <Typography variant="body1">{comment.comment}</Typography>
+                                <Typography variant="body2" sx={{ color: "gray" }}>
+                                  Likes: {comment.like_count} | Anonymous: {comment.anonymous ? "Yes" : "No"}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: "gray" }}>
+                                  Created At: {new Date(comment.created_at).toLocaleString()}
+                                </Typography>
+                              </TableCell>
+                              <TableCell sx={{ textAlign: "right" }}>
+                                <IconButton onClick={() => handleDelete(comment._id)} color="error">
+                                  <Delete />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </Collapse>
                   </TableCell>
                 </TableRow>
@@ -150,10 +163,10 @@ const Feedbacks = () => {
         </Table>
       </TableContainer>
 
-      {/* Recycle Bin Modal */}
-      <Modal open={isModalOpen} onClose={toggleModal}>
+           {/* Recycle Bin Modal */}
+        <Modal open={isModalOpen} onClose={toggleModal}>
         <Box sx={{
-          position: "absolute",
+          position: "absolute" ,
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
@@ -161,6 +174,7 @@ const Feedbacks = () => {
           padding: "20px",
           borderRadius: "8px",
           width: "500px",
+          
           boxShadow: 24
         }}>
           <Typography variant="h6" sx={{ marginBottom: "20px", fontFamily: "'Fraunces'", fontWeight: "bold" }}>
@@ -169,9 +183,9 @@ const Feedbacks = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Username</TableCell>
-                <TableCell>Comment</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'" }}>Username</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'" }}>Comment</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

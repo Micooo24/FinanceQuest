@@ -1,3 +1,5 @@
+import fqlogo from "/assets/financial.png";
+
 import React, { useState } from "react";
 import {
   Box,
@@ -5,72 +7,106 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Collapse,
 } from "@mui/material";
 import {
   Dashboard,
   Person,
-  TableChart,
-  ExpandLess,
-  ExpandMore,
-  ViewModule,
   Article,
   Check,
-  Info
+  Info,
+  Logout,
+  Home
 } from "@mui/icons-material";
 
 const AdminNavbar = ({ activeSection, setActiveSection }) => {
-  const [miniGamesOpen, setMiniGamesOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const menuItems = [
-    { text: "Dashboard", icon: <Dashboard /> },
-    { text: "Accounts", icon: <Info /> },
-    { text: "Users", icon: <Person /> },
-    { text: "Feedbacks", icon: <Article /> },
-    { text: "FinanceTracker", icon: <Check /> },
-   
-  ];
+  const handleLogout = () => {
+    localStorage.clear();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
-  const miniGamesItems = [
-    { text: "Budget Table", icon: <TableChart /> },
-    { text: "Savings Table", icon: <TableChart /> },
-    { text: "Investment Table", icon: <TableChart /> },
+  const menuItems = [
+    { text: "Dashboard", icon: <Home /> },
+    { text: "Account Management", icon: <Info /> },
+    { text: "User Management", icon: <Person /> },
+    { text: "Feedbacks", icon: <Article /> },
+    { text: "Finance Tracker", icon: <Check /> },
   ];
 
   return (
     <Box
       sx={{
-        width: expanded ? 100 : 60, // Reduced width for better fit
-        height: "90vh",
-        background: "#220E36",
-        color: "white",
+        width: expanded ? 200 : 70,
+        height: "100vh",
+        background: "#C5BAFF",
+        color: "#451d6b",
         position: "fixed",
-        left: 20,
-        top: 20,
-        borderRadius: "10px",
+        left: 0,
+        top: 0,
         transition: "width 0.3s ease-in-out",
-        "&:hover": { width: 180 }, // Adjusted hover effect
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: "20px",
+        zIndex: 10,
+        borderRight: "1px solid rgb(26, 25, 24)",
+        fontFamily: "'Lora'" 
       }}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
-      <List>
-        {menuItems.map((item, index) => (
-          <ListItem
-            button
-            key={index}
-            onClick={() => setActiveSection(item.text)}
-            sx={{ padding: "10px 16px", mb: 2, mt: 1 }}
-          >
+      {/* Logo at the top */}
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          mb: 2,
+        }}
+      >
+        <img
+          src={fqlogo}
+          alt="Finance Quest Logo"
+          style={{
+            width: expanded ? "120px" : "40px",
+            transition: "width 0.3s ease-in-out",
+          }}
+        />
+      </Box>
 
-            <ListItemIcon sx={{ color: "white", minWidth: "40px" }}>
-              {item.icon}
-            </ListItemIcon>
-            {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem" }} />}
-          </ListItem>
-        ))}
-        
+      {/* Wrapper for centering menu items */}
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <List>
+          {menuItems.map((item, index) => (
+            <ListItem
+              button
+              key={index}
+              onClick={() => setActiveSection(item.text)}
+              sx={{ padding: "10px 16px"}}
+            >
+              <ListItemIcon sx={{ color: "#331540", minWidth: "40px" , backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center",}}>
+                {item.icon}
+              </ListItemIcon>
+              {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem", ml: 2 , fontFamily: "'Lora'" }} />}
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+
+      {/* Logout button at the bottom */}
+      <List>
+        <ListItem
+          button
+          onClick={handleLogout}
+          sx={{ mb: 5 }}
+        >
+          <ListItemIcon sx={{ color: "#331540", minWidth: "40px" , backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center",}}>
+            <Logout />
+          </ListItemIcon>
+          {expanded && <ListItemText primary="Logout" sx={{ fontSize: "0.9rem" , ml: 2 }} />}
+        </ListItem>
       </List>
     </Box>
   );

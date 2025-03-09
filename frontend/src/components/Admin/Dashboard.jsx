@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import AdminNavbar from "./AdminNavbar";
+import AdminHeader from "./AdminHeader";
 import DashboardCharts from "./Chart";
 import Users from "./Users"; // Import Users component
 import Accounts from "./Accounts"; 
@@ -19,12 +20,15 @@ const Dashboard = () => {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#331540",
+        backgroundColor: "#DAD2FF",
         overflow: "auto",
       }}
     >
       {/* Sidebar */}
       <AdminNavbar activeSection={activeSection} setActiveSection={setActiveSection} />
+ 
+      <AdminHeader activeSection={activeSection} />
+
 
       {/* Main Content */}
       <Box
@@ -37,14 +41,15 @@ const Dashboard = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          marginTop: "70px",
         }}
       >
-        <Box sx={{ width: "90%", height: "90%" }}>
+        <Box sx={{ width: "85%", height: "90%" }}>
           {activeSection === "Dashboard" && <DashboardCharts />}
-          {activeSection === "Users" && <Users />} 
-          {activeSection === "Accounts" && <Accounts />}
+          {activeSection === "User Management" && <Users />} 
+          {activeSection === "Account Management" && <Accounts />}
           {activeSection === "Feedbacks" && <Feedbacks />}
-          {activeSection === "FinanceTracker" && <FinanceTracker />}
+          {activeSection === "Finance Tracker" && <FinanceTracker />}
         </Box>
       </Box>
     </Box>
