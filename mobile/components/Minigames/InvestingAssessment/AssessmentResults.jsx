@@ -5,7 +5,7 @@ import { Dimensions } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
 
-const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, onNext }) => {
+const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, navigation }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const correctAnswers = points;
@@ -98,7 +98,10 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
           <Text style={styles.summaryValue}>{incorrectAnswers}</Text>
         </View>
       </View>
-      <Button title="Next" onPress={onNext} />
+      <View style={styles.buttonContainer}>
+        <Button title="Back" onPress={() => setCurrentPage(1)} />
+        <Button title="Back to Home" onPress={() => navigation.navigate('Home')} />
+      </View>
     </View>
   );
 
@@ -165,6 +168,12 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+    width: "100%",
   },
 });
 
