@@ -14,12 +14,12 @@ import { Google as GoogleIcon } from "@mui/icons-material";
 import axios from "axios";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import SunCity from "../../assets/suncity.mp4";
 import toast from 'react-hot-toast';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,16 +29,15 @@ const Login = () => {
     }
   }, [navigate]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/users/login", {
-        email,
-        password,
+        email: values.email,
+        password: values.password,
       });
       if (response.status === 200) {
         const { access_token } = response.data;
-        localStorage.setItem("email", email);
+        localStorage.setItem("email", values.email);
         localStorage.setItem("authToken", access_token);
         toast.success("Login successful!");
   
@@ -48,7 +47,7 @@ const Login = () => {
             Authorization: `Bearer ${access_token}`,
           },
         });
-        const user = userResponse.data.users.find(user => user.email === email);
+        const user = userResponse.data.users.find(user => user.email === values.email);
         const userRole = user.role;
         const userId = user._id;
         localStorage.setItem("userRole", userRole);
@@ -69,6 +68,8 @@ const Login = () => {
       } else {
         toast.error("Error Login.");
       }
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -114,6 +115,11 @@ const Login = () => {
       }
     }
   };
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Invalid email address").required("Required"),
+    password: Yup.string().required("Required"),
+  });
 
   return (
     <Box
@@ -208,30 +214,48 @@ const Login = () => {
               SIGN IN TO CONTINUE
             </Typography>
 
-            <Box component="form" onSubmit={handleLogin} sx={{ mt: 2, width: "100%" }}>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Email"
-                variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                InputProps={{ startAdornment: <Email /> }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Password"
-                type="password"
-                variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{ startAdornment: <Lock /> }}
-              />
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}>
-                Login
-              </Button>
-            </Box>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              validationSchema={validationSchema}
+              onSubmit={handleLogin}
+            >
+              {({ isSubmitting, touched, errors }) => (
+                <Form style={{ width: "100%" }}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Email"
+                    variant="outlined"
+                    name="email"
+                    InputProps={{ startAdornment: <Email /> }}
+                    helperText={<ErrorMessage name="email" />}
+                    error={touched.email && Boolean(errors.email)}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    name="password"
+                    InputProps={{ startAdornment: <Lock /> }}
+                    helperText={<ErrorMessage name="password" />}
+                    error={touched.password && Boolean(errors.password)}
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
+                    disabled={isSubmitting}
+                  >
+                    Login
+                  </Button>
+                </Form>
+              )}
+            </Formik>
 
             <Typography variant="body2" fontFamily="'Lilita One'">
               Or sign in with:

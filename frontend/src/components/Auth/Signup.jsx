@@ -18,15 +18,12 @@ import { Google as GoogleIcon } from "@mui/icons-material";
 import axios from "axios";
 import { auth } from "../firebase/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import SunCity from "../../assets/suncity.mp4";
 import toast from 'react-hot-toast';
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [img, setImg] = useState(null);
   const [otp, setOtp] = useState(new Array(6).fill("")); // Initialize as an array of empty strings
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -40,19 +37,13 @@ const Signup = () => {
     }
   }, [navigate]);
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Username:", username);
-    console.log("Birthday:", birthday);
-
+  const handleSignup = async (values, { setSubmitting }) => {
     const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("username", username);
-    formData.append("birthday", birthday);
-    formData.append("img", img);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    formData.append("username", values.username);
+    formData.append("birthday", values.birthday);
+    formData.append("img", values.img);
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/users/register", formData, {
@@ -67,6 +58,8 @@ const Signup = () => {
     } catch (err) {
       console.error(err);
       toast.error("Signup failed. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -85,7 +78,7 @@ const Signup = () => {
 
   const handleOtpSubmit = async () => {
     try {
-      const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email, otp: otp.join("") });
+      const response = await axios.post("http://127.0.0.1:8000/users/verify-email", { email: values.email, otp: otp.join("") });
       if (response.status === 200) {
         toast.success("Email verification successful!");
         setOtpDialogOpen(false);
@@ -107,6 +100,25 @@ const Signup = () => {
       document.getElementById(`otp-input-${index + 1}`).focus();
     }
   };
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email("Invalid email address").required("Required"),
+    password: Yup.string().required("Required"),
+    username: Yup.string().required("Required"),
+    birthday: Yup.date()
+      .required("Required")
+      .test("age", "You must be at least 18 years old", function (value) {
+        const today = new Date();
+        const birthDate = new Date(value);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+          return age - 1 >= 18;
+        }
+        return age >= 18;
+      }),
+    img: Yup.mixed().required("Required"),
+  });
 
   return (
     <Box
@@ -200,62 +212,79 @@ const Signup = () => {
               CREATE AN ACCOUNT TO CONTINUE
             </Typography>
 
-            <Box component="form" onSubmit={handleSignup} sx={{ mt: 2, width: "100%" }}>
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Email"
-                variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                InputProps={{ startAdornment: <Email /> }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Password"
-                type="password"
-                variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                InputProps={{ startAdornment: <Lock /> }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Username"
-                variant="outlined"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                InputProps={{ startAdornment: <AccountCircle /> }}
-              />
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Birthday"
-                type="date"
-                variant="outlined"
-                value={birthday}
-                onChange={(e) => setBirthday(e.target.value)}
-                InputProps={{ startAdornment: <Cake /> }}
-                InputLabelProps={{ shrink: true }}
-              />
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
-              >
-                Upload Image
-                <input
-                  type="file"
-                  hidden
-                  onChange={(e) => setImg(e.target.files[0])}
-                />
-              </Button>
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}>
-                SIGNUP
-              </Button>
-            </Box>
+            <Formik
+              initialValues={{ email: "", password: "", username: "", birthday: "", img: null }}
+              validationSchema={validationSchema}
+              onSubmit={handleSignup}
+            >
+              {({ setFieldValue, isSubmitting, touched, errors }) => (
+                <Form style={{ width: "100%" }}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Email"
+                    variant="outlined"
+                    name="email"
+                    InputProps={{ startAdornment: <Email /> }}
+                    helperText={<ErrorMessage name="email" />}
+                    error={touched.email && Boolean(errors.email)}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Password"
+                    type="password"
+                    variant="outlined"
+                    name="password"
+                    InputProps={{ startAdornment: <Lock /> }}
+                    helperText={<ErrorMessage name="password" />}
+                    error={touched.password && Boolean(errors.password)}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Username"
+                    variant="outlined"
+                    name="username"
+                    InputProps={{ startAdornment: <AccountCircle /> }}
+                    helperText={<ErrorMessage name="username" />}
+                    error={touched.username && Boolean(errors.username)}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Birthday"
+                    type="date"
+                    variant="outlined"
+                    name="birthday"
+                    InputProps={{ startAdornment: <Cake /> }}
+                    InputLabelProps={{ shrink: true }}
+                    helperText={<ErrorMessage name="birthday" />}
+                    error={touched.birthday && Boolean(errors.birthday)}
+                  />
+                  <Button
+                    variant="contained"
+                    component="label"
+                    sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
+                  >
+                    Upload Image
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => setFieldValue("img", e.target.files[0])}
+                    />
+                  </Button>
+                  <ErrorMessage name="img" component="div" style={{ color: 'red' }} />
+                  <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }} disabled={isSubmitting}>
+                    SIGNUP
+                  </Button>
+                </Form>
+              )}
+            </Formik>
 
             <Typography variant="body2" fontFamily="'Lilita One'">
               Or sign up with:

@@ -204,12 +204,20 @@ const handleContinue = async () => {
         combinedBalanceHistory[27]?.balance || 0
     ];
 
-    const weeklyExpenses = [
-        Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance),
-        Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance),
-        Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance),
-        Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[27].balance)
-    ];
+  const weeklyExpenses = [
+    combinedBalanceHistory[1]?.balance !== undefined && combinedBalanceHistory[6]?.balance !== undefined
+        ? Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance)
+        : 0,
+    combinedBalanceHistory[7]?.balance !== undefined && combinedBalanceHistory[13]?.balance !== undefined
+        ? Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance)
+        : 0,
+    combinedBalanceHistory[14]?.balance !== undefined && combinedBalanceHistory[20]?.balance !== undefined
+        ? Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance)
+        : 0,
+    combinedBalanceHistory[21]?.balance !== undefined && combinedBalanceHistory[27]?.balance !== undefined
+        ? Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[27].balance)
+        : 0
+];
     
     const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
     const chartData = {
