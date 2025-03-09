@@ -280,11 +280,9 @@ const Gameplay = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
   const [gameStarted, setGameStarted] = useState(false);
-  // const [quest1Completed, setQuest1Completed] = useState(false); // Commented out
   const [playerStats, setPlayerStats] = useState(null);
   const [showRentDecisionModal, setShowRentDecisionModal] = useState(false);
   const [characterPosition, setCharacterPosition] = useState(new THREE.Vector3());
-  
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -400,8 +398,6 @@ const Gameplay = () => {
   ];  
 
   return (
-
-    
     <Box
       ref={mountRef}
       sx={{
@@ -506,8 +502,39 @@ const Gameplay = () => {
                 fetchPlayerStats={fetchPlayerStats}
               />
               </>
-            )}
+          )}
 
+          {playerStats.q1_done && playerStats.sq1_done && playerStats.q2_done && playerStats.q3_done && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                textAlign: 'center',
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <Typography variant="h4" sx={{ mb: 2, fontFamily: "'Cinzel', serif", color: '#000' }}>
+                🎉 Congratulations! 🎉
+              </Typography>
+              <Typography variant="h6" sx={{ mb: 2, fontFamily: "'Cinzel', serif", color: '#000' }}>
+                You have successfully completed all the quests!
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2, fontFamily: "'Cinzel', serif", color: '#000' }}>
+                Great job on navigating through the challenges and making wise financial decisions. Keep up the good work and continue to apply what you've learned in real life!
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2, fontFamily: "'Cinzel', serif", color: '#000' }}>
+                Remember, the journey doesn't end here. There are always new adventures and opportunities to improve your financial skills. Have fun and keep exploring!
+              </Typography>
+              <Button variant="contained" sx={{ mt: 2, fontFamily: "'Cinzel', serif", backgroundColor: '#00cac9', color: 'white', "&:hover": { backgroundColor: '#009797' } }} onClick={() => setGameStarted(false)}>
+                Continue
+              </Button>
+            </Box>
+          )}
 
           <Box sx={{ position: 'absolute', top: 20, left: 20, zIndex: 100 }}>
             <Stats pts={playerStats.points} money={playerStats.money} />
@@ -544,7 +571,6 @@ const Gameplay = () => {
 };
 
 export default Gameplay;
-
 
 // import React, { useEffect, useRef, useState, useContext } from 'react';
 // import * as THREE from 'three';
