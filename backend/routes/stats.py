@@ -36,6 +36,7 @@ class Stats(BaseModel):
     q3_decision: Optional[str] = None
     q3_done: bool = False
     q3_outcome: Optional[dict] = None
+    gameplay_done: bool = False  # Added field
     medals: List[str] = []
 
     class Config:
@@ -82,19 +83,6 @@ async def read_current_user_stats(current_user: dict = Depends(get_current_user)
     stats["_id"] = str(stats["_id"])
     stats["user_id"] = str(stats["user_id"])
     return stats
-
-# @router.post("/store/player", response_model=Stats)
-# async def initialize_stats(current_user: dict = Depends(get_current_user)):
-#     user_id = current_user["_id"]
-#     existing_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
-#     if existing_stats:
-#         raise HTTPException(status_code=400, detail="Stats already exist for the current user")
-    
-#     new_stats = Stats()
-#     stats_dict = new_stats.dict()
-#     stats_dict["user_id"] = ObjectId(user_id)
-#     db["stats"].insert_one(stats_dict)
-#     return stats_dict
 
 
 # Combined endpoint for Q1 decision and subtract money
@@ -517,7 +505,21 @@ async def q3_crew_decision(request: Q3DecisionRequest, current_user: dict = Depe
         "q3_outcome": q3_outcome
     }
     
-    
+@router.put("/update/gameplay_done")
+async def update_gameplay_done(current_user: dict = Depends(get_current_user)):
+    user_id = current_user["_id"]
+    stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    if stats is None:
+        raise HTTPException(status_code=404, detail="Stats not found for the current user")
+
+    db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": {"gameplay_done": True}})
+    updated_stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+    updated_stats["_id"] = str(updated_stats["_id"])
+
+    return {
+        "message": "Gameplay status updated successfully",
+        "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])}
+    }    
     
 
 #     # Leaderboard routes
