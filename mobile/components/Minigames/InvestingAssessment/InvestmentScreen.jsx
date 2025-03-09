@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
 import questions from "./Questions";
 import axios from "axios";
-import AsessmentResults from "./AssessmentResults";
+import AssessmentResults from "./AssessmentResults";
+import baseURL from "../../../assets/common/baseurl";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InvestmentScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -19,6 +21,7 @@ const InvestmentScreen = () => {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes timer
   const [showHowToPlay, setShowHowToPlay] = useState(true);
   const [howToPlayTimeLeft, setHowToPlayTimeLeft] = useState(60); // 1 minute timer for How to Play
+  const [showNextPage, setShowNextPage] = useState(false); // State to handle next page
 
   const shuffleArray = (array) => {
     let currentIndex = array.length,
@@ -123,9 +126,9 @@ const InvestmentScreen = () => {
 
   const saveUserAnswers = async (userAnswers) => {
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = await AsyncStorage.getItem("userId");
       if (!userId) {
-        console.error("User ID not found in localStorage");
+        console.error("User ID not found in AsyncStorage");
         return;
       }
 
@@ -138,14 +141,14 @@ const InvestmentScreen = () => {
       console.log("Payload:", JSON.stringify(payload, null, 2));
 
       const saveResponse = await axios.post(
-        "http://localhost:8000/miniInvesting/save-answers",
+        `${baseURL}/miniInvesting/save-answers`,
         payload
       );
       console.log(saveResponse.data.message);
 
       if (saveResponse.status === 200) {
         const analyzeResponse = await axios.post(
-          `http://localhost:8000/miniInvesting_ai/analyze-miniInvest/${userId}`
+          `${baseURL}/miniInvesting_ai/analyze-miniInvest/${userId}`
         );
         console.log("Analysis:", analyzeResponse.data.analysis);
         fetchAiAnalysis(userId);
@@ -160,7 +163,7 @@ const InvestmentScreen = () => {
   const fetchAiAnalysis = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/miniInvesting_ai/get-miniInvest-analysis/${userId}`
+        `${baseURL}/miniInvesting_ai/get-miniInvest-analysis/${userId}`
       );
       if (response.data && response.data.analysis) {
         setAiAnalysis(response.data.analysis);
@@ -179,8 +182,11 @@ const InvestmentScreen = () => {
       } else {
         setResultMessage("The score is too low");
       }
-      const userId = localStorage.getItem("userId");
-      fetchAiAnalysis(userId);
+      const fetchAnalysis = async () => {
+        const userId = await AsyncStorage.getItem("userId");
+        fetchAiAnalysis(userId);
+      };
+      fetchAnalysis();
     }
   }, [gameOver, points]);
 
@@ -223,6 +229,10 @@ const InvestmentScreen = () => {
     setShowHowToPlay(false);
   };
 
+  const handleNext = () => {
+    setShowNextPage(true);
+  };
+
   return (
     <View style={styles.container}>
       {showHowToPlay ? (
@@ -243,12 +253,17 @@ const InvestmentScreen = () => {
           <Button title="SKIP" onPress={handleSkip} />
         </View>
       ) : gameOver ? (
-        <AsessmentResults
-          points={points}
-          totalQuestions={questions.level1.length}
-          resultMessage={resultMessage}
-          aiAnalysis={aiAnalysis}
-        />
+        showNextPage ? (
+          <Text>Next Page Content</Text>
+        ) : (
+          <AssessmentResults
+            points={points}
+            totalQuestions={questions.level1.length}
+            resultMessage={resultMessage}
+            aiAnalysis={aiAnalysis}
+            onNext={handleNext}
+          />
+        )
       ) : (
         <View style={styles.gameContainer}>
           <Text style={styles.timer}>{formatTime(timeLeft)}</Text>
