@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Card, CardContent, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import axios from 'axios';
-import { Line } from 'react-chartjs-2'; // Import the chart library
+import { Bar } from 'react-chartjs-2'; // Import the chart library
 import FirstWeek, { balanceHistory as firstWeekBalanceHistory } from './FirstWeek'; // Import FirstWeek component and its balance history
 import SecondWeek, { balanceHistory as secondWeekBalanceHistory } from './SecondWeek'; // Import SecondWeek component and its balance history
 import ThirdWeek, { balanceHistory as thirdWeekBalanceHistory } from './ThirdWeek'; // Import ThirdWeek component and its balance history
@@ -194,44 +194,58 @@ const handleContinue = async () => {
         ...firstWeekBalanceHistory,
         ...secondWeekBalanceHistory,
         ...thirdWeekBalanceHistory,
-        ...balanceHistory
+        ...(balanceHistory || [])
     ];
 
     const weeklyBalances = [
         combinedBalanceHistory[6]?.balance || 0,
         combinedBalanceHistory[13]?.balance || 0,
         combinedBalanceHistory[20]?.balance || 0,
-        combinedBalanceHistory[27]?.balance || 0
+        balance
     ];
 
-  const weeklyExpenses = [
-    combinedBalanceHistory[1]?.balance !== undefined && combinedBalanceHistory[6]?.balance !== undefined
-        ? Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance)
-        : 0,
-    combinedBalanceHistory[7]?.balance !== undefined && combinedBalanceHistory[13]?.balance !== undefined
-        ? Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance)
-        : 0,
-    combinedBalanceHistory[14]?.balance !== undefined && combinedBalanceHistory[20]?.balance !== undefined
-        ? Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance)
-        : 0,
-    combinedBalanceHistory[21]?.balance !== undefined && combinedBalanceHistory[27]?.balance !== undefined
-        ? Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[27].balance)
-        : 0
-];
+    const weeklyExpenses = [
+        combinedBalanceHistory[6] && combinedBalanceHistory[1] ? Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance) : 0,
+        combinedBalanceHistory[13] && combinedBalanceHistory[7] ? Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance) : 0,
+        combinedBalanceHistory[20] && combinedBalanceHistory[14] ? Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance) : 0,
+        combinedBalanceHistory[27] && combinedBalanceHistory[21] ? Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[27].balance) : 0
+    ];
     
     const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
-    const chartData = {
-        labels: Array.from({ length: 28 }, (_, i) => `Day ${i}`),
+    const barData = {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
         datasets: [
             {
-                label: 'Balance Weekly Progress',
-                data: combinedBalanceHistory.slice(0, 29).map(entry => entry.balance),
-                fill: false,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-                tension: 0.4, 
-            },
-        ],
+                label: 'Weekly Balances',
+                data: [
+                    combinedBalanceHistory[6]?.balance || 0,
+                    combinedBalanceHistory[13]?.balance || 0,
+                    combinedBalanceHistory[20]?.balance || 0,
+                    balance
+                ],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }
+        ]
+    };
+    
+    const barOptions = {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
     };
     
     const shadowPlugin = {
@@ -488,13 +502,7 @@ const handleContinue = async () => {
                 <DialogContent sx={{ textAlign: "center", color: "#fff", backgroundColor: "#444", fontFamily: "'Press Start 2P', cursive"}}>
                     <Typography variant="h6" sx={{ fontFamily: "Lilita One"}}>You have completed the game!</Typography>
                     <Typography variant="h6" sx={{ fontFamily: "Lilita One"}}>Remaining Balance: ₱{balance}</Typography>
-                    <Line data={chartData} options={chartOptions} plugins={[shadowPlugin]} /> {/* Display the line chart */}
-                    <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2}}>
-                        <Typography variant="body1" sx={{ fontFamily: "Lilita One"}}>1st Week: ₱{weeklyBalances[0]}</Typography>
-                        <Typography variant="body1" sx={{ fontFamily: "Lilita One"}}>2nd Week: ₱{weeklyBalances[1]}</Typography>
-                        <Typography variant="body1" sx={{ fontFamily: "Lilita One" }}>3rd Week: ₱{weeklyBalances[2]}</Typography>
-                        <Typography variant="body1" sx={{ fontFamily: "Lilita One" }}>4th Week: ₱{weeklyBalances[3]}</Typography>
-                    </Box>
+                    <Bar data={barData} options={barOptions} /> {/* Add the Bar component here */}
                     <Typography variant="body1" sx={{ mt: 2, fontFamily: "Lilita One" }}>Average Weekly Expenses: ₱{avgWeeklyExpenses}</Typography>
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: "center" }}>
