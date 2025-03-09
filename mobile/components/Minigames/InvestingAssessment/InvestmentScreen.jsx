@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
 import questions from "./Questions";
 import axios from "axios";
-import AssessmentResults from "./AssessmentResults";
-import baseURL from "../../../assets/common/baseurl";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const InvestmentScreen = () => {
+const InvestmentScreen = ({ navigation }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -21,7 +19,6 @@ const InvestmentScreen = () => {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes timer
   const [showHowToPlay, setShowHowToPlay] = useState(true);
   const [howToPlayTimeLeft, setHowToPlayTimeLeft] = useState(60); // 1 minute timer for How to Play
-  const [showNextPage, setShowNextPage] = useState(false); // State to handle next page
 
   const shuffleArray = (array) => {
     let currentIndex = array.length,
@@ -230,7 +227,12 @@ const InvestmentScreen = () => {
   };
 
   const handleNext = () => {
-    setShowNextPage(true);
+    navigation.navigate('Assessment_Result', {
+      points,
+      totalQuestions: questions.level1.length,
+      resultMessage,
+      aiAnalysis,
+    });
   };
 
   return (
@@ -253,17 +255,13 @@ const InvestmentScreen = () => {
           <Button title="SKIP" onPress={handleSkip} />
         </View>
       ) : gameOver ? (
-        showNextPage ? (
-          <Text>Next Page Content</Text>
-        ) : (
-          <AssessmentResults
-            points={points}
-            totalQuestions={questions.level1.length}
-            resultMessage={resultMessage}
-            aiAnalysis={aiAnalysis}
-            onNext={handleNext}
-          />
-        )
+        <AssessmentResults
+          points={points}
+          totalQuestions={questions.level1.length}
+          resultMessage={resultMessage}
+          aiAnalysis={aiAnalysis}
+          navigation={navigation}
+        />
       ) : (
         <View style={styles.gameContainer}>
           <Text style={styles.timer}>{formatTime(timeLeft)}</Text>

@@ -15,7 +15,7 @@
     const navigate = useNavigate();
 
     const narrationTexts = [
-        "You have 5,000 pesos to survive the month.",
+        "You have 10,000 pesos to survive the month.",
         "Unexpected expenses will arise.",
         "You have to make choices to survive.",
         "Finding a job is an option. But is it enough?",

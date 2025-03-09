@@ -3,52 +3,50 @@ import { Box, Typography, Card, CardContent, Button, Dialog, DialogTitle, Dialog
 import SecondWeek from "./SecondWeek"; 
 
 const scenarios = [
-  {
-      question: "As the evening settles in, your child hands you a list of essential school supplies. These materials are critical for their coursework, but purchasing them now could impact your ability to manage upcoming financial responsibilities. Rent is due in three days, and your available funds are limited. How do you proceed?",
-      options: [
-          { text: "Purchase the supplies immediately (₱1,500)", cost: 1500, bonus: 0, result: "Your child is fully prepared for school, boosting their confidence and ensuring they can participate effectively in class. However, this leaves you with fewer funds to cover other immediate" },
-          { text: "Postpone the purchase", cost: 0, bonus: 0, result: "You maintain financial flexibility, ensuring resources are available for critical expenses like rent. However, your child may struggle in school without the necessary materials, potentially affecting their academic performance and morale" },
-          { text: "Take on extra work to cover the expense(₱1,500)", cost: 1500, bonus: 2000, result: "You secure additional funds, reinforcing financial security while still affording the school supplies. However, this demands extra time and effort, which may impact your personal well-being" }
-      ]
-  },
-  {
-      question: "If your refrigerator is nearly empty and ensuring your family has enough food for the week is a priority, would you opt for a full grocery run to provide stability at the cost of financial flexibility, or would you choose a more frugal approach, potentially compromising on nutrition?",
-      options: [
-          { text: "Stock up with a full grocery run (₱2,000)", cost: 2000, bonus: 0, result: "You decided to purchase full groceries for ₱2,000, this ensures that your family will have proper nutrition for the week." },
-          { text: "Buy only essentials (₱1,000)", cost: 1000, bonus: 0, result: "You opted to buy only the essentials, spending ₱1,000, which allowed you to save money for future needs. This careful budgeting helps improve your financial stability while still meeting your family's basic needs" },
-          { text: "Stretch existing ingredients", cost: 0, bonus: 0, result: "By utilizing what is already available and planning meals strategically, you minimize expenses while still providing sustenance. However, this requires extra effort and creativity in meal preparation" }
-      ]
-  },
-  {
-      question: "Rising transportation costs force you to reconsider how you travel to work. Do you continue your regular routine, explore cost-saving alternatives, or make a long-term investment?",
-      options: [
-          { text: "Stick to your usual commute via jeepney (₱20/day)", cost: 560, bonus: 0, result: "You maintain convenience and punctuality, ensuring a predictable routine without disruptions. However, the cost accumulates daily, impacting long-term savings" },
-          { text: "Walk to work", cost: 0, bonus: 0, result: "You eliminate commuting costs entirely, preserving funds for other priorities. However, walking daily requires additional time and energy, potentially affecting your productivity" },
-          { text: "Invest in a second-hand bicycle (₱2,000)", cost: 2000, bonus: 0, result: "A one-time expense reduces your long-term transportation costs significantly. However, maintenance and potential wear and tear could lead to future expenses" }
-      ]
-  },
-  {
-      question: "Your younger sibling approaches you with a request: they need additional funds to complete an important school project that could impact their academic standing. With financial constraints looming, how do you respond?",
-      options: [
-          { text: "Provide the funds", cost: 500, bonus: 0, result: "Your sibling successfully completes the project, enhancing their academic performance. However, this reduces your available funds, potentially affecting other priorities" },
-          { text: "Encourage them to find an alternative solution", cost: 0, bonus: 0, result: "Your finances remain intact, and your sibling learns to be resourceful. However, they may struggle with limited resources, which could impact their final project" },
-          
-      ]
-  },
-  {
-      question: "A bill for ₱1,200 arrives with a warning that failure to pay within the week will incur a penalty. You need to decide how to prioritize this payment while managing your other financial responsibilities. How do you handle the situation to avoid the penalty?",
-      options: [
-          { text: "Settle the bill immediately (₱1,200)", cost: 1200, bonus: 0, result: "Your water service remains uninterrupted, providing stability at home. However, this reduces your financial flexibility for other expenses" }
-      ]
-  },
-  {
-      question: "A close friend invites you to a gathering, an opportunity to unwind and strengthen relationships. However, attending will require an expense for food, transportation, and other costs. How do you navigate this decision?",
-      options: [
-          { text: "Contribute money and attend without participating in preparation (₱1,200)", cost: 1200, bonus: 0, result: "You enjoy valuable social interaction, strengthening friendships. However, this affects your financial reserves, reducing funds for upcoming needs" },
-          { text: "Decline the invitation", cost: 0, bonus: 0, result: "You maintain financial stability, prioritizing savings. However, you miss out on social engagement, which may impact relationships" },
-          { text: "Participate in the preparation to reduce your contribution (₱600)", cost: 600, bonus: 0, result: "You still engage socially while significantly reducing costs by helping with preparation. However, this requires effort in planning and coordination" }
-      ]
-  },
+    {
+        question: "As the evening settles in, your child hands you a list of essential school supplies. These materials are critical for their coursework, but purchasing them now could impact your ability to manage upcoming financial responsibilities. Rent is due in three days, and your available funds are limited. How do you proceed?",
+        options: [
+            { text: "Purchase the supplies immediately (₱1,500)", cost: 1500, bonus: 0, result: "Your child is fully prepared for school, boosting their confidence and ensuring they can participate effectively in class. However, this leaves you with fewer funds to cover other immediate expenses." },
+            { text: "Buy partial supplies (₱800)", cost: 800, bonus: 0, result: "You manage to provide some essential materials for your child while maintaining better financial stability, but they may still lack some important resources." },
+            { text: "Take on extra work to cover the expense (₱1,500)", cost: 1500, bonus: 2000, result: "You secure additional funds, reinforcing financial security while still affording the school supplies. However, this demands extra time and effort, which may impact your personal well-being." }
+        ]
+    },
+    {
+        question: "If your refrigerator is nearly empty and ensuring your family has enough food for the week is a priority, would you opt for a full grocery run to provide stability at the cost of financial flexibility, or would you choose a more frugal approach, potentially compromising on nutrition?",
+        options: [
+            { text: "Stock up with a full grocery run (₱2,000)", cost: 2000, bonus: 0, result: "Your family has proper nutrition and meals are secure for the week, but your budget takes a hit." },
+            { text: "Buy only essentials (₱1,200)", cost: 1200, bonus: 0, result: "You provide basic meals for the week while preserving financial flexibility, but meal variety and nutrition may be limited." },
+            { text: "Stretch existing ingredients and buy minimal add-ons (₱600)", cost: 600, bonus: 0, result: "You creatively use what’s available and add just enough to make it work, saving the most money but requiring extra effort." }
+        ]
+    },
+    {
+        question: "Rising transportation costs force you to reconsider how you travel to work. Do you continue your regular routine, explore cost-saving alternatives, or make a long-term investment?",
+        options: [
+            { text: "Stick to your usual commute via jeepney (₱20/day)", cost: 560, bonus: 0, result: "You maintain convenience and punctuality, ensuring a predictable routine without disruptions. However, the cost accumulates daily, impacting long-term savings." },
+            { text: "Switch to public bicycles (₱300/month)", cost: 300, bonus: 0, result: "You reduce your commuting costs while staying active, though it requires adjusting to a new routine." },
+            { text: "Invest in a second-hand bicycle (₱2,000)", cost: 2000, bonus: 0, result: "A one-time expense reduces your long-term transportation costs significantly. However, maintenance and potential wear and tear could lead to future expenses." }
+        ]
+    },
+    {
+        question: "Your younger sibling approaches you with a request: they need additional funds to complete an important school project that could impact their academic standing. With financial constraints looming, how do you respond?",
+        options: [
+            { text: "Provide full funding (₱500)", cost: 500, bonus: 0, result: "Your sibling successfully completes the project, enhancing their academic performance. However, this reduces your available funds, potentially affecting other priorities." },
+            { text: "Contribute partially (₱250)", cost: 250, bonus: 0, result: "You help them complete a significant part of the project while still maintaining some financial stability." }
+        ]
+    },
+    {
+        question: "A bill for ₱1,200 arrives with a warning that failure to pay within the week will incur a penalty. You need to decide how to prioritize this payment while managing your other financial responsibilities. How do you handle the situation to avoid the penalty?",
+        options: [
+            { text: "Settle the bill immediately (₱1,200)", cost: 1200, bonus: 0, result: "Your water service remains uninterrupted, providing stability at home. However, this reduces your financial flexibility for other expenses." }
+        ]
+    },
+    {
+        question: "A close friend invites you to a gathering, an opportunity to unwind and strengthen relationships. However, attending will require an expense for food, transportation, and other costs. How do you navigate this decision?",
+        options: [
+            { text: "Contribute money and attend without participating in preparation (₱1,200)", cost: 1200, bonus: 0, result: "You enjoy valuable social interaction, strengthening friendships. However, this affects your financial reserves, reducing funds for upcoming needs." },
+            { text: "Participate in the preparation to reduce your contribution (₱600)", cost: 600, bonus: 0, result: "You still engage socially while significantly reducing costs by helping with preparation. However, this requires effort in planning and coordination." },
+        ]
+    },
   {
       question: "Congratulations on receiving your first hard-earned salary! Your dedication and effort have finally paid off, marking the beginning of your journey.",
       options: [

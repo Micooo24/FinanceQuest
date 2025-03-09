@@ -3,52 +3,50 @@ import { Box, Typography, Card, CardContent, Button, Dialog, DialogTitle, Dialog
 import FourthWeek from "./FourthWeek"; 
 
 const scenarios = [
-  {
-    question: "Your child comes home from school with an urgent project deadline. The teacher has emphasized that this project is crucial for their grades, and they need materials costing ₱2,000. You didn’t account for this expense, and covering it could impact your budget for other essentials",
-    options: [
-      { text: "Fully fund the project with quality materials (₱2,000)", cost: 2000, bonus: 0, result: "Your child completes their project to a high standard, which may improve their grades and boost their confidence. However, this significantly reduces your cash for the week, making it harder to cover other necessities" },
-      { text: "Buy only essential supplies and encourage resourcefulness (₱1,000)", cost: 1000, bonus: 0, result: "Your child learns to work within limitations, still completing their project but without premium materials. Their grades may not be affected much, and you preserve more of your budget" },
-      { text: "Delay the project expense and risk the consequences", cost: 0, bonus: 0, result: "Your child struggles to complete the project, and their grades might suffer. Additionally, they may feel discouraged. You keep your money, but at the cost of their academic progress" }
-    ]
-  },
-  {
-    question: "Your electricity bill has arrived, totaling ₱2,500. You can pay it immediately to avoid extra fees, but doing so will limit your funds for groceries and other needs",
-    options: [
-      { text: "Pay the full bill on time", cost: 2500, bonus: 0, result: " You ensure continued electricity service and avoid penalties. However, this significantly reduces your available cash for other needs" },
-    ]
-  },
-  {
-    question: "While browsing through an online shopping platform, you come across a limited-time offer on an item you've been eyeing for months. The price is far lower than usual, but the item is not an immediate necessity. You’re torn between the desire to buy it now and the realization that it wasn’t in your original budget",
-    options: [
-      { text: "Buy the item now, even though it's outside your budget (₱2,500)", cost: 2500, bonus: 0, result: "You’re thrilled with the deal, and the item will surely add value in the long run. However, your finances will be tighter this week, and you may have to adjust other expenses or delay other important purchases" },
-      { text: "Purchase the item with a payment plan or installment(₱500)", cost: 500, bonus: 0, result: "You get the item you desire without a major hit to your current finances, as the cost will be spread out. However, you’ll be paying for it over time, and you need to ensure future payments won’t strain your budget" },
-      { text: "Wait for a more reasonable sale in the future", cost: 0, bonus: 0, result: " You delay the purchase, but this gives you time to save for it properly. However, you risk missing out on this sale, and the item might become more expensive later" }
-    ]
-  },
-  {
-    question: "You’ve suddenly developed a health issue that requires medical attention. It’s not an emergency, but it’s something you should address soon to prevent complications down the road. Unfortunately, you didn’t set aside money for medical expenses, so you need to figure out how to pay for it while managing your finances",
-    options: [
-      { text: "Pay for treatment in full right away, using your savings (₱2,000)", cost: 2000, bonus: 0, result: "You prioritize getting the treatment you need immediately, ensuring that your health issue is resolved quickly. However, this will leave your savings severely depleted, and you may struggle with other expenses over the next few weeks" },
-      { text: "Use your health insurance and pay for the deductible (₱500)", cost: 500, bonus: 0, result: "You decide to use your health insurance, which reduces the immediate cost, but you still need to pay for the deductible. This way, you can address your health issue while keeping some of your savings intact for other expenses" },
-      { text: "Opt for a more affordable treatment, which may take longer to heal (₱1,000)", cost: 1000, bonus: 0, result: "You choose a more budget-friendly treatment option. While this will save you money now, it may take longer to recover, and there’s a risk that your condition could worsen or come back, requiring further treatment later" }
-    ]
-  },
-  {
-    question: "After a busy day, you’re tired and debating whether to cook at home or order food delivery. Both choices have their merits, but you need to decide whether the convenience of eating out is worth the extra cost, or if cooking will allow you to save money and eat healthier",
-    options: [
-      { text: "Order food delivery for convenience (₱700)", cost: 700, bonus: 0, result: "You enjoy a meal without lifting a finger, but the added costs of delivery fees, service charges, and tip make it far more expensive than cooking at home. While you save time and energy, you will have to adjust your budget elsewhere to account for the additional spending" },
-      { text: "Cook a meal at home using ingredients you already have (₱300)", cost: 300, bonus: 0, result: "You prepare a healthy, satisfying meal that costs much less than ordering delivery. Although this requires more time and effort, it allows you to stick to your budget and enjoy a home-cooked meal" },
-      { text: "Cook a quick, low-cost meal using fewer ingredients (₱150)", cost: 150, bonus: 0, result: "You opt for a simple, quick meal that costs even less than your usual home-cooked dishes. While it’s economical, you might not feel as satisfied as you would with a more elaborate meal" }
-    ]
-  },
-  {
-    question: "While browsing through your social media, you come across an ad for an online gambling platform offering a big jackpot for a small initial stake. You’ve been feeling the pressure of some financial goals lately, and the temptation of potentially solving your problems with a lucky win is tempting. But deep down, you know it’s a risky decision",
-    options: [
-      { text: "Place a large bet, hoping to hit the jackpot (₱3,500)", cost: 3500, bonus: 0, result: "You go all in, hoping that the gamble will pay off and solve your financial issues. If you win, you’ll have a significant amount of money to use for your goals. However, if you lose, it will set you back and make it harder to recover financially" },
-      { text: "Place a small bet, keeping the risk manageable (₱1,500)", cost: 1500, bonus: 0, result: "You bet a small amount, which allows you to participate without risking too much. While your potential reward is smaller, you feel less stressed about the possibility of a major loss. If you win, it could still be a nice boost to your finances, but losing won’t have as big an impact" },
-      { text: "Skip the gamble and save your money", cost: 0, bonus: 0, result: "You decide not to risk your money and instead focus on safer, more stable ways to reach your financial goals. While you miss out on the thrill of gambling, you avoid the risk of losing money and maintain your financial stability" }
-    ]
-  },
+    {
+      question: "Your child comes home from school with an urgent project deadline. The teacher has emphasized that this project is crucial for their grades, and they need materials costing ₱2,000. You didn’t account for this expense, and covering it could impact your budget for other essentials.",
+      options: [
+        { text: "Fully fund the project with quality materials (₱1,300)", cost: 1300, bonus: 0, result: "Your child completes their project to a high standard, improving their grades and confidence. However, this significantly reduces your cash for the week, making it harder to cover other necessities." },
+        { text: "Buy only essential supplies and encourage resourcefulness (₱800)", cost: 800, bonus: 0, result: "Your child learns to work within limitations, completing the project with decent materials. Their grades may not be affected much, and you preserve more of your budget." },
+        { text: "Find secondhand or borrowed materials (₱300)", cost: 300, bonus: 0, result: "You save a lot by sourcing secondhand materials, but the project quality may suffer, and your child might feel disadvantaged." }
+      ]
+    },
+    {
+      question: "Your electricity bill has arrived, totaling ₱2,500. You can pay it immediately to avoid extra fees, but doing so will limit your funds for groceries and other needs.",
+      options: [
+        { text: "Pay the full bill on time (₱2,500)", cost: 2500, bonus: 0, result: "You ensure continued electricity service and avoid penalties, but your available cash for other needs is significantly reduced." }
+      ]
+    },
+    {
+      question: "While browsing through an online shopping platform, you come across a limited-time offer on an item you've been eyeing for months. The price is far lower than usual, but the item is not an immediate necessity.",
+      options: [
+        { text: "Buy the item now, even though it's outside your budget (₱2,500)", cost: 2500, bonus: 0, result: "You’re thrilled with the deal, and the item will add value in the long run, but your finances will be tighter this week." },
+        { text: "Purchase the item with a payment plan or installment (₱700)", cost: 700, bonus: 0, result: "You get the item without a major hit to your current finances, but you’ll be locked into future payments, which could affect future budgeting." }
+      ]
+    },
+    {
+      question: "You’ve suddenly developed a health issue that requires medical attention. It’s not an emergency, but it’s something you should address soon to prevent complications.",
+      options: [
+        { text: "Pay for treatment in full right away (₱1,800)", cost: 1800, bonus: 0, result: "You get immediate treatment, ensuring your health doesn't worsen, but your savings take a major hit." },
+        { text: "Use your health insurance and pay for the deductible (₱1,000)", cost: 1000, bonus: 0, result: "You take advantage of your insurance, reducing immediate costs, but you still have to cover the deductible." },
+        { text: "Opt for a more affordable treatment, which may take longer to heal (₱800)", cost: 800, bonus: 0, result: "You save money now, but the treatment might be slower, and there’s a risk of needing further medical attention later." }
+      ]
+    },
+    {
+      question: "After a busy day, you’re tired and debating whether to cook at home or order food delivery.",
+      options: [
+        { text: "Order food delivery for convenience (₱700)", cost: 700, bonus: 0, result: "You enjoy a meal without effort, but it’s costly, and you need to adjust your budget elsewhere." },
+        { text: "Cook a meal at home using ingredients you already have (₱400)", cost: 400, bonus: 0, result: "You prepare a healthy, satisfying meal at a lower cost, but it requires more time and effort." },
+        { text: "Cook a quick, low-cost meal using fewer ingredients (₱200)", cost: 200, bonus: 0, result: "You save the most money, but the meal might not be as satisfying or nutritious." }
+      ]
+    },
+    {
+      question: "While browsing through your social media, you come across an ad for an online gambling platform offering a big jackpot for a small initial stake.",
+      options: [
+        { text: "Place a large bet, hoping to hit the jackpot (₱1,500)", cost: 1500, bonus: 3500, result: "You risk a large amount with the potential for high rewards, but the likelihood of losing is greater. Luckily you won ₱3,500" },
+        { text: "Place a small bet, keeping the risk manageable (₱700)", cost: 700, bonus: 400, result: "You limit your losses but still engage in risky gambling that could become a bad habit. Unfortunetly, you lost ₱300" }
+      ]
+    },
   {
       question: "It’s payday! After a long month of hard work, your salary is finally in your account. The relief of knowing your bills are covered and there’s room for a little extra spending is a great feeling.",
       options: [

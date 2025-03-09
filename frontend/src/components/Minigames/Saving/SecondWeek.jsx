@@ -6,9 +6,9 @@ const scenarios = [
     {
         question: "The summer heat is unbearable, and just when you need it the most, your electric fan stops working. With high temperatures making it difficult to sleep and focus, you must decide whether to repair, replace, or endure the discomfort",
         options: [
-          { text: " Repair the electric fan (₱800)", cost: 800, bonus: 0, result: "You spent ₱600 to repair the fan, keeping your home comfortable. This helps you sleep better, preventing fatigue from affecting your work performance." },
+          { text: " Repair the electric fan (₱800)", cost: 800, bonus: 0, result: "You spent ₱800 to repair the fan, keeping your home comfortable. This helps you sleep better, preventing fatigue from affecting your work performance." },
           { text: "Buy a new electric fan (₱1,500)", cost: 1500, bonus: 0, result: "A brand-new fan ensures long-term reliability, saving you from future repair costs. However, it’s a bigger expense that takes a noticeable chunk from your budget. If you can afford it, this is a long-term investment" },
-          { text: "Do nothing and endure the heat", cost: 0, bonus: 0, result: "You save money, but at the cost of your comfort. Over time, the heat might force you to seek alternative ways to cool down, such as eating out in air-conditioned places or visiting malls, which could lead to unnecessary spending" }
+          { text: "Do nothing and endure the heat (₱300)", cost: 300, bonus: 0, result: "You save money, but at the cost of your comfort. Over time, the heat might force you to seek alternative ways to cool down, such as eating out in air-conditioned places or visiting malls, which could lead to unnecessary spending" }
         ]
       },
       {
@@ -16,39 +16,36 @@ const scenarios = [
         options: [
           { text: "Hire a professional plumber for a permanent fix (₱1,500)", cost: 1500, bonus: 0, result: "The leak is properly fixed, preventing further damage. This protects your kitchen from costly water damage and mold growth. While this expense reduces your savings now, it prevents significantly higher repair costs later" },
           { text: "Apply a temporary DIY fix (₱500)", cost: 500, bonus: 0, result: "You reduce the leak for now, delaying the need for a major repair. However, this is only a short-term solution, and the problem may worsen, eventually forcing you to pay more" },
-          { text: "Ignore the leak", cost: 0, bonus: 0, result: "Your savings remain untouched, but the leak grows worse, increasing your water bill. Eventually, you’ll need costly repairs, and the damage might spread to flooring and cabinets, making future expenses unavoidable" }
+          { text: "Ignore the leak (₱200)", cost: 200, bonus: 0, result: "Your savings remain mostly intact, but the leak grows worse, increasing your water bill. Eventually, you’ll need costly repairs, and the damage might spread to flooring and cabinets, making future expenses unavoidable" }
         ]
       },
       {
         question: "Your employer offers an overtime shift. Taking it means extra earnings, but it also means less free time. Should you prioritize income or personal balance?",
         options: [
-          { text: "Work the full overtime shift (₱1,800)", cost: 0, bonus: 1800, result: "You earn an extra ₱1,200, boosting your savings. However, the additional stress may impact your health or energy levels later in the game." },
-          { text: "Work a partial shift (₱900)", cost: 0, bonus: 900, result: "You maintain your well-being but miss out on extra income that could help with future expenses." },
-          { text: "Decline the shift", cost: 0, bonus: 0, result: "You keep your free time but miss out on extra income. If unexpected expenses arise later, this missed opportunity could make financial management harder" }
+          { text: "Work the full overtime shift (₱1,800)", cost: 300, bonus: 1800, result: "You earn an extra ₱1,800, boosting your savings. However, you've spent ₱300 to ease the additional stress may impact your health or energy levels later in the game." },
+          { text: "Work a partial shift (₱900)", cost: 100, bonus: 900, result: "You maintain your well-being taking the work you are capable of doing without burning out, you've spent ₱100 to treat yourself for doing such a good job" }
         ]
       },
       {
         question: "Your usual commute is unavailable today due to unexpected road construction. This leaves you with the challenge of finding a new route to get to work. You now have to decide on the best alternative that will get you to your destination efficiently, whether it's taking a longer detour, using public transportation, or considering other options to avoid delays.",
         options: [
-          { text: "Take a taxi or ride-sharing service (₱350)", cost: 350, bonus: 0, result: "ou arrive on time, stress-free, and ready to start the day, ensuring job stability and a productive morning. However, this convenience comes at a cost, and the fare significantly reduces your savings for the week" },
+          { text: "Take a taxi or ride-sharing service (₱350)", cost: 350, bonus: 0, result: "You arrive on time, stress-free, and ready to start the day, ensuring job stability and a productive morning. However, this convenience comes at a cost, and the fare significantly reduces your savings for the week" },
           { text: "Use public transportation via an alternative route (₱200)", cost: 200, bonus: 0, result: "You save a decent amount of money by opting for public transport, but you do arrive slightly late. While this may be acceptable for one day, repeated lateness could begin to affect your job security and overall performance at work" },
-          { text: "Walk to work", cost: 0, bonus: 0, result: "Walking saves you the most money, allowing you to avoid any transportation costs altogether. However, this option leaves you arriving late and feeling exhausted, which might negatively affect your energy levels and productivity throughout the day" }
+          { text: "Walk to work (₱100)", cost: 100, bonus: 0, result: "Walking saves you money compared to other options, allowing you to avoid major transportation costs. However, this option leaves you arriving late and feeling exhausted, which might negatively affect your energy levels and productivity throughout the day causing you to spend on energy drinks" }
         ]
       },
       {
-        question: "Your child wakes up feeling weak, and after checking, you notice they have a slight fever. You’re unsure if it’s a minor illness or something more serious. You must decide how to handle it",
+        question: "Your child wakes up feeling weak, and after checking, you notice they have a fever. You’re unsure if it’s a minor illness or something more serious. You must decide how to handle it",
         options: [
           { text: "Take your child to a doctor for a proper check-up and medication (₱1,000)", cost: 1000, bonus: 0, result: "Your child receives professional medical attention, ensuring the right treatment. While it’s an expense now, it prevents worsening symptoms that could lead to hospital visits and higher costs" },
-          { text: "Buy over-the-counter medicine and monitor the condition at home (₱500) ", cost: 500, bonus: 0, result: "Your child gets basic treatment, and if it’s just a mild illness, they may recover. However, if the condition worsens, a delayed doctor’s visit could lead to additional expenses and a longer recovery time" },
-          { text: "Let your child rest and see if they recover naturally", cost: 0, bonus: 0, result: "f it’s just fatigue, they may feel better with rest and fluids. However, if the sickness worsens, you might need an emergency doctor visit later, which could be more expensive" }
+          { text: "Buy over-the-counter medicine and monitor the condition at home (₱500) ", cost: 500, bonus: 0, result: "Your child gets basic treatment, and if it’s just a mild illness, they may recover. However, if the condition worsens, a delayed doctor’s visit could lead to additional expenses and a longer recovery time" }
         ]
       },
       {
         question: "Your parents have invited you and your family for a short weekend visit. While it’s a great chance to relax and spend time with family, it also comes with expenses like travel and food. You must decide how to handle the trip",
         options: [
           { text: "Accept the invitation and travel comfortably by bus (₱2,500)", cost: 2500, bonus: 0, result: "You and your family enjoy a smooth and comfortable trip, making the most of the time with your parents without any stress. However, this means spending money on tickets and other travel-related expenses" },
-          { text: "Travel on a budget by taking a cheaper alternative (₱1,200)", cost: 1200, bonus: 0, result: "You still get to visit your parents but at a lower cost. However, the trip might be less comfortable, and delays could affect the time spent with family" },
-          { text: "Decline the trip and promise to visit another time", cost: 0, bonus: 0, result: "You save money, but your parents may feel disappointed. Additionally, you miss out on a chance to relax and bond with family, which could have been beneficial for your well-being"}
+          { text: "Travel on a budget by taking a cheaper alternative (₱1,200)", cost: 1200, bonus: 0, result: "You still get to visit your parents but at a lower cost. However, the trip might be less comfortable, and delays could affect the time spent with family" }
         ]
       },
   {

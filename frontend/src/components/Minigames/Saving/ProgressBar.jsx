@@ -179,7 +179,7 @@ function ProgressBar({ day, balance, updateBalance }) {
           <Typography variant="caption" sx={{ color: "#F5E8D9", fontWeight: "bold", textAlign: "center" }}>
             DAY
           </Typography>
-          {[...Array(30)].map((_, index) => (
+          {[...Array(28)].map((_, index) => (
             <Box
               key={index}
               sx={{
