@@ -213,11 +213,11 @@ const handleContinue = async () => {
     
     const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
     const chartData = {
-        labels: Array.from({ length: 28 }, (_, i) => `Day ${i + 1}`),
+        labels: Array.from({ length: 28 }, (_, i) => `Day ${i}`),
         datasets: [
             {
                 label: 'Balance Weekly Progress',
-                data: combinedBalanceHistory.map(entry => entry.balance),
+                data: combinedBalanceHistory.slice(0, 29).map(entry => entry.balance),
                 fill: false,
                 backgroundColor: 'rgba(75,192,192,0.4)',
                 borderColor: 'rgba(75,192,192,1)',

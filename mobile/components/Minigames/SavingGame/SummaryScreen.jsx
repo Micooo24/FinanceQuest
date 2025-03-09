@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BarChart } from 'react-native-chart-kit';
 import baseURL from '../../../assets/common/baseurl';
 
 const { width, height } = Dimensions.get('window');
@@ -74,6 +75,43 @@ const SummaryScreen = ({ route, navigation }) => {
         <View style={styles.averageExpensesContainer}>
           <Text style={styles.averageExpensesTitle}>Average Weekly Expenses</Text>
           <Text style={styles.averageExpensesAmount}>₱{averageWeeklyExpenses.toLocaleString()}</Text>
+        </View>
+
+        <View style={styles.chartContainer}>
+          <Text style={styles.chartTitle}>Weekly Expenses</Text>
+          <BarChart
+            data={{
+              labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+              datasets: [
+                {
+                  data: weeklyExpenses,
+                },
+              ],
+            }}
+            width={screenWidth}
+            height={220}
+            yAxisLabel="₱"
+            chartConfig={{
+              backgroundColor: "#1E1E1E",
+              backgroundGradientFrom: "#1E1E1E",
+              backgroundGradientTo: "#1E1E1E",
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(147, 112, 219, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: "6",
+                strokeWidth: "2",
+                stroke: "#9370DB",
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
         </View>
 
         {analysis && (
@@ -203,6 +241,22 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(36),
     fontWeight: 'bold',
     color: '#FF5252',
+  },
+  chartContainer: {
+    backgroundColor: '#2D2D2D',
+    width: '100%',
+    padding: moderateScale(20),
+    borderRadius: moderateScale(16),
+    marginBottom: moderateScale(24),
+    elevation: 5,
+    alignItems: 'center',
+  },
+  chartTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: 'bold',
+    color: '#F9F6FF',
+    marginBottom: moderateScale(16),
+    textAlign: 'center',
   },
   analysisContainer: {
     backgroundColor: '#2D2D2D',
