@@ -98,7 +98,7 @@ const GameAnalysis = () => {
   };
 
   const chartData = {
-    labels: ['Q1', 'SQ1', 'Q2', 'SQ2', 'Q3', 'SQ3'],
+    labels: ['Q1', 'SQ1', 'Q2', 'SQ2', 'Q3'],
     datasets: [
       {
         label: 'Money Spent',
@@ -308,6 +308,26 @@ const GameAnalysis = () => {
                         <span className="money_earned">+₱{playerData?.q1_outcome?.money_earned || '0'}</span>
                         <br />
                         <span className="money_spent">-₱{playerData?.q1_outcome?.money_spent || '0'}</span>
+                        <br />
+                        <span className="quest_rewards">
+                          {playerData?.q1_outcome?.rewards ? (
+                            <ul>
+                              {playerData.q1_outcome.rewards.map((reward, index) => (
+                                <li key={index}>{reward}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
+                        <br />
+                        <span className="quest_consequences">
+                          {playerData?.q1_outcome?.consequences ? (
+                            <ul>
+                              {playerData.q1_outcome.consequences.map((consequence, index) => (
+                                <li key={index}>{consequence}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
                       </li>
                     </div>
                 
@@ -322,8 +342,29 @@ const GameAnalysis = () => {
                         <span className="money_earned">+₱{playerData?.sq1_outcome?.money_earned || '0'}</span>
                         <br />
                         <span className="money_spent">-₱{playerData?.sq1_outcome?.money_spent || '0'}</span>
+                        <br />
+                        <span className="quest_rewards">
+                          {playerData?.sq1_outcome?.rewards ? (
+                            <ul>
+                              {playerData.sq1_outcome.rewards.map((reward, index) => (
+                                <li key={index}>{reward}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
+                        <br />
+                        <span className="quest_consequences">
+                          {playerData?.sq1_outcome?.consequences ? (
+                            <ul>
+                              {playerData.sq1_outcome.consequences.map((consequence, index) => (
+                                <li key={index}>{consequence}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
                       </li>
                     </div>
+                
                 
                     <div className="quest-slide">
                       <li>
@@ -336,8 +377,29 @@ const GameAnalysis = () => {
                         <span className="money_earned">+₱{playerData?.q2_outcome?.money_earned || '0'}</span>
                         <br />
                         <span className="money_spent">-₱{playerData?.q2_outcome?.money_spent || '0'}</span>
+                        <br />
+                        <span className="quest_rewards">
+                          {playerData?.sq1_outcome?.rewards ? (
+                            <ul>
+                              {playerData.sq1_outcome.rewards.map((reward, index) => (
+                                <li key={index}>{reward}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
+                        <br />
+                        <span className="quest_consequences">
+                          {playerData?.q2_outcome?.consequences ? (
+                            <ul>
+                              {playerData.q2_outcome.consequences.map((consequence, index) => (
+                                <li key={index}>{consequence}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
                       </li>
                     </div>
+                
                 
                     <div className="quest-slide">
                       <li>
@@ -350,8 +412,29 @@ const GameAnalysis = () => {
                         <span className="money_earned">+₱{playerData?.sq2_outcome?.money_earned || '0'}</span>
                         <br />
                         <span className="money_spent">-₱{playerData?.sq2_outcome?.money_spent || '0'}</span>
+                        <br />
+                        <span className="quest_rewards">
+                          {playerData?.sq2_outcome?.rewards ? (
+                            <ul>
+                              {playerData.sq1_outcome.rewards.map((reward, index) => (
+                                <li key={index}>{reward}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
+                        <br />
+                        <span className="quest_consequences">
+                          {playerData?.sq2_outcome?.consequences ? (
+                            <ul>
+                              {playerData.sq1_outcome.consequences.map((consequence, index) => (
+                                <li key={index}>{consequence}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
                       </li>
                     </div>
+                
                 
                     <div className="quest-slide">
                       <li>
@@ -364,8 +447,29 @@ const GameAnalysis = () => {
                         <span className="money_earned">+₱{playerData?.q3_outcome?.money_earned || '0'}</span>
                         <br />
                         <span className="money_spent">-₱{playerData?.q3_outcome?.money_spent || '0'}</span>
+                        <br />
+                        <span className="quest_rewards">
+                          {playerData?.sq1_outcome?.rewards ? (
+                            <ul>
+                              {playerData.sq1_outcome.rewards.map((reward, index) => (
+                                <li key={index}>{reward}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
+                        <br />
+                        <span className="quest_consequences">
+                          {playerData?.q3_outcome?.consequences ? (
+                            <ul>
+                              {playerData.q3_outcome.consequences.map((consequence, index) => (
+                                <li key={index}>{consequence}</li>
+                              ))}
+                            </ul>
+                          ) : '0'}
+                        </span>
                       </li>
                     </div>
+        
                   </div>
                 </div>
               </div>

@@ -266,6 +266,101 @@
     font-size: 1rem;
   }
   
+  /* ...existing code... */
+
+/* Enhanced rewards and consequences styling */
+.quest_rewards,
+.quest_consequences {
+  margin-top: 0.8rem;
+  position: relative;
+  padding-top: 1.2rem;
+}
+
+.quest_rewards::before,
+.quest_consequences::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.quest_rewards::before {
+  content: "REWARDS";
+  background-color: rgba(46, 204, 113, 0.2);
+  border: 1px solid #2ecc71;
+  color: #2ecc71;
+  text-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+}
+
+.quest_consequences::before {
+  content: "CONSEQUENCES";
+  background-color: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  text-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+}
+
+.quest_rewards ul,
+.quest_consequences ul {
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+}
+
+.quest_rewards li,
+.quest_consequences li {
+  background: none;
+  border: none;
+  padding: 0.3rem 0;
+  margin: 0;
+  box-shadow: none;
+  font-size: 0.9rem;
+  position: relative;
+  padding-left: 1.2rem;
+  list-style-type: none;
+}
+
+.quest_rewards li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.quest_consequences li::before {
+  content: "✗";
+  position: absolute;
+  left: 0;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.quest_rewards {
+  color: #2ecc71;
+}
+
+.quest_consequences {
+  color: #e74c3c;
+}
+
+/* Add responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .quest_rewards::before,
+  .quest_consequences::before {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.6rem;
+  }
+  
+  .quest_rewards li,
+  .quest_consequences li {
+    font-size: 0.85rem;
+  }
+}
   /* Additional styling for quest log elements */
   .decision-summary .completed {
     color: #00cac9;

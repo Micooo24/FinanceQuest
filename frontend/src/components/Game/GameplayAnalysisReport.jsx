@@ -170,7 +170,7 @@ const GameplayReport = ({ playerData, analysis }) => {
           {/* AI Analysis */}
           <View style={styles.section}>
             <Text style={styles.heading}>FinanceQuest Feedback</Text>
-            <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.3, marginBottom: 0 }]}>{analysis}</Text>
+            <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.2, marginBottom: 0 }]}>{analysis}</Text>
             <Watermark />
           </View>
         </Page>
