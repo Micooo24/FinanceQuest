@@ -12,7 +12,9 @@ class Answer(BaseModel):
     response_time: float = Field(default=0.0)  # Track how long user took to answer
     confidence_level: str = Field(default="medium")  # Based on response time
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
 
 class UserAnswers(BaseModel):
     user_id: str
+    score: int
     answers: List[Answer]

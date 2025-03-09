@@ -9,6 +9,8 @@ from routes.minibudget_ai import router as minibudget_ai_router
 from routes import ai_analysis
 from routes import miniInvesting  
 from routes.miniInvest_ai import router as miniInvest_ai_router
+from routes.stats_ai import router as stats_ai_router
+from routes.leaderboards import router as leaderboards_router
 
 
 app = FastAPI()
@@ -38,4 +40,6 @@ app.include_router(minibudget_ai_router, prefix="/minibudget_ai")
 app.include_router(ai_analysis.router, prefix="/ai")
 app.include_router(miniInvesting.router, prefix="/miniInvesting") 
 app.include_router(miniInvest_ai_router, prefix="/miniInvesting_ai")
+app.include_router(stats_ai_router, prefix="/stats_ai")
+app.include_router(leaderboards_router, prefix="/leaderboards")
  

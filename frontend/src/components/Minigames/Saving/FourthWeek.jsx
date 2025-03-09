@@ -5,7 +5,8 @@ import { Line } from 'react-chartjs-2'; // Import the chart library
 import FirstWeek, { balanceHistory as firstWeekBalanceHistory } from './FirstWeek'; // Import FirstWeek component and its balance history
 import SecondWeek, { balanceHistory as secondWeekBalanceHistory } from './SecondWeek'; // Import SecondWeek component and its balance history
 import ThirdWeek, { balanceHistory as thirdWeekBalanceHistory } from './ThirdWeek'; // Import ThirdWeek component and its balance history
-
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
+import SavingsReport from './SavingsReport';
 
 const scenarios = [
     {
@@ -207,12 +208,12 @@ const handleContinue = async () => {
         Math.abs(combinedBalanceHistory[1].balance - combinedBalanceHistory[6].balance),
         Math.abs(combinedBalanceHistory[7].balance - combinedBalanceHistory[13].balance),
         Math.abs(combinedBalanceHistory[14].balance - combinedBalanceHistory[20].balance),
-        Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[28].balance)
+        Math.abs(combinedBalanceHistory[21].balance - combinedBalanceHistory[27].balance)
     ];
     
     const avgWeeklyExpenses = weeklyExpenses.reduce((acc, expense) => acc + expense, 0) / weeklyExpenses.length;
     const chartData = {
-        labels: Array.from({ length: 29 }, (_, i) => `Day ${i}`),
+        labels: Array.from({ length: 28 }, (_, i) => `Day ${i + 1}`),
         datasets: [
             {
                 label: 'Balance Weekly Progress',
@@ -273,8 +274,26 @@ const handleContinue = async () => {
             }
         }
     };
+
+    const handleDownloadPDF = async () => {
+        const pdfDocument = (
+            <SavingsReport
+                balance={balance}
+                weeklyBalances={weeklyBalances}
+                weeklyExpenses={weeklyExpenses}
+                aiFeedback={aiFeedback}
+            />
+        );
     
-    
+        const blob = await pdf(pdfDocument).toBlob();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'FinanceQuest_Analysis.pdf';
+        link.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <Box
             sx={{
@@ -507,6 +526,23 @@ const handleContinue = async () => {
                     <Typography variant="h6">{aiFeedback}</Typography>
                 </DialogContent>
                 <DialogActions sx={{ justifyContent: "center" }}>
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            color: "white",
+                            borderColor: "white",
+                            fontFamily: "'Press Start 2P', cursive",
+                            "&:hover": {
+                                backgroundColor: "#444",
+                                borderColor: "gray",
+                                boxShadow: "0px 0px 15px rgba(0, 202, 201, 0.8)",
+                                color: "white"
+                            }
+                        }}
+                        onClick={handleDownloadPDF}
+                    >
+                        Download 
+                    </Button>
                     <Button
                         variant="outlined"
                         sx={{

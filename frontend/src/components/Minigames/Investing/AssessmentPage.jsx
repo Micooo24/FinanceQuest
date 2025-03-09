@@ -344,6 +344,7 @@ const InvestingPage = () => {
       const payload = {
         user_id: userId,
         answers: userAnswers,
+        score: points,
       };
 
       console.log("Payload:", JSON.stringify(payload, null, 2)); // Log the payload to verify its structure
