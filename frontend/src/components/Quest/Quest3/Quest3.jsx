@@ -142,6 +142,18 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
     handleNextModal();
   };
 
+  const handleModal12Complete = () => {
+    setCurrentModal('15'); 
+    fetchPlayerStats(); // Fetch player stats when Modal 12 is completed
+    toast.success('Updated Stats Displayed!');
+  };
+
+  const handleModal13Complete = () => {
+    setCurrentModal('15'); 
+    fetchPlayerStats(); // Fetch player stats when Modal 13 is completed
+    toast.success('Updated Stats Displayed!');
+  };
+
   const handleModal14Complete = () => {
     setCurrentModal('15'); // Assuming '15' is the next modal or completion state
     fetchPlayerStats(); // Fetch player stats when Modal 14 is completed
@@ -216,8 +228,8 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
       {currentModal === '9G' && <Modal9G onContinue={() => setCurrentModal('10')} />}
       {currentModal === '10' && <Modal10 onContinue={handleNextModal} />}
       {currentModal === '11' && <Modal11 onChoose={handleInvestmentChoice} />}
-      {currentModal === '12' && <Modal12 onBack={() => setCurrentModal('11')} onComplete={fetchPlayerStats} />}
-      {currentModal === '13' && <Modal13 onBack={() => setCurrentModal('11')} onComplete={fetchPlayerStats} />}
+      {currentModal === '12' && <Modal12 onBack={() => setCurrentModal('11')} onComplete={handleModal12Complete} />}
+      {currentModal === '13' && <Modal13 onBack={() => setCurrentModal('11')} onComplete={handleModal13Complete} />}
       {currentModal === '14' && <Modal14 onBack={() => setCurrentModal('11')} onComplete={handleModal14Complete} />}
     </>
   );

@@ -328,6 +328,7 @@ async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(g
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q2_outcome": q2_outcome
     }
+    
 @router.put("/decision/sq2")
 async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -395,7 +396,6 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "sq2_outcome": sq2_outcome
     }
-
 
 
 
@@ -516,6 +516,8 @@ async def q3_crew_decision(request: Q3DecisionRequest, current_user: dict = Depe
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q3_outcome": q3_outcome
     }
+    
+    
     
 
 #     # Leaderboard routes
