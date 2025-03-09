@@ -39,7 +39,7 @@ const GameScreen = ({ navigation }) => {
   };
 
   const handleDecision = async (cost, result) => {
-    let newBalance = balance - cost;
+    let newBalance = balance + cost; // Adjusted to add cost (negative values will subtract)
 
     if (newBalance < 0) {
       Alert.alert("Game Over!", "You ran out of money before payday!");
@@ -72,10 +72,10 @@ const GameScreen = ({ navigation }) => {
 
     // Calculate weekly expenses
     const weeklyExpenses = [
-      Math.max(5000 - firstweek, 0),
-      Math.max(firstweek - secondweek, 0),
-      Math.max(secondweek - thirdweek, 0),
-      Math.max(thirdweek - fourthweek, 0)
+      Math.abs(5000 - firstweek),
+      Math.abs(firstweek - secondweek),
+      Math.abs(secondweek - thirdweek),
+      Math.abs(thirdweek - fourthweek)
     ];
 
     // Calculate average weekly expenses

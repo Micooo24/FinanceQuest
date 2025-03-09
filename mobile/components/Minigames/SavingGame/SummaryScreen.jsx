@@ -33,7 +33,7 @@ const SummaryScreen = ({ route, navigation }) => {
   // Calculate weekly expenses
   const weeklyExpenses = weeklyBalances.map((balance, index) => {
     const previousBalance = index === 0 ? 5000 : weeklyBalances[index - 1];
-    return Math.max(previousBalance - balance, 0); // Ensure no negative values
+    return Math.abs(previousBalance - balance); // Ensure positive values
   });
 
   // Calculate total weekly expenses
