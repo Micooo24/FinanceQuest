@@ -9,7 +9,8 @@ import InvestingBlog from "../LandingPage/InvestingBlog";
 import SavingBlog from "../LandingPage/SavingBlog";
 import Home from "../Homepage/Home";
 import AuthNavigator from "./AuthNavigator";
-import SavingGameNavigator from "./SavingGameNavigator";
+import SavingGameNavigator from "./SavingGameNavigator"
+import AssessmentNavigator from "./AssessmentNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ const MainNavigator = () => (
     <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
     <Stack.Screen name="Auth" component={AuthNavigator} options={{ headerShown: false }} />
     <Stack.Screen name="SavingGame" component={SavingGameNavigator} options={{ headerShown: false }} />
+    <Stack.Screen name="Assessment" component={AssessmentNavigator} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
 

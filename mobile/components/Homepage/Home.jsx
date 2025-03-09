@@ -41,7 +41,7 @@ const popularGames = [
     description: "Grow your virtual portfolio",
     icon: "show-chart",
     color: "#8F7BE8",
-    screen: "InvestmentGame",
+    screen: "Assessment",
     animation: require('../../assets/animations/investing.json')
   }
 ];
