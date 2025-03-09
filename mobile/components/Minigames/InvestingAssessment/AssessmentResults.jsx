@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Button } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
@@ -6,6 +6,8 @@ import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width;
 
 const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, onNext }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const correctAnswers = points;
   const incorrectAnswers = totalQuestions - points;
   const accuracyRate = ((correctAnswers / totalQuestions) * 100).toFixed(2);
@@ -27,7 +29,39 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
     },
   ];
 
-  return (
+  const renderFirstPage = () => (
+    <View style={styles.results}>
+      <Text style={styles.resultMessage}>{resultMessage}</Text>
+      <Text style={styles.finalScore}>
+        Your final score: {points} out of {totalQuestions}
+      </Text>
+      <ScrollView style={styles.analysisContainer}>
+        <Text style={styles.analysisTitle}>Category Performance Analysis</Text>
+        {["Investment Basics", "Risk Management", "Market Analysis"].map((category) => {
+          const categoryAnalysis = aiAnalysis
+            .split("\n\n")
+            .find((section) =>
+              section.toLowerCase().includes(category.toLowerCase())
+            );
+
+          return (
+            <View key={category} style={styles.categoryContainer}>
+              <Text style={styles.categoryTitle}>{category}</Text>
+              <Text style={styles.categoryText}>
+                {categoryAnalysis
+                  ?.replace(`${category}:`, "")
+                  .replace("AI Analysis:", "")
+                  .trim() || "No analysis available"}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+      <Button title="Next" onPress={() => setCurrentPage(2)} />
+    </View>
+  );
+
+  const renderSecondPage = () => (
     <View style={styles.results}>
       <Text style={styles.resultMessage}>{resultMessage}</Text>
       <Text style={styles.finalScore}>
@@ -53,28 +87,6 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
         paddingLeft="15"
         absolute
       />
-      <ScrollView style={styles.analysisContainer}>
-        <Text style={styles.analysisTitle}>Category Performance Analysis</Text>
-        {["Investment Basics", "Risk Management", "Market Analysis"].map((category) => {
-          const categoryAnalysis = aiAnalysis
-            .split("\n\n")
-            .find((section) =>
-              section.toLowerCase().includes(category.toLowerCase())
-            );
-
-          return (
-            <View key={category} style={styles.categoryContainer}>
-              <Text style={styles.categoryTitle}>{category}</Text>
-              <Text style={styles.categoryText}>
-                {categoryAnalysis
-                  ?.replace(`${category}:`, "")
-                  .replace("AI Analysis:", "")
-                  .trim() || "No analysis available"}
-              </Text>
-            </View>
-          );
-        })}
-      </ScrollView>
       <View style={styles.summaryContainer}>
         <Text style={styles.summaryTitle}>Summary</Text>
         <View style={styles.summaryRow}>
@@ -89,6 +101,8 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
       <Button title="Next" onPress={onNext} />
     </View>
   );
+
+  return currentPage === 1 ? renderFirstPage() : renderSecondPage();
 };
 
 const styles = StyleSheet.create({
