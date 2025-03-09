@@ -70,41 +70,41 @@ const FinanceTracker = () => {
 
   const categories = {
     Expenses: {
-      "Payments/Dues": ["Housing Bills", "Rent", "Mortgage", "Property Tax", "Loan Payments", "Others"],
-      Utilities: ["Electricity", "Water", "Gas", "Internet", "Phone", "Garbage Collection", "Others"],
-      Insurance: ["Health Insurance", "Life Insurance", "Vehicle Insurance", "Home Insurance", "Travel Insurance", "Others"],
-      "Education Bills": ["Tuition Fees", "Student Loan Payments", "School Supplies", "Online Courses", "Others"],
-      "Food Expenses": ["Groceries", "Snacks", "Beverages", "Fast Food", "Others"],
-      Transportation: ["Gas", "Public Transportation", "Ride-Sharing Services", "Vehicle Maintenance", "Others"],
-      "Savings & Investments": ["Emergency Fund", "Retirement Savings", "Debt Repayment", "Stock Market Investments", "Others"],
+      "Payments/Dues": ["Housing Bills", "Rent", "Mortgage", "Property Tax", "Loan Payments"],
+      Utilities: ["Electricity", "Water", "Gas", "Internet", "Phone", "Garbage Collection"],
+      Insurance: ["Health Insurance", "Life Insurance", "Vehicle Insurance", "Home Insurance", "Travel Insurance"],
+      "Education Bills": ["Tuition Fees", "Student Loan Payments", "School Supplies", "Online Courses"],
+      "Food Expenses": ["Groceries", "Snacks", "Beverages", "Fast Food"],
+      Transportation: ["Gas", "Public Transportation", "Ride-Sharing Services", "Vehicle Maintenance"],
+      "Savings & Investments": ["Emergency Fund", "Retirement Savings", "Debt Repayment", "Stock Market Investments"],
       Others: ["Charitable Donations", "Unexpected Expenses", "Pet Expenses"],
     },
     Bills: {
-      Subscriptions: ["Netflix", "Gym Membership", "Cloud Storage", "Magazine Subscriptions", "Music Streaming", "Others"],
-      Entertainment: ["Movies/Cinema", "Concerts", "Gaming", "Hobbies", "Streaming Services", "Others"],
-      Shopping: ["Clothes", "Accessories", "Gadgets", "Home Decor", "Books", "Others"],
-      "Dining Out": ["Restaurants", "Cafes", "Takeout/Delivery", "Street Food", "Others"],
-      "Travel Expenses": ["Flights", "Hotels", "Vacations", "Transportation Rentals", "Others"],
+      Subscriptions: ["Netflix", "Gym Membership", "Cloud Storage", "Magazine Subscriptions", "Music Streaming"],
+      Entertainment: ["Movies/Cinema", "Concerts", "Gaming", "Hobbies", "Streaming Services"],
+      Shopping: ["Clothes", "Accessories", "Gadgets", "Home Decor", "Books"],
+      "Dining Out": ["Restaurants", "Cafes", "Takeout/Delivery", "Street Food"],
+      "Travel Expenses": ["Flights", "Hotels", "Vacations", "Transportation Rentals"],
       Others: ["Special Occasions", "Gifts", "Event Tickets"],
     },
     Savings: {
-      "Emergency Fund": ["Medical Emergencies", "Job Loss Fund", "Unexpected Repairs", "Others"],
-      "Retirement Savings": ["401(k)", "Pension Plan", "IRA Contributions", "Others"],
-      "Debt Repayment": ["Credit Card Payments", "Student Loan Repayments", "Car Loan Payments", "Others"],
-      "Investments": ["Stocks", "Bonds", "Mutual Funds", "Real Estate", "Others"],
-      "Savings Account Deposits": ["Monthly Savings", "High-Interest Savings Accounts", "Others"],
-      "Sinking Fund": ["Planned Future Expenses", "Car Purchase", "Wedding Fund", "Vacation Fund", "Others"],
+      "Emergency Fund": ["Medical Emergencies", "Job Loss Fund", "Unexpected Repairs"],
+      "Retirement Savings": ["401(k)", "Pension Plan", "IRA Contributions"],
+      "Debt Repayment": ["Credit Card Payments", "Student Loan Repayments", "Car Loan Payments"],
+      "Investments": ["Stocks", "Bonds", "Mutual Funds", "Real Estate"],
+      "Savings Account Deposits": ["Monthly Savings", "High-Interest Savings Accounts"],
+      "Sinking Fund": ["Planned Future Expenses", "Car Purchase", "Wedding Fund", "Vacation Fund"],
       Others: ["Tax Savings", "Investment in Business"],
     },
     Income: {
-      "Salary/Wages": ["Full-Time Job", "Part-Time Job", "Overtime Pay", "Others"],
-      "Freelance/Side Hustle Earnings": ["Freelance Writing", "Graphic Design", "Online Tutoring", "Others"],
-      "Business Income": ["E-commerce Sales", "Consulting Services", "Passive Income Streams", "Others"],
-      "Rental Income": ["Apartment Rental", "Car Rental", "Vacation Home Rental", "Others"],
-      "Dividends": ["Stock Dividends", "Mutual Fund Dividends", "Real Estate Investment Trusts (REITs)", "Others"],
-      "Government Benefits": ["SSS", "GSIS", "Unemployment Benefits", "Disability Benefits", "Others"],
-      "Bonuses/Commissions": ["Performance Bonus", "Referral Bonus", "Sales Commission", "Others"],
-      "Gifts or Allowances": ["Holiday Gifts", "Parental Support", "Scholarships", "Others"],
+      "Salary/Wages": ["Full-Time Job", "Part-Time Job", "Overtime Pay"],
+      "Freelance/Side Hustle Earnings": ["Freelance Writing", "Graphic Design", "Online Tutoring"],
+      "Business Income": ["E-commerce Sales", "Consulting Services", "Passive Income Streams"],
+      "Rental Income": ["Apartment Rental", "Car Rental", "Vacation Home Rental"],
+      "Dividends": ["Stock Dividends", "Mutual Fund Dividends", "Real Estate Investment Trusts (REITs)"],
+      "Government Benefits": ["SSS", "GSIS", "Unemployment Benefits", "Disability Benefits"],
+      "Bonuses/Commissions": ["Performance Bonus", "Referral Bonus", "Sales Commission"],
+      "Gifts or Allowances": ["Holiday Gifts", "Parental Support", "Scholarships"],
       Others: ["Lottery Winnings", "Cash Prizes", "Refunds/Rebates"],
     },
   };
@@ -262,9 +262,60 @@ const FinanceTracker = () => {
     datasets: [
       {
         data: hasData ? [totalsavings, totalIncome] : [1],
-        backgroundColor: hasData ? ['#4caf50', '#6a0dad'] : ['#d3d3d3'],
+        backgroundColor: hasData ? ['#5e3967', '#6a0dad'] : ['#d3d3d3'],
+        borderColor: hasData ? ['#4a2d52', '#500b8b'] : ['#c0c0c0'],
+        borderWidth: 2,
+        hoverBackgroundColor: hasData ? ['#7e4987', '#8627d1'] : ['#e0e0e0'],
+        hoverOffset: 15,
       },
     ],
+  };
+  
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967',
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(94, 57, 103, 0.8)',
+        titleFont: {
+          family: "'Lilita One'",
+          size: 16
+        },
+        bodyFont: {
+          family: "'Lilita One'",
+          size: 14
+        },
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+            const percentage = Math.round((value / total) * 100);
+            return `${label}: ₱${value} (${percentage}%)`;
+          }
+        }
+      }
+    },
+    cutout: '50%',
+    animation: {
+      animateScale: true,
+      animateRotate: true,
+      duration: 1500,
+      easing: 'easeOutQuart'
+    }
   };
   
   const barData = {
@@ -273,7 +324,13 @@ const FinanceTracker = () => {
       {
         label: "Actual",
         data: [totalIncome, totalExpenses, totalBills, totalsavings],
-        backgroundColor: "#4caf50",
+        backgroundColor: "#6a0dad",
+        borderColor: "#500b8b",
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: "#8a2be2",
+        barPercentage: 0.75,
+        categoryPercentage: 0.8,
       },
       {
         label: "Expected",
@@ -283,17 +340,97 @@ const FinanceTracker = () => {
           billsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0),
           savingsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0),
         ],
-        backgroundColor: "#c2185b",
+        backgroundColor: "#5e3967",
+        borderColor: "#432848",
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: "#7a4c86",
+        barPercentage: 0.75,
+        categoryPercentage: 0.8,
       }
     ] : [
       {
         label: "No data",
         data: [1],
         backgroundColor: "#d3d3d3",
+        borderColor: "#b3b3b3",
+        borderWidth: 2,
+        borderRadius: 6,
       }
     ],
   };
-
+  
+  const barOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(94, 57, 103, 0.1)',
+        },
+        ticks: {
+          font: {
+            family: "'Lilita One'",
+            size: 12
+          },
+          color: '#5e3967',
+          callback: function(value) {
+            return '₱' + value;
+          }
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967',
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'rect'
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(94, 57, 103, 0.8)',
+        titleFont: {
+          family: "'Lilita One'",
+          size: 16
+        },
+        bodyFont: {
+          family: "'Lilita One'",
+          size: 14
+        },
+        callbacks: {
+          label: function(context) {
+            const label = context.dataset.label || '';
+            const value = context.raw || 0;
+            return `${label}: ₱${value}`;
+          }
+        }
+      }
+    },
+    animation: {
+      duration: 1500,
+      easing: 'easeOutQuart'
+    }
+  };
   // Handlers for create dialog
   const handleOpenDialog = (type) => {
     setDialogType(type);

@@ -4,17 +4,31 @@ import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
 import fqlogo from "/assets/TUPLogo.png";
 
+// Register fonts
+Font.register({
+  family: "Lilita One",
+  src: "https://fonts.gstatic.com/s/lilitaone/v6/i7dPIFZ9Zz-WBtRtedDbUEY.ttf",
+});
+
 Font.register({
   family: "Roboto",
   src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Me5Q.ttf",
 });
 
+// Register the font
+Font.register({
+  family: "Lora",
+  src: "/assets/fonts/Lora-Medium.ttf",
+  fontWeight: "normal",
+  format: "truetype",
+});
+
 // Styles
 const styles = StyleSheet.create({
-  page: { padding: 30, position: "relative", fontFamily: "Roboto" },
+  page: { padding: 30, position: "relative", fontFamily: "Roboto" , fontWeight: "bold" },
   section: { margin: 10, padding: 10, flexGrow: 1 },
-  heading: { fontSize: 18, textAlign: "center", marginBottom: 10, fontWeight: "bold" },
-  text: { fontSize: 12, fontFamily: "Roboto" },
+  heading: { fontSize: 18,  marginBottom: 10, fontWeight: "bold" },
+  text: { fontSize: 12, fontFamily: "Roboto" ,  textAlign: "justify" },
   table: {
     display: "table",
     width: "auto",
@@ -42,31 +56,10 @@ const styles = StyleSheet.create({
   },
 });
 
-// Watermark Component
-const Watermark = () => (
-  <View style={styles.watermarkContainer}>
-    {[...Array(10)].map((_, row) =>
-      [...Array(5)].map((_, col) => (
-        <Text
-          key={`${row}-${col}`}
-          style={{
-            ...styles.watermarkText,
-            top: row * 100,
-            left: col * 150,
-            transform: "rotate(-45deg)",
-          }}
-        >
-          FinanceQuest
-        </Text>
-      ))
-    )}
-  </View>
-);
 
 const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, expensesData, billsData, savingsData, aiAnalysis }) => {
   const [userDetails, setUserDetails] = useState({ username: "", email: "" });
-  
-  // Fetch user details from localStorage
+
   const userId = localStorage.getItem("userId");
   const email = localStorage.getItem("email");
   const authToken = localStorage.getItem("authToken");
@@ -90,67 +83,116 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
   const currentDate = new Date().toLocaleDateString();
   const currentTime = new Date().toLocaleTimeString();
 
+  // Function to chunk data for tables (income, expenses, etc.)
+  const chunkData = (data, rowsPerPage = 10) => {
+    const chunks = [];
+    for (let i = 0; i < data.length; i += rowsPerPage) {
+      chunks.push(data.slice(i, i + rowsPerPage));
+    }
+    return chunks;
+  };
+
+  // Watermark Component to be included in each chunk
+  const Watermark = () => (
+    <View style={styles.watermarkContainer}>
+      {[...Array(10)].map((_, row) =>
+        [...Array(5)].map((_, col) => (
+          <Text
+            key={`${row}-${col}`}
+            style={{
+              ...styles.watermarkText,
+              top: row * 300,
+              left: col * 300,
+              transform: "rotate(-45deg)",
+            }}
+          >
+            FinanceQuest
+          </Text>
+        ))
+      )}
+    </View>
+  );
+
   return (
     <Document>
-      <Page style={styles.page}>
-        <Watermark />
-        <View style={styles.header}>
-          <Image style={styles.logo} src={tuplogo} />
-          <Text style={styles.heading}>FINANCE TRACKER REPORT</Text>
-          <Image style={styles.logo} src={fqlogo} />
-        </View>
+      {[...Array(2)].map((_, pageIndex) => (
+        <Page key={pageIndex} style={styles.page}>
+          {/* Watermark applied to each page */}
+          <Watermark /> 
 
-        {/* User Details and Financial Summary */}
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={styles.section}>
-            <Text style={styles.heading}>User Details</Text>
-            <Text style={styles.text}>User ID: {userId}</Text>
-            <Text style={styles.text}>Username: {userDetails.username}</Text>
-            <Text style={styles.text}>Email: {userDetails.email}</Text>
-            <Text style={styles.text}>Date: {currentDate}</Text>
-            <Text style={styles.text}>Time: {currentTime}</Text>
+          <View style={styles.header}>
+            <Image style={styles.logo} src={tuplogo} />
+            <Text style={styles.heading}>FINANCE TRACKER REPORT</Text>
+            <Image style={styles.logo} src={fqlogo} />
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.heading}>Financial Summary</Text>
-            <Text style={styles.text}>Total Income: ₱{(totalIncome || 0).toLocaleString()}</Text>
-            <Text style={styles.text}>Total Expenses: ₱{(totalExpenses || 0).toLocaleString()}</Text>
-            <Text style={styles.text}>Savings: ₱{(totalsavings || 0).toLocaleString()}</Text>
-          </View>
-        </View>
-        
-        {/* Financial Data Tables */}
-        {[{ title: "Income Data", data: incomeData }, { title: "Needs Data", data: expensesData }, { title: "Wants Data", data: billsData }, { title: "Savings Data", data: savingsData }].map((section, idx) => (
-          <View key={idx} style={styles.section} wrap={false}>
-            <Text style={{ ...styles.heading, textAlign: "left" }}>{section.title}</Text>
-            <View style={styles.table}>
-              <View style={styles.tableRow}>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Category</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Expected</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Actual</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>Done</Text></View>
-              </View>
-              {section.data.map((item, index) => (
-                <View key={index} style={styles.tableRow}>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.category}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.expected || 0).toLocaleString()}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.actual || 0).toLocaleString()}</Text></View>
-                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.done ? "Completed" : "Pending"}</Text></View>
+          {/* Page-Specific Content */}
+          {pageIndex === 0 && (
+            <>
+              {/* User Details and Financial Summary */}
+              <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <View style={styles.section}>
+                  <Text style={styles.heading}>User Details</Text>
+                  <Text style={styles.text}>Username: {userDetails.username}</Text>
+                  <Text style={styles.text}>Email: {userDetails.email}</Text>
+                  <Text style={styles.text}>Date: {currentDate}</Text>
+                  <Text style={styles.text}>Time: {currentTime}</Text>
                 </View>
-              ))}
+
+                <View style={styles.section}>
+                  <Text style={styles.heading}>Financial Summary</Text>
+                  <Text style={styles.text}>Total Income: ₱{(totalIncome || 0).toLocaleString()}</Text>
+                  <Text style={styles.text}>Total Expenses: ₱{(totalExpenses || 0).toLocaleString()}</Text>
+                  <Text style={styles.text}>Savings: ₱{(totalsavings || 0).toLocaleString()}</Text>
+                </View>
+              </View>
+            </>
+          )}
+
+          {pageIndex === 0 && (
+            <>
+              {/* Breaking down the sections into chunks */}
+              {[{ title: "Income Breakdown", data: incomeData }, { title: "Essential Expenses (Needs)", data: expensesData }, { title: "Discretionary Expenses (Wants)", data: billsData }, { title: "Personal Savings", data: savingsData }].map((section, idx) => {
+                const chunks = chunkData(section.data, 20);  // Adjust rows per page as needed
+                return chunks.map((chunk, chunkIndex) => (
+                  <View key={`${idx}-${chunkIndex}`} style={styles.section} wrap={false}>
+                    <Text style={{ ...styles.heading, textAlign: "left" }}>{section.title}</Text>
+                    <View style={styles.table}>
+                      <View style={styles.tableRow}>
+                        <View style={styles.tableCol}><Text style={styles.tableCell}>Category</Text></View>
+                        <View style={styles.tableCol}><Text style={styles.tableCell}>Budget</Text></View>
+                        <View style={styles.tableCol}><Text style={styles.tableCell}>Actual</Text></View>
+                        <View style={styles.tableCol}><Text style={styles.tableCell}>Done</Text></View>
+                      </View>
+                      {chunk.map((item, index) => (
+                        <View key={index} style={styles.tableRow}>
+                          <View style={styles.tableCol}><Text style={styles.tableCell}>{item.category}</Text></View>
+                          <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.expected || 0).toLocaleString()}</Text></View>
+                          <View style={styles.tableCol}><Text style={styles.tableCell}>₱{(item.actual || 0).toLocaleString()}</Text></View>
+                          <View style={styles.tableCol}><Text style={styles.tableCell}>{item.done ? "Completed" : "Pending"}</Text></View>
+                        </View>
+                      ))}
+                    </View>
+                    {/* Add watermark on every chunk */}
+                    <Watermark />
+                  </View>
+                ));
+              })}
+            </>
+          )}
+
+          {pageIndex === 1 && (
+            <View style={styles.section}>
+              <Text style={styles.heading}>Financial Pattern Analysis</Text>
+              <Text style={[styles.text, {lineHeight: 1.5 }]}>{aiAnalysis}</Text>
+              <Watermark /> {/* Add watermark on this section too */}
             </View>
-          </View>
-        ))}
-
-             {/* AI Analysis */}
-             <View style={styles.section}>
-          <Text style={styles.heading}>FinanceQuest Feedback</Text>
-          <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.5, marginBottom: 0 }]}>{aiAnalysis}</Text>
-        </View>
-
-      </Page>
+          )}
+        </Page>
+      ))}
     </Document>
   );
 };
+
 
 export default TrackerReport;

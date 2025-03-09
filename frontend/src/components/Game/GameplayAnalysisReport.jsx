@@ -4,14 +4,28 @@ import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
 import fqlogo from "/assets/TUPLogo.png";
 
+// Register fonts
+Font.register({
+  family: "Lilita One",
+  src: "https://fonts.gstatic.com/s/lilitaone/v6/i7dPIFZ9Zz-WBtRtedDbUEY.ttf",
+});
+
 Font.register({
   family: "Roboto",
   src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Me5Q.ttf",
 });
 
+// Register the font
+Font.register({
+  family: "Lora",
+  src: "/assets/fonts/Lora-Medium.ttf",
+  fontWeight: "normal",
+  format: "truetype",
+});
+
 // Styles
 const styles = StyleSheet.create({
-  page: { padding: 30, position: "relative", fontFamily: "Roboto" },
+  page: { padding: 30, position: "relative", fontFamily: "Lora" },
   section: { margin: 10, padding: 10, flexGrow: 1 },
   heading: { fontSize: 18, textAlign: "center", marginBottom: 10, fontWeight: "bold" },
   text: { fontSize: 12, fontFamily: "Roboto" },
@@ -89,7 +103,6 @@ const GameplayReport = ({ playerData, analysis }) => {
   
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
-  
     return (
       <Document>
         <Page style={styles.page}>
@@ -108,60 +121,61 @@ const GameplayReport = ({ playerData, analysis }) => {
               <Text style={styles.text}>Date: {currentDate}</Text>
               <Text style={styles.text}>Time: {currentTime}</Text>
             </View>
-
-          <View style={styles.section}>
-            <Text style={styles.heading}>Player Statistics</Text>
-            <Text style={styles.text}>Money: ₱{playerData?.money || '0'}</Text>
-            <Text style={styles.text}>Points Earned: {new Intl.NumberFormat().format(
-              (playerData?.q1_outcome?.points_earned || 0) +
-              (playerData?.sq1_outcome?.points_earned || 0) +
-              (playerData?.q2_outcome?.points_earned || 0) +
-              (playerData?.sq2_outcome?.points_earned || 0) +
-              (playerData?.q3_outcome?.points_earned || 0) +
-              (playerData?.sq3_outcome?.points_earned || 0)
-            )}</Text>
-            <Text style={styles.text}>Medals: {playerData?.medals ? playerData.medals.length : '0'}</Text>
-          </View>
-        </View>
-
-        {/* Quest Decisions */}
-        <View style={styles.section}>
-          <Text style={styles.heading}>Quest Decisions</Text>
-          <View style={styles.table}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol}><Text style={styles.tableCell}>Quest</Text></View>
-              <View style={styles.tableCol}><Text style={styles.tableCell}>Decision</Text></View>
-              <View style={styles.tableCol}><Text style={styles.tableCell}>Points Earned</Text></View>
-              <View style={styles.tableCol}><Text style={styles.tableCell}>Money Earned</Text></View>
-              <View style={styles.tableCol}><Text style={styles.tableCell}>Money Spent</Text></View>
+  
+            <View style={styles.section}>
+              <Text style={styles.heading}>Player Statistics</Text>
+              <Text style={styles.text}>Money: ₱{playerData?.money || '0'}</Text>
+              <Text style={styles.text}>Points Earned: {new Intl.NumberFormat().format(
+                (playerData?.q1_outcome?.points_earned || 0) +
+                (playerData?.sq1_outcome?.points_earned || 0) +
+                (playerData?.q2_outcome?.points_earned || 0) +
+                (playerData?.sq2_outcome?.points_earned || 0) +
+                (playerData?.q3_outcome?.points_earned || 0) 
+              )}</Text>
+              <Text style={styles.text}>Medals: {playerData?.medals ? playerData.medals.length : '0'}</Text>
             </View>
-            {[
-              { quest: "Quest 1", decision: playerData?.q1_decision, points: playerData?.q1_outcome?.points_earned, earned: playerData?.q1_outcome?.money_earned, spent: playerData?.q1_outcome?.money_spent },
-              { quest: "Side Quest 1", decision: playerData?.sq1_done ? 'Completed' : 'Not attempted', points: playerData?.sq1_outcome?.points_earned, earned: playerData?.sq1_outcome?.money_earned, spent: playerData?.sq1_outcome?.money_spent },
-              { quest: "Quest 2", decision: playerData?.q2_decision, points: playerData?.q2_outcome?.points_earned, earned: playerData?.q2_outcome?.money_earned, spent: playerData?.q2_outcome?.money_spent },
-              { quest: "Side Quest 2", decision: playerData?.sq2_decision, points: playerData?.sq2_outcome?.points_earned, earned: playerData?.sq2_outcome?.money_earned, spent: playerData?.sq2_outcome?.money_spent },
-              { quest: "Quest 3", decision: playerData?.q3_decision, points: playerData?.q3_outcome?.points_earned, earned: playerData?.q3_outcome?.money_earned, spent: playerData?.q3_outcome?.money_spent },
-              { quest: "Side Quest 3", decision: playerData?.sq3_decision, points: playerData?.sq3_outcome?.points_earned, earned: playerData?.sq3_outcome?.money_earned, spent: playerData?.sq3_outcome?.money_spent },
-            ].map((item, index) => (
-              <View key={index} style={styles.tableRow}>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{item.quest}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{item.decision}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{item.points}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>₱{item.earned}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>₱{item.spent}</Text></View>
-              </View>
-            ))}
           </View>
-        </View>
-
-        {/* AI Analysis */}
-        <View style={styles.section}>
-          <Text style={styles.heading}>FinanceQuest Feedback</Text>
-          <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.5, marginBottom: 0 }]}>{analysis}</Text>
-        </View>
-      </Page>
-    </Document>
-  );
-};
-
-export default GameplayReport;
+  
+          {/* Quest Decisions */}
+          <View style={styles.section}>
+            <Text style={styles.heading}>Quest Decisions</Text>
+            <View style={styles.table}>
+              <View style={styles.tableRow}>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>Quest</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>Decision</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>Points Earned</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>Money Earned</Text></View>
+                <View style={styles.tableCol}><Text style={styles.tableCell}>Money Spent</Text></View>
+              </View>
+              {[
+                { quest: "Quest 1", decision: playerData?.q1_decision, points: playerData?.q1_outcome?.points_earned, earned: playerData?.q1_outcome?.money_earned, spent: playerData?.q1_outcome?.money_spent },
+                { quest: "Side Quest 1", decision: playerData?.sq1_done ? 'Completed' : 'Not attempted', points: playerData?.sq1_outcome?.points_earned, earned: playerData?.sq1_outcome?.money_earned, spent: playerData?.sq1_outcome?.money_spent },
+                { quest: "Quest 2", decision: playerData?.q2_decision, points: playerData?.q2_outcome?.points_earned, earned: playerData?.q2_outcome?.money_earned, spent: playerData?.q2_outcome?.money_spent },
+                { quest: "Side Quest 2", decision: playerData?.sq2_decision, points: playerData?.sq2_outcome?.points_earned, earned: playerData?.sq2_outcome?.money_earned, spent: playerData?.sq2_outcome?.money_spent },
+                { quest: "Quest 3", decision: playerData?.q3_decision, points: playerData?.q3_outcome?.points_earned, earned: playerData?.q3_outcome?.money_earned, spent: playerData?.q3_outcome?.money_spent },
+              ].map((item, index) => (
+                <View key={index} style={styles.tableRow}>
+                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.quest || 'None'}</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.decision || 'None'}</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableCell}>{item.points || '0'}</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{item.earned || '0'}</Text></View>
+                  <View style={styles.tableCol}><Text style={styles.tableCell}>₱{item.spent || '0' }</Text></View>
+                </View>
+              ))}
+            </View>
+          </View>
+        </Page>
+  
+        <Page style={styles.page}>
+          {/* AI Analysis */}
+          <View style={styles.section}>
+            <Text style={styles.heading}>FinanceQuest Feedback</Text>
+            <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.3, marginBottom: 0 }]}>{analysis}</Text>
+            <Watermark />
+          </View>
+        </Page>
+      </Document>
+    );
+  };
+  
+  export default GameplayReport;
