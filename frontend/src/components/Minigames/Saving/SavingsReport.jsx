@@ -3,16 +3,29 @@ import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/
 import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
 import fqlogo from "/assets/TUPLogo.png";
-
 // Register fonts
+Font.register({
+  family: "Lilita One",
+  src: "https://fonts.gstatic.com/s/lilitaone/v6/i7dPIFZ9Zz-WBtRtedDbUEY.ttf",
+});
+
 Font.register({
   family: "Roboto",
   src: "https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Me5Q.ttf",
 });
 
+// Register the font
+Font.register({
+  family: "Lora",
+  src: "/assets/fonts/Lora-Medium.ttf",
+  fontWeight: "normal",
+  format: "truetype",
+});
+
+
 // Styles
 const styles = StyleSheet.create({
-  page: { padding: 30, position: "relative", fontFamily: "Roboto" },
+  page: { padding: 30, position: "relative", fontFamily: "Lora" },
   section: { margin: 10, padding: 10, flexGrow: 1 },
   heading: { fontSize: 18, textAlign: "center", marginBottom: 10, fontWeight: "bold" },
   text: { fontSize: 12, fontFamily: "Roboto" },
@@ -109,8 +122,6 @@ const SavingsReport = ({ balance, weeklyBalances, weeklyExpenses, aiFeedback }) 
           <View style={styles.section}>
             <Text style={styles.heading}>User Details</Text>
             <Text style={styles.text}>User ID: {userId}</Text>
-            <Text style={styles.text}>Username: {userDetails.username}</Text>
-            <Text style={styles.text}>Email: {userDetails.email}</Text>
             <Text style={styles.text}>Date: {currentDate}</Text>
             <Text style={styles.text}>Time: {currentTime}</Text>
           </View>

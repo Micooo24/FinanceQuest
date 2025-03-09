@@ -52,7 +52,7 @@ async def analyze_minibudget(user_id: str):
     Here is your minibudget data:
     {formatted_data}
     
-    ALL DATA PROVIDED ARE NON EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY. Provide a detailed diagnosis in 3 sentences discussing their financial behaviour and suggestion for improvement then use Linear Progression.
+    ALL DATA PROVIDED ARE NON EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY. Provide a detailed diagnosis in 3 sentences discussing their financial behaviour and suggestion for improvement.
     first sentence include the firstweek to fourthweek progress then on the second sentence is the use of savings strategies and techniques, also discuss about the average that average is the average spending per week, and then lastly
     suggest some improvements. IF YOU ARE TO DISPLAY THE MONEY, MAKE SURE YOU USE PHILIPPINE PERO CURRENCY SIGN
     """

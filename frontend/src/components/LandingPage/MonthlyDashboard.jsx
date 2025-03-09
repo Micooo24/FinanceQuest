@@ -27,7 +27,8 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import { AttachMoney, ShoppingCart, Savings, Home, SportsEsports, Article, TravelExplore, Info, Login } from "@mui/icons-material";
+import { Money, AccountBalanceWallet, MonetizationOn, AttachMoney, ShoppingCart, Savings, Home, SportsEsports, Article, TravelExplore, Info, Login } from "@mui/icons-material";
+import AssuredWorkloadIcon from '@mui/icons-material/AssuredWorkload';
 import { Pie, Bar } from "react-chartjs-2";
 import 'chart.js/auto';
 import axios from "axios";
@@ -69,41 +70,41 @@ const FinanceTracker = () => {
 
   const categories = {
     Expenses: {
-      "Payments/Dues": ["Housing Bills", "Rent", "Mortgage", "Property Tax", "Loan Payments", "Others"],
-      Utilities: ["Electricity", "Water", "Gas", "Internet", "Phone", "Garbage Collection", "Others"],
-      Insurance: ["Health Insurance", "Life Insurance", "Vehicle Insurance", "Home Insurance", "Travel Insurance", "Others"],
-      "Education Bills": ["Tuition Fees", "Student Loan Payments", "School Supplies", "Online Courses", "Others"],
-      "Food Expenses": ["Groceries", "Snacks", "Beverages", "Fast Food", "Others"],
-      Transportation: ["Gas", "Public Transportation", "Ride-Sharing Services", "Vehicle Maintenance", "Others"],
-      "Savings & Investments": ["Emergency Fund", "Retirement Savings", "Debt Repayment", "Stock Market Investments", "Others"],
+      "Payments/Dues": ["Housing Bills", "Rent", "Mortgage", "Property Tax", "Loan Payments"],
+      Utilities: ["Electricity", "Water", "Gas", "Internet", "Phone", "Garbage Collection"],
+      Insurance: ["Health Insurance", "Life Insurance", "Vehicle Insurance", "Home Insurance", "Travel Insurance"],
+      "Education Bills": ["Tuition Fees", "Student Loan Payments", "School Supplies", "Online Courses"],
+      "Food Expenses": ["Groceries", "Snacks", "Beverages", "Fast Food"],
+      Transportation: ["Gas", "Public Transportation", "Ride-Sharing Services", "Vehicle Maintenance"],
+      "Savings & Investments": ["Emergency Fund", "Retirement Savings", "Debt Repayment", "Stock Market Investments"],
       Others: ["Charitable Donations", "Unexpected Expenses", "Pet Expenses"],
     },
     Bills: {
-      Subscriptions: ["Netflix", "Gym Membership", "Cloud Storage", "Magazine Subscriptions", "Music Streaming", "Others"],
-      Entertainment: ["Movies/Cinema", "Concerts", "Gaming", "Hobbies", "Streaming Services", "Others"],
-      Shopping: ["Clothes", "Accessories", "Gadgets", "Home Decor", "Books", "Others"],
-      "Dining Out": ["Restaurants", "Cafes", "Takeout/Delivery", "Street Food", "Others"],
-      "Travel Expenses": ["Flights", "Hotels", "Vacations", "Transportation Rentals", "Others"],
+      Subscriptions: ["Netflix", "Gym Membership", "Cloud Storage", "Magazine Subscriptions", "Music Streaming"],
+      Entertainment: ["Movies/Cinema", "Concerts", "Gaming", "Hobbies", "Streaming Services"],
+      Shopping: ["Clothes", "Accessories", "Gadgets", "Home Decor", "Books"],
+      "Dining Out": ["Restaurants", "Cafes", "Takeout/Delivery", "Street Food"],
+      "Travel Expenses": ["Flights", "Hotels", "Vacations", "Transportation Rentals"],
       Others: ["Special Occasions", "Gifts", "Event Tickets"],
     },
     Savings: {
-      "Emergency Fund": ["Medical Emergencies", "Job Loss Fund", "Unexpected Repairs", "Others"],
-      "Retirement Savings": ["401(k)", "Pension Plan", "IRA Contributions", "Others"],
-      "Debt Repayment": ["Credit Card Payments", "Student Loan Repayments", "Car Loan Payments", "Others"],
-      "Investments": ["Stocks", "Bonds", "Mutual Funds", "Real Estate", "Others"],
-      "Savings Account Deposits": ["Monthly Savings", "High-Interest Savings Accounts", "Others"],
-      "Sinking Fund": ["Planned Future Expenses", "Car Purchase", "Wedding Fund", "Vacation Fund", "Others"],
+      "Emergency Fund": ["Medical Emergencies", "Job Loss Fund", "Unexpected Repairs"],
+      "Retirement Savings": ["401(k)", "Pension Plan", "IRA Contributions"],
+      "Debt Repayment": ["Credit Card Payments", "Student Loan Repayments", "Car Loan Payments"],
+      "Investments": ["Stocks", "Bonds", "Mutual Funds", "Real Estate"],
+      "Savings Account Deposits": ["Monthly Savings", "High-Interest Savings Accounts"],
+      "Sinking Fund": ["Planned Future Expenses", "Car Purchase", "Wedding Fund", "Vacation Fund"],
       Others: ["Tax Savings", "Investment in Business"],
     },
     Income: {
-      "Salary/Wages": ["Full-Time Job", "Part-Time Job", "Overtime Pay", "Others"],
-      "Freelance/Side Hustle Earnings": ["Freelance Writing", "Graphic Design", "Online Tutoring", "Others"],
-      "Business Income": ["E-commerce Sales", "Consulting Services", "Passive Income Streams", "Others"],
-      "Rental Income": ["Apartment Rental", "Car Rental", "Vacation Home Rental", "Others"],
-      "Dividends": ["Stock Dividends", "Mutual Fund Dividends", "Real Estate Investment Trusts (REITs)", "Others"],
-      "Government Benefits": ["SSS", "GSIS", "Unemployment Benefits", "Disability Benefits", "Others"],
-      "Bonuses/Commissions": ["Performance Bonus", "Referral Bonus", "Sales Commission", "Others"],
-      "Gifts or Allowances": ["Holiday Gifts", "Parental Support", "Scholarships", "Others"],
+      "Salary/Wages": ["Full-Time Job", "Part-Time Job", "Overtime Pay"],
+      "Freelance/Side Hustle Earnings": ["Freelance Writing", "Graphic Design", "Online Tutoring"],
+      "Business Income": ["E-commerce Sales", "Consulting Services", "Passive Income Streams"],
+      "Rental Income": ["Apartment Rental", "Car Rental", "Vacation Home Rental"],
+      "Dividends": ["Stock Dividends", "Mutual Fund Dividends", "Real Estate Investment Trusts (REITs)"],
+      "Government Benefits": ["SSS", "GSIS", "Unemployment Benefits", "Disability Benefits"],
+      "Bonuses/Commissions": ["Performance Bonus", "Referral Bonus", "Sales Commission"],
+      "Gifts or Allowances": ["Holiday Gifts", "Parental Support", "Scholarships"],
       Others: ["Lottery Winnings", "Cash Prizes", "Refunds/Rebates"],
     },
   };
@@ -166,45 +167,35 @@ const FinanceTracker = () => {
 
   const handleCheckboxChange = (category, type, index, checked) => {
     const updatedData = [...data];
-
-    // Calculate the total checked expenses and bills
-    const totalCheckedExpenses = expensesData
-      .filter(item => item.done)
-      .reduce((total, item) => total + item.actual, 0);
-    const totalCheckedBills = billsData
-      .filter(item => item.done)
-      .reduce((total, item) => total + item.actual, 0);
-
+  
     // Find the current item
-    const currentItem = type === "expenses" ? expensesData.find(item => item.category === category) : billsData.find(item => item.category === category);
-
-    // Check if the new checked expense or bill exceeds the total income
-    if ((type === "expenses" || type === "bills") && checked && (totalCheckedExpenses + totalCheckedBills + currentItem.actual > totalIncome)) {
-      setErrorMessage("Total checked expenses and bills exceed the total income.");
-      setErrorDialogOpen(true);
-      return;
-    }
-
+    const currentItem = type === "income" ? incomeData[index] :
+                        type === "expenses" ? expensesData[index] :
+                        type === "bills" ? billsData[index] :
+                        savingsData[index];
+  
     updatedData.forEach((entry, entryIndex) => {
       if (Array.isArray(entry[type])) {
         updatedData[entryIndex] = {
           ...entry,
           [type]: entry[type].map(item =>
-            item.category === category ? { ...item, done: checked } : item
+            item.category === category && item.expected === currentItem.expected && item.actual === currentItem.actual && item.due === currentItem.due
+              ? { ...item, done: checked }
+              : item
           ),
         };
       }
     });
-
+  
     updatedData.forEach((updatedRecord) => {
       if (!updatedRecord.tracker_id) {
         console.error("Missing tracker_id for update.");
         return;
       }
-
+  
       // Log the data being sent in the PUT request
       console.log("Updating record:", updatedRecord);
-
+  
       axios
         .put(
           `http://127.0.0.1:8000/monthly_tracker/update-tracker/${updatedRecord.tracker_id}`,
@@ -222,29 +213,42 @@ const FinanceTracker = () => {
     });
   };
 
-const handleAiAnalysis = async () => {
-  try {
-    const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
-    const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
-    setAiAnalysis(response.data.analysis);
-
-    if (userId && currentYear && monthIndex) {
-      axios
-        .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${currentYear}/${monthIndex}`)
-        .then((response) => setAiAnalysis(response.data.analysis))
-        .catch((error) => {
-          console.error("Error fetching AI analysis:", error);
-          setAiAnalysis("Unable to generate AI insights.");
-        });
+  const handleAiAnalysis = async () => {
+    try {
+      const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
+  
+      if (!userId || !currentYear || !monthIndex || !hasData) {
+        setAiAnalysis("No data available for AI analysis.");
+        return;
+      }
+  
+      const response = await axios.post(`http://127.0.0.1:8000/ai/analyze/${userId}/${currentYear}/${monthIndex}`);
+      setAiAnalysis(response.data.analysis);
+  
+      if (hasData) {
+        axios
+          .get(`http://127.0.0.1:8000/ai/get-analysis/${userId}/${currentYear}/${monthIndex}`)
+          .then((response) => {
+            if (response.data.analysis) {
+              setAiAnalysis(response.data.analysis);
+            } else {
+              setAiAnalysis("No data available for AI analysis.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching AI analysis:", error);
+            setAiAnalysis("Unable to generate AI insights.");
+          });
+      }
+    } catch (error) {
+      console.error("Error fetching AI analysis:", error);
+      setAiAnalysis("Unable to generate AI insights.");
     }
-  } catch (error) {
-    console.error("Error fetching AI analysis:", error);
-  }
-};
-
-useEffect(() => {
-  handleAiAnalysis();
-}, [selectedMonth, currentYear]);
+  };
+  
+  useEffect(() => {
+    handleAiAnalysis();
+  }, [selectedMonth, currentYear]);
 
   const totalIncome = incomeData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
   const totalExpenses = expensesData.filter(item => item.done).reduce((total, item) => total + item.actual, 0);
@@ -258,18 +262,75 @@ useEffect(() => {
     datasets: [
       {
         data: hasData ? [totalsavings, totalIncome] : [1],
-        backgroundColor: hasData ? ['#4caf50', '#6a0dad'] : ['#d3d3d3'],
+        backgroundColor: hasData ? ['#5e3967', '#6a0dad'] : ['#d3d3d3'],
+        borderColor: hasData ? ['#4a2d52', '#500b8b'] : ['#c0c0c0'],
+        borderWidth: 2,
+        hoverBackgroundColor: hasData ? ['#7e4987', '#8627d1'] : ['#e0e0e0'],
+        hoverOffset: 15,
       },
     ],
   };
   
+  const pieOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967',
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(94, 57, 103, 0.8)',
+        titleFont: {
+          family: "'Lilita One'",
+          size: 16
+        },
+        bodyFont: {
+          family: "'Lilita One'",
+          size: 14
+        },
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+            const percentage = Math.round((value / total) * 100);
+            return `${label}: ₱${value} (${percentage}%)`;
+          }
+        }
+      }
+    },
+    cutout: '50%',
+    animation: {
+      animateScale: true,
+      animateRotate: true,
+      duration: 1500,
+      easing: 'easeOutQuart'
+    }
+  };
+  
   const barData = {
-    labels: hasData ? ["Income", "Expenses", "Bills", "Savings"] : ["No data recorded"],
+    labels: hasData ? ["Income", "Needs", "Wants", "Savings"] : ["No data recorded"],
     datasets: hasData ? [
       {
         label: "Actual",
         data: [totalIncome, totalExpenses, totalBills, totalsavings],
-        backgroundColor: "#4caf50",
+        backgroundColor: "#6a0dad",
+        borderColor: "#500b8b",
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: "#8a2be2",
+        barPercentage: 0.75,
+        categoryPercentage: 0.8,
       },
       {
         label: "Expected",
@@ -279,17 +340,97 @@ useEffect(() => {
           billsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0),
           savingsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0),
         ],
-        backgroundColor: "#c2185b",
+        backgroundColor: "#5e3967",
+        borderColor: "#432848",
+        borderWidth: 2,
+        borderRadius: 6,
+        hoverBackgroundColor: "#7a4c86",
+        barPercentage: 0.75,
+        categoryPercentage: 0.8,
       }
     ] : [
       {
         label: "No data",
         data: [1],
         backgroundColor: "#d3d3d3",
+        borderColor: "#b3b3b3",
+        borderWidth: 2,
+        borderRadius: 6,
       }
     ],
   };
-
+  
+  const barOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(94, 57, 103, 0.1)',
+        },
+        ticks: {
+          font: {
+            family: "'Lilita One'",
+            size: 12
+          },
+          color: '#5e3967',
+          callback: function(value) {
+            return '₱' + value;
+          }
+        }
+      },
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967'
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: {
+            family: "'Lilita One'",
+            size: 14
+          },
+          color: '#5e3967',
+          padding: 20,
+          usePointStyle: true,
+          pointStyle: 'rect'
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(94, 57, 103, 0.8)',
+        titleFont: {
+          family: "'Lilita One'",
+          size: 16
+        },
+        bodyFont: {
+          family: "'Lilita One'",
+          size: 14
+        },
+        callbacks: {
+          label: function(context) {
+            const label = context.dataset.label || '';
+            const value = context.raw || 0;
+            return `${label}: ₱${value}`;
+          }
+        }
+      }
+    },
+    animation: {
+      duration: 1500,
+      easing: 'easeOutQuart'
+    }
+  };
   // Handlers for create dialog
   const handleOpenDialog = (type) => {
     setDialogType(type);
@@ -303,22 +444,32 @@ useEffect(() => {
 
   const handleFormChange = (field, value) => {
     setFormValues(prev => ({ ...prev, [field]: value }));
+  
+    // If the category is changed to "Others", clear the subcategory
+    if (field === "category" && value === "Others") {
+      setFormValues(prev => ({ ...prev, subcategory: "", customSubcategory: "" }));
+    }
+  
+    // If the subcategory is changed to "Others", clear the custom subcategory
+    if (field === "subcategory" && value === "Others") {
+      setFormValues(prev => ({ ...prev, customSubcategory: "" }));
+    }
   };
-
   const handleCreateRecord = async () => {
     // Ensure numeric values are properly parsed
     const newRecord = {
-      category: formValues.subcategory === "Others" ? formValues.customSubcategory : formValues.subcategory,
+      category: formValues.category === "Others" ? formValues.customSubcategory : formValues.category,
+      subcategory: formValues.subcategory === "Others" ? formValues.customSubcategory : formValues.subcategory,
       expected: parseFloat(formValues.expected) || 0,
-      actual: parseFloat(formValues.actual) || 0, 
+      actual: parseFloat(formValues.actual) || 0,
       done: false,
       ...(dialogType === "expenses" || dialogType === "bills" ? { due: formValues.due } : {}),
     };
-
+  
     try {
       // Convert selectedMonth to its corresponding index (1-indexed)
       const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
-
+  
       // Send request to create tracker
       const response = await axios.post(`http://127.0.0.1:8000/monthly_tracker/create-tracker`, {
         year: currentYear,
@@ -326,14 +477,14 @@ useEffect(() => {
         user_id: userId,
         [dialogType]: [newRecord], // Ensure the new record is included in the correct array
       });
-
+  
       if (response.data.success) {
         // Refetch data after creation
         fetchFinanceData(parseInt(currentYear), monthIndex);
       } else {
         console.error("Failed to create new record:", response.data);
       }
-
+  
       setOpenDialog(false);
       // Refetch data after closing the dialog
       fetchFinanceData(parseInt(currentYear), monthIndex);
@@ -341,7 +492,7 @@ useEffect(() => {
       console.error("Error creating new record:", error);
     }
   };
-
+  
   const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth) + 1;
 
   return (
@@ -440,12 +591,14 @@ useEffect(() => {
           <Divider sx={{ my: 5 }} />
 
     
-        {/* Financial Summary (Total Income, Expenses, Savings) */}
+        {/* Financial Summary (Total Income, Expenses, Savings, Remaining Budget, Personal Savings) */}
         <Box sx={{ flex: 2, fontFamily: "'Lilita One'", pr: 4 }}>
           {[
-            { label: "Total Income", amount: hasData ? totalIncome : 0, color: "#6a0dad", icon: <AttachMoney fontSize="large" /> },
+            { label: "Total Income", amount: hasData ? totalIncome : 0, color: "#6a0dad", icon: <Money fontSize="large" /> },
             { label: "Total Expenses", amount: hasData ? totalCombinedExpenses : 0, color: "#c2185b", icon: <ShoppingCart fontSize="large" /> },
-            { label: "Savings", amount: hasData ? totalsavings : 0, color: "#4caf50", icon: <Savings fontSize="large" /> }
+            { label: "Savings", amount: hasData ? totalsavings : 0, color: "#4caf50", icon: <Savings fontSize="large" /> },
+            { label: "Remaining Budget", amount: hasData ? (totalIncome - totalCombinedExpenses) : 0, color: "#ff9800", icon: <AccountBalanceWallet fontSize="large" /> },
+            { label: "Personal Savings", amount: hasData ? savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0) : 0, color: "#3f51b5", icon: <AssuredWorkloadIcon fontSize="large" /> }
           ].map((item, index) => (
             <Paper key={index} elevation={3} sx={{ display: "flex", alignItems: "center", p: 2, my: 2, borderRadius: 5, backgroundColor: "#f3e5f5", width: "100%" }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -456,7 +609,14 @@ useEffect(() => {
                   </Typography>
                   <LinearProgress
                     variant="determinate"
-                    value={item.label === "Total Expenses" ? (totalIncome ? (totalCombinedExpenses / totalIncome) * 100 : 0) : (item.label === "Savings" ? (totalsavings ? (totalsavings / totalsavings) * 100 : 0) : 100)}
+                    value={
+                      item.label === "Total Expenses" ? (totalIncome ? (totalCombinedExpenses / totalIncome) * 100 : 0) :
+                      item.label === "Savings" ? (totalsavings ? (totalsavings / totalsavings) * 100 : 0) :
+                      item.label === "Total Income" ? (totalIncome ? (totalIncome / totalIncome) * 100 : 0) :
+                      item.label === "Remaining Budget" ? (totalIncome ? ((totalIncome - totalCombinedExpenses) / totalIncome) * 100 : 0) :
+                      item.label === "Personal Savings" ? (totalIncome ? (savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0) / totalIncome) * 100 : 0) :
+                      100
+                    }
                     sx={{ width: "100%", height: 8, borderRadius: 2, bgcolor: "#d1c4e9" }}
                   />
                 </Box>
@@ -522,6 +682,14 @@ useEffect(() => {
                       <TableCell colSpan={4} align="center">No data recorded</TableCell>
                     </TableRow>
                   )}
+                  {hasData && incomeData.some(item => item.done) && (
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell>₱{incomeData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
+                      <TableCell>₱{incomeData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -542,7 +710,7 @@ useEffect(() => {
                     <TableCell>Category</TableCell>
                     <TableCell>Expected</TableCell>
                     <TableCell>Actual</TableCell>
-                    <TableCell>Due Date</TableCell>
+                    <TableCell>Payment Date</TableCell>
                     <TableCell>Done</TableCell>
                   </TableRow>
                 </TableHead>
@@ -551,7 +719,7 @@ useEffect(() => {
                     <TableRow key={index}>
                       <TableCell>{item.category}</TableCell>
                       <TableCell>₱{item.expected}</TableCell>
-                      <TableCell>₱{item.actual}</TableCell>  
+                      <TableCell>₱{item.actual}</TableCell>
                       <TableCell>{item.due}</TableCell>
                       <TableCell>
                         <Checkbox
@@ -563,6 +731,15 @@ useEffect(() => {
                   )) : (
                     <TableRow>
                       <TableCell colSpan={5} align="center">No data recorded</TableCell>
+                    </TableRow>
+                  )}
+                  {hasData && expensesData.some(item => item.done) && (
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell>₱{expensesData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
+                      <TableCell>₱{expensesData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -588,7 +765,7 @@ useEffect(() => {
                     <TableCell>Category</TableCell>
                     <TableCell>Expected</TableCell>
                     <TableCell>Actual</TableCell>
-                    <TableCell>Due Date</TableCell>
+                    <TableCell>Payment Date</TableCell>
                     <TableCell>Done</TableCell>
                   </TableRow>
                 </TableHead>
@@ -608,7 +785,16 @@ useEffect(() => {
                     </TableRow>
                   )) : (
                     <TableRow>
-                      <TableCell colSpan={4} align="center">No data recorded</TableCell>
+                      <TableCell colSpan={5} align="center">No data recorded</TableCell>
+                    </TableRow>
+                  )}
+                  {hasData && billsData.some(item => item.done) && (
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell>₱{billsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
+                      <TableCell>₱{billsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
                     </TableRow>
                   )}
                 </TableBody>
@@ -652,6 +838,14 @@ useEffect(() => {
                       <TableCell colSpan={4} align="center">No data recorded</TableCell>
                     </TableRow>
                   )}
+                  {hasData && savingsData.some(item => item.done) && (
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
+                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -661,107 +855,106 @@ useEffect(() => {
 
 
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-  <DialogTitle sx={{ fontFamily: "'Lilita One'" }}>
-    {/* Create New {dialogType.charAt(0).toUpperCase() + dialogType.slice(1)} Record */}
-    Create New Record
-  </DialogTitle>
-  <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-    {(dialogType === "expenses" || dialogType === "bills" || dialogType === "savings" || dialogType === "income") ? (
-      <>
-        <FormControl fullWidth>
-          <InputLabel>Category</InputLabel>
-          <Select
-            value={formValues.category}
-            onChange={(e) => handleFormChange("category", e.target.value)}
-            label="Category"
-          >
-            {Object.keys(categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)]).map((category) => (
-              <MenuItem key={category} value={category}>
-                {category}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {formValues.category === "Others" ? (
-          <TextField
-            label="Custom Subcategory"
-            value={formValues.customSubcategory}
-            onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
-            fullWidth
-            sx={{ fontFamily: "'Lilita One'" }}
-          />
-        ) : (
-          formValues.category && (
-            <FormControl fullWidth>
-              <InputLabel>Subcategory</InputLabel>
-              <Select
-                value={formValues.subcategory}
-                onChange={(e) => handleFormChange("subcategory", e.target.value)}
-                label="Subcategory"
-              >
-                {categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)][formValues.category].map((subcategory) => (
-                  <MenuItem key={subcategory} value={subcategory}>
-                    {subcategory}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )
-        )}
-        {formValues.subcategory === "Others" && (
-          <TextField
-            label="Custom Subcategory"
-            value={formValues.customSubcategory}
-            onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
-            fullWidth
-            sx={{ fontFamily: "'Lilita One'" }}
-          />
-        )}
-      </>
-    ) : (
+    <DialogTitle sx={{ fontFamily: "'Lilita One'" }}>
+      Create New Record
+    </DialogTitle>
+    <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {(dialogType === "expenses" || dialogType === "bills" || dialogType === "savings" || dialogType === "income") ? (
+        <>
+          <FormControl fullWidth>
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={formValues.category}
+              onChange={(e) => handleFormChange("category", e.target.value)}
+              label="Category"
+            >
+              {Object.keys(categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)]).map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {formValues.category === "Others" ? (
+            <TextField
+              label="Custom Category"
+              value={formValues.customSubcategory}
+              onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
+              fullWidth
+              sx={{ fontFamily: "'Lilita One'" }}
+            />
+          ) : (
+            formValues.category && (
+              <FormControl fullWidth>
+                <InputLabel>Subcategory</InputLabel>
+                <Select
+                  value={formValues.subcategory}
+                  onChange={(e) => handleFormChange("subcategory", e.target.value)}
+                  label="Subcategory"
+                >
+                  {categories[dialogType.charAt(0).toUpperCase() + dialogType.slice(1)][formValues.category].map((subcategory) => (
+                    <MenuItem key={subcategory} value={subcategory}>
+                      {subcategory}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )
+          )}
+          {formValues.subcategory === "Others" && (
+            <TextField
+              label="Custom Subcategory"
+              value={formValues.customSubcategory}
+              onChange={(e) => handleFormChange("customSubcategory", e.target.value)}
+              fullWidth
+              sx={{ fontFamily: "'Lilita One'" }}
+            />
+          )}
+        </>
+      ) : (
+        <TextField
+          label="Category"
+          value={formValues.category}
+          onChange={(e) => handleFormChange("category", e.target.value)}
+          fullWidth
+          sx={{ fontFamily: "'Lilita One'" }}
+        />
+      )}
       <TextField
-        label="Category"
-        value={formValues.category}
-        onChange={(e) => handleFormChange("category", e.target.value)}
+        label="Expected"
+        type="number"
+        value={formValues.expected}
+        onChange={(e) => handleFormChange("expected", e.target.value)}
         fullWidth
         sx={{ fontFamily: "'Lilita One'" }}
       />
-    )}
-    <TextField
-      label="Expected"
-      type="number"
-      value={formValues.expected}
-      onChange={(e) => handleFormChange("expected", e.target.value)}
-      fullWidth
-      sx={{ fontFamily: "'Lilita One'" }}
-    />
-    <TextField
-      label="Actual"
-      type="number"
-      value={formValues.actual}
-      onChange={(e) => handleFormChange("actual", e.target.value)}
-      fullWidth
-      sx={{ fontFamily: "'Lilita One'" }}
-    />
-    {(dialogType === "expenses" || dialogType === "bills") && (
       <TextField
-        label="Due Date"
-        type="date"
-        value={formValues.due}
-        onChange={(e) => handleFormChange("due", e.target.value)}
+        label="Actual"
+        type="number"
+        value={formValues.actual}
+        onChange={(e) => handleFormChange("actual", e.target.value)}
         fullWidth
         sx={{ fontFamily: "'Lilita One'" }}
-        InputLabelProps={{
-          shrink: true,
-        }}
       />
-    )}
-  </DialogContent>
-  <DialogActions>
-    <Button onClick={handleCloseDialog} sx={{ fontFamily: "'Lilita One'" }}>Cancel</Button>
-    <Button onClick={handleCreateRecord} variant="contained" sx={{ fontFamily: "'Lilita One'" }}>Create</Button>
-  </DialogActions>
-</Dialog>
+      {(dialogType === "expenses" || dialogType === "bills") && (
+        <TextField
+          label="Due Date"
+          type="date"
+          value={formValues.due}
+          onChange={(e) => handleFormChange("due", e.target.value)}
+          fullWidth
+          sx={{ fontFamily: "'Lilita One'" }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+      )}
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleCloseDialog} sx={{ fontFamily: "'Lilita One'" }}>Cancel</Button>
+      <Button onClick={handleCreateRecord} variant="contained" sx={{ fontFamily: "'Lilita One'" }}>Create</Button>
+    </DialogActions>
+  </Dialog>
 
 <Dialog
   open={errorDialogOpen}
