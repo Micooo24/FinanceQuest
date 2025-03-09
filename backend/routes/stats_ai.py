@@ -78,7 +78,7 @@ async def analyze_stats(user_id: str):
         
         NOTE IF YOU EVER TO MENTION MONEY USE PHILIPPINE PESO CURRENCY SIGN AND THEN USE PROPER TERMS LIKE QUEST 1 INSTEAD of q1_outcome,
         its Side Quest of sq and Quest for q ... for the medal just use the Bronze Medal or Silver Medal or Gold Medal not bronze_planner...
-        dont send me the ###3 something, dont put hastags just do it normally
+        dont send me the ###3 something, dont put hastags just do it normally, and dont put or use the location of the user its unnecessary.
         """
         
         # logger.info(f"AI Prompt: {prompt}")  # Log the AI prompt
