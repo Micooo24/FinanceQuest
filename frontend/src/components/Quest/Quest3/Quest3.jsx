@@ -216,8 +216,8 @@ const Quest3 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
       {currentModal === '9G' && <Modal9G onContinue={() => setCurrentModal('10')} />}
       {currentModal === '10' && <Modal10 onContinue={handleNextModal} />}
       {currentModal === '11' && <Modal11 onChoose={handleInvestmentChoice} />}
-      {currentModal === '12' && <Modal12 onBack={() => setCurrentModal('11')} onContinue={handleNextModal} />}
-      {currentModal === '13' && <Modal13 onBack={() => setCurrentModal('11')} onContinue={handleNextModal} />}
+      {currentModal === '12' && <Modal12 onBack={() => setCurrentModal('11')} onComplete={fetchPlayerStats} />}
+      {currentModal === '13' && <Modal13 onBack={() => setCurrentModal('11')} onComplete={fetchPlayerStats} />}
       {currentModal === '14' && <Modal14 onBack={() => setCurrentModal('11')} onComplete={handleModal14Complete} />}
     </>
   );
