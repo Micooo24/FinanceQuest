@@ -180,7 +180,7 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
     if new_money < 0:
         raise HTTPException(status_code=400, detail="Insufficient funds")
     
-    if request.total_spent <= 2000:
+    if request.total_spent <= 1000:
         new_points = stats["points"] + 10
         rewards = [
             "Maintains financial stability",

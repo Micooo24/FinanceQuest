@@ -16,7 +16,7 @@ const storeItems = [
 
 const Modal8GroceryGame = ({ onCheckout, setPlayerStats }) => {
   const [cart, setCart] = useState({});
-  const budget = 2000;
+  const budget = 1000;
 
   const handleQuantityChange = (item, amount) => {
     setCart((prevCart) => {
@@ -35,7 +35,7 @@ const Modal8GroceryGame = ({ onCheckout, setPlayerStats }) => {
   }, 0);
 
   const handleCheckout = () => {
-    if (totalSpent === 500) {
+    if (totalSpent < 300) {
       toast.error('You must select enough items before checking out.');
       return;
     }
