@@ -164,11 +164,10 @@ const GameScreen = ({ navigation }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FFFAFA',
   },
   container: {
     flex: 1,
@@ -179,9 +178,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: moderateScale(20),
     padding: moderateScale(15),
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#FFFFFF',
     borderRadius: moderateScale(15),
-    elevation: 5,
+    elevation: 4,
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   dayContainer: {
     flexDirection: 'row',
@@ -190,7 +198,7 @@ const styles = StyleSheet.create({
   dayText: {
     fontSize: moderateScale(16),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginLeft: moderateScale(8),
   },
   balanceContainer: {
@@ -200,59 +208,85 @@ const styles = StyleSheet.create({
   balanceText: {
     fontSize: moderateScale(16),
     fontWeight: 'bold',
-    color: '#00cac9',
+    color: '#8F7BE8',
     marginLeft: moderateScale(8),
   },
   jobInfoContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     borderRadius: moderateScale(12),
     padding: moderateScale(15),
     marginBottom: moderateScale(20),
     borderLeftWidth: 3,
-    borderLeftColor: '#9370DB',
+    borderLeftColor: '#8F7BE8',
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
   jobTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(5),
   },
   jobPay: {
     fontSize: moderateScale(14),
-    color: '#BDBDBD',
+    color: '#555555',
   },
   scenarioCard: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     borderRadius: moderateScale(15),
     padding: moderateScale(20),
     marginBottom: moderateScale(20),
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   scenarioTitle: {
     fontSize: moderateScale(20),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(12),
     textAlign: 'center',
   },
   questionText: {
     fontSize: moderateScale(18),
-    color: '#BDBDBD',
+    color: '#555555',
     marginBottom: moderateScale(25),
     lineHeight: moderateScale(26),
   },
   decisionButton: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: '#F9F6FF',
     padding: moderateScale(16),
     borderRadius: moderateScale(12),
     marginBottom: moderateScale(12),
     borderWidth: 1,
-    borderColor: 'rgba(147, 112, 219, 0.3)',
+    borderColor: 'rgba(143, 123, 232, 0.3)',
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   decisionContent: {
     flexDirection: 'column',
   },
   decisionText: {
-    color: '#F9F6FF',
+    color: '#333333',
     fontSize: moderateScale(16),
     marginBottom: moderateScale(10),
   },
@@ -261,19 +295,29 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   costText: {
-    color: '#00cac9',
+    color: '#8F7BE8',
     fontSize: moderateScale(14),
     fontWeight: 'bold',
   },
   resultContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     borderRadius: moderateScale(15),
     padding: moderateScale(20),
     marginTop: moderateScale(20),
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.3)',
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   resultText: {
     fontSize: moderateScale(18),
-    color: '#F9F6FF',
+    color: '#333333',
     textAlign: 'center',
   },
 });

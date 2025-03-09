@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import questions from "./Questions";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AssessmentResults from "./AssessmentResults"; // Ensure this import is correct
+import AssessmentResults from "./AssessmentResults"; 
 import baseURL from "../../../assets/common/baseurl";
 
 const InvestmentScreen = ({ navigation }) => {
@@ -254,7 +254,12 @@ const InvestmentScreen = ({ navigation }) => {
             {"\n"}• You cannot go back to a previous question once you proceed.
             {"\n"}• Keep an eye on the timer to stay within the 2-minutes limit.
           </Text>
-          <Button title="SKIP" onPress={handleSkip} />
+          <TouchableOpacity 
+            style={styles.skipButton} 
+            onPress={handleSkip}
+          >
+            <Text style={styles.skipButtonText}>SKIP</Text>
+          </TouchableOpacity>
         </View>
       ) : gameOver ? (
         <AssessmentResults
@@ -294,6 +299,11 @@ const InvestmentScreen = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               ))}
+              {feedback && (
+                <View style={styles.feedbackContainer}>
+                  <Text style={styles.feedbackText}>{feedback.message}</Text>
+                </View>
+              )}
             </View>
           )}
         </View>
@@ -306,66 +316,130 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#FFFAFA", // Snow White primary color
   },
   howToPlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFAFA",
+    padding: 20,
+    borderRadius: 15,
   },
   howToPlayText: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
     marginBottom: 20,
+    color: "#333333",
+    textAlign: "center",
   },
   howToPlayInstructions: {
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 30,
+    color: "#555555",
+    lineHeight: 24,
+  },
+  skipButton: {
+    backgroundColor: "#8F7BE8", 
+    paddingVertical: 12, 
+    paddingHorizontal: 30, 
+    borderRadius: 25,
+    elevation: 4,
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  skipButtonText: {
+    color: "white", 
+    fontWeight: "bold", 
+    fontSize: 16
   },
   gameContainer: {
     flex: 1,
     justifyContent: "center",
+    backgroundColor: "#FFFAFA",
   },
   timer: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+    color: "#8F7BE8", // Periwinkle Violet secondary color
   },
   points: {
     fontSize: 18,
     textAlign: "center",
     marginBottom: 20,
+    color: "#333333",
   },
   questionContainer: {
     marginBottom: 20,
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: "#8F7BE8",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "rgba(143, 123, 232, 0.2)",
   },
   category: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#8F7BE8", // Periwinkle Violet for category
   },
   question: {
     fontSize: 16,
     marginBottom: 20,
+    color: "#333333",
+    lineHeight: 24,
   },
   optionButton: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: "#ddd",
-    borderRadius: 5,
+    padding: 15,
+    marginVertical: 8,
+    backgroundColor: "#F9F6FF", // Light periwinkle background
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(143, 123, 232, 0.3)",
   },
   optionText: {
     fontSize: 16,
+    color: "#555555",
   },
   correctOption: {
-    backgroundColor: "green",
+    backgroundColor: "#D4F8D4", // Light green
+    borderColor: "#4CAF50",
+    borderWidth: 1,
   },
   incorrectOption: {
-    backgroundColor: "red",
+    backgroundColor: "#FFE5E5", // Light red
+    borderColor: "#FF6B6B",
+    borderWidth: 1,
   },
   showCorrectOption: {
-    backgroundColor: "green",
+    backgroundColor: "#D4F8D4", // Light green
+    borderColor: "#4CAF50",
+    borderWidth: 1,
+  },
+  feedbackContainer: {
+    marginTop: 15,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: "#F9F6FF",
+    borderLeftWidth: 3,
+    borderLeftColor: "#8F7BE8",
+  },
+  feedbackText: {
+    color: "#333333",
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
 

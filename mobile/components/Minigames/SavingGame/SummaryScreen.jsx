@@ -45,13 +45,13 @@ const SummaryScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.safeArea}>
-      <StatusBar backgroundColor="#121212" barStyle="light-content" />
+      <StatusBar backgroundColor="#FFFAFA" barStyle="dark-content" />
       <ScrollView 
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.headerContainer}>
-          <FontAwesome5 name="chart-bar" size={moderateScale(28)} color="#9370DB" />
+        <FontAwesome5 name="chart-bar" size={moderateScale(28)} color="#8F7BE8" />
           <Text style={styles.header}>Financial Summary</Text>
         </View>
 
@@ -79,39 +79,39 @@ const SummaryScreen = ({ route, navigation }) => {
 
         <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>Weekly Expenses</Text>
-          <BarChart
-            data={{
-              labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-              datasets: [
-                {
-                  data: weeklyExpenses,
-                },
-              ],
-            }}
-            width={screenWidth}
-            height={220}
-            yAxisLabel="₱"
-            chartConfig={{
-              backgroundColor: "#1E1E1E",
-              backgroundGradientFrom: "#1E1E1E",
-              backgroundGradientTo: "#1E1E1E",
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(147, 112, 219, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: "6",
-                strokeWidth: "2",
-                stroke: "#9370DB",
-              },
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
+                        <BarChart
+                data={{
+                  labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+                  datasets: [
+                    {
+                      data: weeklyExpenses,
+                    },
+                  ],
+                }}
+                width={screenWidth}
+                height={220}
+                yAxisLabel="₱"
+                chartConfig={{
+                  backgroundColor: "#FFFFFF",
+                  backgroundGradientFrom: "#FFFFFF",
+                  backgroundGradientTo: "#F9F6FF",
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(143, 123, 232, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                  propsForDots: {
+                    r: "6",
+                    strokeWidth: "2",
+                    stroke: "#8F7BE8",
+                  },
+                }}
+                style={{
+                  marginVertical: 8,
+                  borderRadius: 16,
+                }}
+              />
         </View>
 
         {analysis && (
@@ -135,11 +135,10 @@ const SummaryScreen = ({ route, navigation }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FFFAFA',
   },
   scrollContainer: {
     alignItems: "center",
@@ -156,137 +155,177 @@ const styles = StyleSheet.create({
   header: {
     fontSize: moderateScale(28),
     fontWeight: "bold",
-    color: '#F9F6FF',
+    color: '#333333',
     marginLeft: moderateScale(12),
   },
   balanceCard: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     alignItems: 'center',
     marginBottom: moderateScale(24),
     elevation: 5,
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   balanceLabel: {
     fontSize: moderateScale(16),
-    color: '#BDBDBD',
+    color: '#555555',
     marginBottom: moderateScale(8),
   },
   balanceAmount: {
     fontSize: moderateScale(36),
     fontWeight: 'bold',
-    color: '#00cac9',
+    color: '#8F7BE8',
     marginBottom: moderateScale(12),
   },
   weeklyBalancesContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
     alignItems: 'center',
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   weeklyBalancesTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
   weeklyBalanceText: {
     fontSize: moderateScale(16),
-    color: '#BDBDBD',
+    color: '#555555',
     marginBottom: moderateScale(8),
   },
   totalExpensesContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
     alignItems: 'center',
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   totalExpensesTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
   totalExpensesAmount: {
     fontSize: moderateScale(36),
     fontWeight: 'bold',
-    color: '#FF5252',
+    color: '#FF6B6B',
   },
   averageExpensesContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
     alignItems: 'center',
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   averageExpensesTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
   averageExpensesAmount: {
     fontSize: moderateScale(36),
     fontWeight: 'bold',
-    color: '#FF5252',
+    color: '#FF6B6B',
   },
   chartContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
     alignItems: 'center',
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   chartTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
   analysisContainer: {
-    backgroundColor: '#2D2D2D',
+    backgroundColor: '#FFFFFF',
     width: '100%',
     padding: moderateScale(20),
     borderRadius: moderateScale(16),
     marginBottom: moderateScale(24),
     elevation: 5,
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 123, 232, 0.2)',
   },
   analysisTitle: {
     fontSize: moderateScale(18),
     fontWeight: 'bold',
-    color: '#F9F6FF',
+    color: '#333333',
     marginBottom: moderateScale(16),
     textAlign: 'center',
   },
   analysisText: {
     fontSize: moderateScale(16),
-    color: '#BDBDBD',
+    color: '#555555',
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#9370DB",
+    backgroundColor: "#8F7BE8",
     padding: moderateScale(16),
     borderRadius: moderateScale(14),
     width: '80%',
     marginTop: moderateScale(12),
     elevation: 5,
+    shadowColor: "#8F7BE8",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   buttonText: {
     color: "white",
