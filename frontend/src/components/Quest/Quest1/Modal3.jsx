@@ -24,6 +24,8 @@ const Modal3BoardingHouse = ({ onContinue }) => {
       slotProps={{
         backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

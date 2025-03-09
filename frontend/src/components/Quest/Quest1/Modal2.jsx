@@ -15,7 +15,6 @@ const Modal2InnerThoughts = ({ onContinue }) => {
     const fetchUsername = async () => {
       const authToken = localStorage.getItem('authToken');
       const email = localStorage.getItem('email'); // Assuming you store the user's email in localStorage
-   // Assuming you store the user's email in localStorage
       try {
         const userResponse = await axios.get("http://127.0.0.1:8000/admin/get-users", {
           headers: {
@@ -43,6 +42,8 @@ const Modal2InnerThoughts = ({ onContinue }) => {
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{ backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } } }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

@@ -44,6 +44,8 @@ const Modal7A_PayRent = ({ onContinue }) => {
       slotProps={{
         backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

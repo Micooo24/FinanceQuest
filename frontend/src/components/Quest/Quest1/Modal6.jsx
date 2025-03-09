@@ -36,6 +36,8 @@ const Modal6RentDecision = ({ onSelectChoice }) => {
       slotProps={{
         backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

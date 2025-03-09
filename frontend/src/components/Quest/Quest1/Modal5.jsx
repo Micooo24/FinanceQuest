@@ -42,6 +42,8 @@ const Modal5PlayerReaction = ({ onContinue }) => {
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{ backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } } }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

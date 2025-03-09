@@ -22,6 +22,8 @@ const Welcome = ({ onContinue }) => { // Use onContinue instead of onClose
       slotProps={{
         backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box
