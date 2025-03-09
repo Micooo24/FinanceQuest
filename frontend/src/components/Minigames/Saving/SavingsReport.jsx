@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
-import fqlogo from "/assets/TUPLogo.png";
+import fqlogo from "/assets/financial.jpg";
 // Register fonts
 Font.register({
   family: "Lilita One",
