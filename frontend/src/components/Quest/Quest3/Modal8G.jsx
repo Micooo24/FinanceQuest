@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Fade, Backdrop, Modal } from "@mui/material";
 import { q3BaristaDecision } from "../../Utils/decisions"; // Adjust the import path as necessary
+import { toast } from 'react-hot-toast';
 
 const Modal8G = ({ onChoose, updateStatsCallback }) => {
   const [showModal, setShowModal] = useState(true);
@@ -12,8 +13,12 @@ const Modal8G = ({ onChoose, updateStatsCallback }) => {
     }
     if (option === "acceptJob") {
       await q3BaristaDecision("yes", updateStatsCallback);
+      toast.success("You received ₱100 for your first salary");
+      toast.success("Points earned: 15");
     } else if (option === "declineJob") {
       await q3BaristaDecision("no", updateStatsCallback);
+      toast.error("You have no job");
+      toast.error("No points earned");
     }
   };
 

@@ -18,7 +18,7 @@ const Modal25 = ({ onChoose, setPlayerStats }) => {
     // Toast notifications based on the choice
     if (choice === 'withdraw') {
       toast(`You chose to withdraw it. Money spent: ₱0`);
-      toast('-5 points');
+      toast('+5 points');
     } else if (choice === 'deposit') {
       toast(`You chose to deposit it. Money spent: ₱${moneySpent}`);
       toast('+15 points');
