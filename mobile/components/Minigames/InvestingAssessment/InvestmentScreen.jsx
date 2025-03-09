@@ -3,6 +3,8 @@ import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
 import questions from "./Questions";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AssessmentResults from "./AssessmentResults"; // Ensure this import is correct
+import baseURL from "../../../assets/common/baseurl";
 
 const InvestmentScreen = ({ navigation }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
