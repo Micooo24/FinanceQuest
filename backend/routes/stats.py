@@ -365,7 +365,7 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         
         deposit_amount = stats["q2_outcome"]["money_spent"]
         new_money = stats["money"] + deposit_amount
-        points_earned = -5
+        points_earned = 5
         update_fields["money"] = new_money
         update_fields["points"] = stats["points"] + points_earned
         rewards = [
