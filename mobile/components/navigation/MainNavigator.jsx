@@ -9,7 +9,7 @@ import InvestingBlog from "../LandingPage/InvestingBlog";
 import SavingBlog from "../LandingPage/SavingBlog";
 import Home from "../Homepage/Home";
 import AuthNavigator from "./AuthNavigator";
-import SavingGameNavigator from "./SavingGameNavigator"
+import SavingGameNavigator from "./SavingGameNavigator";
 import AssessmentNavigator from "./AssessmentNavigator";
 
 const Stack = createNativeStackNavigator();

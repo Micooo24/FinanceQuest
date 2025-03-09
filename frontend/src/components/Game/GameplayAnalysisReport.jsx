@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
-import fqlogo from "/assets/financial.jpg";
+import fqlogo from "/assets/TUPLogo.png";
 
 // Register fonts
 Font.register({
@@ -109,7 +109,7 @@ const GameplayReport = ({ playerData, analysis }) => {
           <Watermark />
           <View style={styles.header}>
             <Image style={styles.logo} src={tuplogo} />
-            <Text style={styles.heading}>FINANCE QUEST GAMEPLAY REPORT</Text>
+            <Text style={styles.heading}>FINANCE TRACKER REPORT</Text>
             <Image style={styles.logo} src={fqlogo} />
           </View>
   
@@ -170,7 +170,7 @@ const GameplayReport = ({ playerData, analysis }) => {
           {/* AI Analysis */}
           <View style={styles.section}>
             <Text style={styles.heading}>FinanceQuest Feedback</Text>
-            <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.3, marginBottom: 0 }]}>{analysis}</Text>
+            <Text style={[styles.text, { textAlign: "justify", lineHeight: 1.2, marginBottom: 0 }]}>{analysis}</Text>
             <Watermark />
           </View>
         </Page>

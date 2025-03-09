@@ -74,7 +74,8 @@ async def analyze_stats(user_id: str):
         4. Suggestions for Improvement:
         5. Actionable Recommendations:
         6. Medals Earned:
-        7. Conclusion:
+        7. Rewards and Consequences:
+        8. Conclusion:
         
         NOTE IF YOU EVER TO MENTION MONEY USE PHILIPPINE PESO CURRENCY SIGN AND THEN USE PROPER TERMS LIKE QUEST 1 INSTEAD of q1_outcome,
         its Side Quest of sq and Quest for q ... for the medal just use the Bronze Medal or Silver Medal or Gold Medal not bronze_planner...
