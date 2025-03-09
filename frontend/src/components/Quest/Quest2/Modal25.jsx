@@ -12,12 +12,15 @@ const Modal25 = ({ onChoose, setPlayerStats }) => {
     // Call sq2Decision with the choice
     const response = await sq2Decision(choice, setPlayerStats);
 
+    // Handle the money_spent value returned from the backend
+    const moneySpent = response.sq2_outcome.money_spent;
+
     // Toast notifications based on the choice
     if (choice === 'withdraw') {
-      toast('You chose to withdraw it');
+      toast(`You chose to withdraw it. Money spent: ₱0`);
       toast('-5 points');
     } else if (choice === 'deposit') {
-      toast('You chose to deposit it');
+      toast(`You chose to deposit it. Money spent: ₱${moneySpent}`);
       toast('+15 points');
     }
 
@@ -37,6 +40,8 @@ const Modal25 = ({ onChoose, setPlayerStats }) => {
       slotProps={{
         backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

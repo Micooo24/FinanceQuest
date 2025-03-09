@@ -328,7 +328,6 @@ async def q2_decision(request: Q2DecisionRequest, current_user: dict = Depends(g
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "q2_outcome": q2_outcome
     }
-    
 @router.put("/decision/sq2")
 async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
@@ -354,6 +353,12 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         ]
         consequences = []
         chosen_money = 0
+        sq2_outcome = {
+            "rewards": rewards,
+            "consequences": consequences,
+            "money_spent": chosen_money,
+            "points_earned": points_earned
+        }
     elif request.decision == "withdraw":
         if "q2_outcome" not in stats or "money_spent" not in stats["q2_outcome"]:
             raise HTTPException(status_code=400, detail="No deposit amount found from Q2 decision")
@@ -372,13 +377,13 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
             "Increased risk of bad spending habits"
         ]
         chosen_money = deposit_amount
+        sq2_outcome = {
+            "rewards": rewards,
+            "consequences": consequences,
+            "money_earned": chosen_money,
+            "points_earned": points_earned
+        }
 
-    sq2_outcome = {
-        "rewards": rewards,
-        "consequences": consequences,
-        "money_spent": chosen_money,  # Changed field
-        "points_earned": points_earned
-    }
     update_fields["sq2_outcome"] = sq2_outcome
 
     db["stats"].update_one({"user_id": ObjectId(user_id)}, {"$set": update_fields})
@@ -390,6 +395,10 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         "updatedStats": {**updated_stats, "user_id": str(updated_stats["user_id"])},
         "sq2_outcome": sq2_outcome
     }
+
+
+
+
 
 @router.put("/decision/q3/barista")
 async def q3_barista_decision(request: Q3DecisionRequest, current_user: dict = Depends(get_current_user)):

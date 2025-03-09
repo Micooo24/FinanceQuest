@@ -4,7 +4,7 @@ import { quest2Decision } from '../../Utils/decisions';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
-const Modal23 = ({ onChoose }) => {
+const Modal23 = ({ onChoose, setPlayerStats }) => {
   const [showModal, setShowModal] = useState(true);
   const [currentMoney, setCurrentMoney] = useState(0);
   const [deposit, setDeposit] = useState('');
@@ -78,6 +78,8 @@ const Modal23 = ({ onChoose }) => {
       slotProps={{
         backdrop: { sx: { backgroundColor: "rgba(0, 0, 0, 0.1)" } },
       }}
+      disableBackdropClick
+      disableEscapeKeyDown
     >
       <Fade in={showModal}>
         <Box

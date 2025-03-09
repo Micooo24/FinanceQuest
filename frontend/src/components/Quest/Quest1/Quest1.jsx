@@ -11,7 +11,6 @@ import Modal7A_PayRent from './Modal7A';
 import Modal8A_LandlordResponse from './Modal8A';
 import Modal7B_DelayRent from './Modal7B';
 import Modal8B_LandlordResponse from './Modal8B';
-import ChecklistModal from '../Checklist/ChecklistModal';
 import { Button } from '@mui/material';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { checkProximityToNPC4 } from '../../Utils/proximity';
@@ -20,7 +19,6 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
   const [currentModal, setCurrentModal] = useState(1);
   const [rentDecision, setRentDecision] = useState(null);
   const [isQuest1Completed, setIsQuest1Completed] = useState(false);
-  const [showChecklist, setShowChecklist] = useState(false);
   const [showMeetingLandlordModal, setShowMeetingLandlordModal] = useState(false);
   const [isModal3Completed, setIsModal3Completed] = useState(false);
   const [showTalkToLandlordButton, setShowTalkToLandlordButton] = useState(false);
@@ -114,30 +112,6 @@ const Quest1 = ({ onComplete, setPlayerStats, characterPosition, fetchPlayerStat
           TALK TO LANDLORD
         </Button>
       )}
-
-      {currentModal > 1 && (
-        <Button 
-          onClick={() => setShowChecklist(true)}
-          sx={{ 
-            position: 'fixed', 
-            top: 100, 
-            right: 20, 
-            zIndex: 9999,
-            minWidth: 'auto', 
-            padding: '8px',
-            color: '#fff',
-          }}
-        >
-          <AssignmentTurnedInIcon sx={{ fontSize: 50 }} />
-        </Button>
-      )}
-
-      {/* Checklist Modal */}     
-      <ChecklistModal 
-        open={showChecklist} 
-        onClose={() => setShowChecklist(false)} 
-        isQuest1Completed={isQuest1Completed} 
-      />
     </>
   );
 };
