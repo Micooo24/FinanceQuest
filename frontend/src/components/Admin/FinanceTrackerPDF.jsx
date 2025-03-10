@@ -162,21 +162,6 @@ const FinanceTrackerPDF = ({ user, categories }) => {
         ));
       })}
 
-      {/* Financial Report Page */}
-      <Page size="A4" style={styles.page}>
-        <Watermark />
-        <View style={styles.header}>
-          <Image src="/assets/TUPLogo.png" style={styles.logo} />
-          <Text style={styles.title}>Financial Report Summary</Text>
-          <Image src="/assets/financial.png" style={styles.logo} />
-        </View>
-
-        <View style={styles.reportContainer}>
-          {financialReport.split("\n").map((line, index) => (
-            <Text key={index} style={styles.reportText}>{line}</Text>
-          ))}
-        </View>
-      </Page>
     </Document>
   );
 };

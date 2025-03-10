@@ -79,6 +79,15 @@ const Users = () => {
         setFilteredUsers(filtered);
     }, [searchQuery, users]);
 
+    const handleToggleStatus = async (id) => {
+        try {
+            await axios.put(`http://localhost:8000/admin/toggle-user-status/${id}`);
+            fetchUsers();
+        } catch (error) {
+            console.error("Error updating user status:", error);
+        }
+    };
+
         // Handle pagination
         const handleChangePage = (event, newPage) => {
             setPage(newPage);

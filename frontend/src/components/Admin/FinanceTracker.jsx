@@ -342,12 +342,7 @@ const generateFinancialReport = (user) => {
               </Grid>
 
 
-              <Box sx={{ marginTop: "20px", padding: "20px", bgcolor: "#F7F7FF", borderRadius: "10px", marginBottom: "20px" }}>
-              <h2>Financial Report for {openModal?.username || "User"}</h2>
-              <p style={{ whiteSpace: "pre-line", fontFamily: "'Lora'" }}>
-                {openModal ? generateFinancialReport(openModal) : "Loading financial data..."}
-              </p>
-            </Box>
+              
             </>
           ) : (
             <CategoryTable title={selectedCategory} data={openModal?.categorizedRecords[selectedCategory] || []} />

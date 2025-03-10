@@ -458,7 +458,7 @@ const FinanceTracker = () => {
   const handleCreateRecord = async () => {
     // Ensure numeric values are properly parsed
     const newRecord = {
-      category: formValues.category === "Others" ? formValues.customSubcategory : formValues.category,
+      category: formValues.category === "Others" ? formValues.customSubcategory : formValues.subcategory,
       subcategory: formValues.subcategory === "Others" ? formValues.customSubcategory : formValues.subcategory,
       expected: parseFloat(formValues.expected) || 0,
       actual: parseFloat(formValues.actual) || 0,
