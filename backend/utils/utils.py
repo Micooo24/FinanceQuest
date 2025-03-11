@@ -6,6 +6,7 @@ from config.db import db  # Import the MongoDB database
 from bson import ObjectId
 import logging
 
+
 # Mailtrap
 from config.mailtrap import MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM
 import smtplib
@@ -144,4 +145,5 @@ def send_verification_email(email: str, otp: int):
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to send email")
-   
+    
+
