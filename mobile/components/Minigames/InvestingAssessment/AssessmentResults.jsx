@@ -1,12 +1,27 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
+import InvestingAssessmentPDF from "./InvestingAssessmentPDF";
 
 const screenWidth = Dimensions.get("window").width;
 
-const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, navigation }) => {
+const AssessmentResults = ({
+  points,
+  totalQuestions,
+  resultMessage,
+  aiAnalysis,
+  navigation,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [generatingPDF, setGeneratingPDF] = useState(false);
 
   const correctAnswers = points;
   const incorrectAnswers = totalQuestions - points;
@@ -29,6 +44,29 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
     },
   ];
 
+  const handleGeneratePDF = async () => {
+    setGeneratingPDF(true);
+    try {
+      const result = await InvestingAssessmentPDF(
+        points,
+        totalQuestions,
+        resultMessage,
+        aiAnalysis
+      );
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+    } catch (error) {
+      console.error("PDF Generation Error:", error);
+      Alert.alert(
+        "PDF Generation Failed",
+        "Unable to generate PDF. Please try again later."
+      );
+    } finally {
+      setGeneratingPDF(false);
+    }
+  };
+
   const renderFirstPage = () => (
     <View style={styles.results}>
       <Text style={styles.resultMessage}>{resultMessage}</Text>
@@ -37,30 +75,29 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
       </Text>
       <ScrollView style={styles.analysisContainer}>
         <Text style={styles.analysisTitle}>Category Performance Analysis</Text>
-        {["Investment Basics", "Risk Management", "Market Analysis"].map((category) => {
-          const categoryAnalysis = aiAnalysis
-            .split("\n\n")
-            .find((section) =>
-              section.toLowerCase().includes(category.toLowerCase())
-            );
+        {["Investment Basics", "Risk Management", "Market Analysis"].map(
+          (category) => {
+            const categoryAnalysis = aiAnalysis
+              .split("\n\n")
+              .find((section) =>
+                section.toLowerCase().includes(category.toLowerCase())
+              );
 
-          return (
-            <View key={category} style={styles.categoryContainer}>
-              <Text style={styles.categoryTitle}>{category}</Text>
-              <Text style={styles.categoryText}>
-                {categoryAnalysis
-                  ?.replace(`${category}:`, "")
-                  .replace("AI Analysis:", "")
-                  .trim() || "No analysis available"}
-              </Text>
-            </View>
-          );
-        })}
+            return (
+              <View key={category} style={styles.categoryContainer}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <Text style={styles.categoryText}>
+                  {categoryAnalysis
+                    ?.replace(`${category}:`, "")
+                    .replace("AI Analysis:", "")
+                    .trim() || "No analysis available"}
+                </Text>
+              </View>
+            );
+          }
+        )}
       </ScrollView>
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => setCurrentPage(2)}
-      >
+      <TouchableOpacity style={styles.button} onPress={() => setCurrentPage(2)}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
     </View>
@@ -98,27 +135,44 @@ const AssessmentResults = ({ points, totalQuestions, resultMessage, aiAnalysis, 
         <Text style={styles.summaryTitle}>Summary</Text>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Correct Answers:</Text>
-          <Text style={[styles.summaryValue, {color: "#4CAF50"}]}>{correctAnswers}</Text>
+          <Text style={[styles.summaryValue, { color: "#4CAF50" }]}>
+            {correctAnswers}
+          </Text>
         </View>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Incorrect Answers:</Text>
-          <Text style={[styles.summaryValue, {color: "#FF6B6B"}]}>{incorrectAnswers}</Text>
+          <Text style={[styles.summaryValue, { color: "#FF6B6B" }]}>
+            {incorrectAnswers}
+          </Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.backButton]} 
+        <TouchableOpacity
+          style={[styles.button, styles.backButton]}
           onPress={() => setCurrentPage(1)}
         >
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('Home')}
+        <TouchableOpacity
+          style={[
+            styles.button,
+            styles.pdfButton,
+            generatingPDF && styles.disabledButton,
+          ]}
+          onPress={handleGeneratePDF}
+          disabled={generatingPDF}
         >
-          <Text style={styles.buttonText}>Back to Home</Text>
+          <Text style={[styles.buttonText, styles.pdfButtonText]}>
+            {generatingPDF ? "Generating..." : "Download PDF"}
+          </Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        style={[styles.button, styles.homeButton]}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Text style={styles.buttonText}>Back to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -246,6 +300,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 20,
     width: "100%",
+    marginBottom: 10,
   },
   button: {
     backgroundColor: "#8F7BE8",
@@ -274,6 +329,23 @@ const styles = StyleSheet.create({
     color: "#8F7BE8",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  pdfButton: {
+    backgroundColor: "#4CAF50",
+    flex: 1,
+    marginLeft: 10,
+  },
+  disabledButton: {
+    backgroundColor: "#CCCCCC",
+    opacity: 0.7,
+  },
+  pdfButtonText: {
+    color: "#FFFFFF",
+  },
+  homeButton: {
+    backgroundColor: "#8F7BE8",
+    width: "100%",
+    marginTop: 10,
   },
 });
 

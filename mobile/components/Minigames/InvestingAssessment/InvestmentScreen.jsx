@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import questions from "./Questions";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import AssessmentResults from "./AssessmentResults"; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AssessmentResults from "./AssessmentResults";
 import baseURL from "../../../assets/common/baseurl";
 
 const InvestmentScreen = ({ navigation }) => {
@@ -229,7 +229,7 @@ const InvestmentScreen = ({ navigation }) => {
   };
 
   const handleNext = () => {
-    navigation.navigate('Assessment_Result', {
+    navigation.navigate("Assessment_Result", {
       points,
       totalQuestions: questions.level1.length,
       resultMessage,
@@ -254,10 +254,7 @@ const InvestmentScreen = ({ navigation }) => {
             {"\n"}• You cannot go back to a previous question once you proceed.
             {"\n"}• Keep an eye on the timer to stay within the 2-minutes limit.
           </Text>
-          <TouchableOpacity 
-            style={styles.skipButton} 
-            onPress={handleSkip}
-          >
+          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
             <Text style={styles.skipButtonText}>SKIP</Text>
           </TouchableOpacity>
         </View>
@@ -268,6 +265,7 @@ const InvestmentScreen = ({ navigation }) => {
           resultMessage={resultMessage}
           aiAnalysis={aiAnalysis}
           navigation={navigation}
+          selectedAnswers={selectedAnswers} // Add this prop
         />
       ) : (
         <View style={styles.gameContainer}>
@@ -275,7 +273,9 @@ const InvestmentScreen = ({ navigation }) => {
           <Text style={styles.points}>Points: {points}/12</Text>
           {currentQuestion && (
             <View style={styles.questionContainer}>
-              <Text style={styles.category}>Category: {currentQuestion.category}</Text>
+              <Text style={styles.category}>
+                Category: {currentQuestion.category}
+              </Text>
               <Text style={styles.question}>{currentQuestion.question}</Text>
               {currentQuestion.options.map((option, index) => (
                 <TouchableOpacity
@@ -340,9 +340,9 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   skipButton: {
-    backgroundColor: "#8F7BE8", 
-    paddingVertical: 12, 
-    paddingHorizontal: 30, 
+    backgroundColor: "#8F7BE8",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
     borderRadius: 25,
     elevation: 4,
     shadowColor: "#8F7BE8",
@@ -351,9 +351,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   skipButtonText: {
-    color: "white", 
-    fontWeight: "bold", 
-    fontSize: 16
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   gameContainer: {
     flex: 1,
