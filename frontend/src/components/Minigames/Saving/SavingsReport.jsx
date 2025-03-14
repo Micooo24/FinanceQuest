@@ -82,7 +82,7 @@ const SavingsReport = ({ balance, weeklyBalances, weeklyExpenses, aiFeedback }) 
   const [userDetails, setUserDetails] = useState({ username: "", email: "" });
   
   // Fetch user details from localStorage
-  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username")
   const email = localStorage.getItem("email");
   const authToken = localStorage.getItem("authToken");
 
@@ -121,7 +121,7 @@ const SavingsReport = ({ balance, weeklyBalances, weeklyExpenses, aiFeedback }) 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={styles.section}>
             <Text style={styles.heading}>User Details</Text>
-            <Text style={styles.text}>User ID: {userId}</Text>
+            <Text style={styles.heading}>Username: {username}</Text>
             <Text style={styles.text}>Date: {currentDate}</Text>
             <Text style={styles.text}>Time: {currentTime}</Text>
           </View>

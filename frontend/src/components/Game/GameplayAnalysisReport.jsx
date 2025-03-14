@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Document, Page, Text, View, StyleSheet, Image, Font } from "@react-pdf/renderer";
 import axios from "axios";
 import tuplogo from "/assets/TUPLogo.png";
-import fqlogo from "/assets/TUPLogo.png";
+import fqlogo from "/assets/financial.jpg";
 
 // Register fonts
 Font.register({
@@ -81,7 +81,7 @@ const GameplayReport = ({ playerData, analysis }) => {
     const [userDetails, setUserDetails] = useState({ username: "", email: "" });
   
     // Fetch user details from localStorage
-    const userId = localStorage.getItem("userId");
+    const username = localStorage.getItem("username")
     const email = localStorage.getItem("email");
     const authToken = localStorage.getItem("authToken");
   
@@ -109,7 +109,7 @@ const GameplayReport = ({ playerData, analysis }) => {
           <Watermark />
           <View style={styles.header}>
             <Image style={styles.logo} src={tuplogo} />
-            <Text style={styles.heading}>FINANCE TRACKER REPORT</Text>
+            <Text style={styles.heading}>FINANCE QUEST GAMEPLAY REPORT</Text>
             <Image style={styles.logo} src={fqlogo} />
           </View>
   
@@ -117,7 +117,7 @@ const GameplayReport = ({ playerData, analysis }) => {
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <View style={styles.section}>
               <Text style={styles.heading}>User Details</Text>
-              <Text style={styles.text}>User ID: {userId}</Text>
+              <Text style={styles.heading}>Username: {username}</Text>
               <Text style={styles.text}>Date: {currentDate}</Text>
               <Text style={styles.text}>Time: {currentTime}</Text>
             </View>

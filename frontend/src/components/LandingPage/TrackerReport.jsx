@@ -184,7 +184,7 @@ const TrackerReport = ({ totalIncome, totalExpenses, totalsavings, incomeData, e
           {pageIndex === 1 && (
             <View style={styles.section}>
               <Text style={styles.heading}>Financial Pattern Analysis</Text>
-              <Text style={[styles.text, {lineHeight: 1.5 }]}>{aiAnalysis}</Text>
+              <Text style={[styles.text, {lineHeight: 1.3 }]}>{aiAnalysis}</Text>
               <Watermark /> {/* Add watermark on this section too */}
             </View>
           )}

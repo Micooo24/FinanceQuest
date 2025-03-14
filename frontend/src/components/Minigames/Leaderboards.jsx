@@ -11,7 +11,7 @@ import axios from 'axios';
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka+One&display=swap" rel="stylesheet"></link>
 
 const Leaderboards = () => {
-  const [activeTab, setActiveTab] = useState('savings');
+  const [activeTab, setActiveTab] = useState('budgeting');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
@@ -48,7 +48,7 @@ const Leaderboards = () => {
           ...prev,
           budgeting: response.data.map((player, index) => ({
             username: player.username,
-            score: player.money,
+            medals_count: player.medals_count,
             rank: index + 1,
           })),
         }));
@@ -111,14 +111,15 @@ const Leaderboards = () => {
 
   const getTabIcon = (tab) => {
     switch (tab) {
+      case 'budgeting':
+        return '📊';
       case 'savings':
         return '💰';
       case 'investing':
         return '📈';
-      case 'budgeting':
-        return '📊';
       default:
         return '🎮';
+
     }
   };
 
@@ -150,6 +151,14 @@ const Leaderboards = () => {
       </h1>
       
       <div className="leaderboards-tabs">
+      <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`tab ${activeTab === 'budgeting' ? 'active' : ''}`}
+          onClick={() => handleTabChange('budgeting')}
+        >
+          {getTabIcon('budgeting')} Budget Quest
+        </motion.button>
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -165,14 +174,6 @@ const Leaderboards = () => {
           onClick={() => handleTabChange('investing')}
         >
           {getTabIcon('investing')} Investing Assessment
-        </motion.button>
-        <motion.button 
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={`tab ${activeTab === 'budgeting' ? 'active' : ''}`}
-          onClick={() => handleTabChange('budgeting')}
-        >
-          {getTabIcon('budgeting')} Budget Quest
         </motion.button>
       </div>
       
@@ -198,7 +199,7 @@ const Leaderboards = () => {
               <div className="leaderboard-header">
                 <span className="rank-header">Rank</span>
                 <span className="name-header">Player</span>
-                <span className="score-header">{activeTab === 'investing' ? 'Score' : 'Money'}</span>
+                <span className="score-header">{activeTab === 'investing' ? 'Score' : activeTab === 'budgeting' ? 'Medals' : 'Money'}</span>
               </div>
 
               {currentLeaderboard.map((player, index) => (
@@ -217,7 +218,7 @@ const Leaderboards = () => {
                     {getBadge(player.rank)} {player.rank}
                   </span>
                   <span className="name">{player.username}</span>
-                  <span className="score">{player.score} {activeTab === 'investing' ? 'PTS' : 'PHP'}</span>
+                  <span className="score">{activeTab === 'budgeting' ? player.medals_count : player.score} {activeTab === 'investing' ? 'PTS' : activeTab === 'budgeting' ? 'Medals' : 'PHP'}</span>
                 </motion.div>
               ))}
             {currentLeaderboard.length === 0 && (

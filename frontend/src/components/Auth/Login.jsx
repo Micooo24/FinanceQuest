@@ -50,8 +50,12 @@ const Login = () => {
         const user = userResponse.data.users.find(user => user.email === values.email);
         const userRole = user.role;
         const userId = user._id;
+        const username = user.username
+        
         localStorage.setItem("userRole", userRole);
         localStorage.setItem("userId", userId);
+        localStorage.setItem("username", username)
+        
         console.log("User ID:", userId);
   
         if (userRole === "admin") {
@@ -95,9 +99,13 @@ const Login = () => {
         const userRole = user.role;
         const userId = user._id;
         const useremail = user.email;
+        const username = user.username;
+
         localStorage.setItem("email", useremail);
         localStorage.setItem("userRole", userRole);
         localStorage.setItem("userId", userId);
+        localStorage.setItem("username", username);
+
         console.log("User ID:", userId);
 
         if (userRole === "admin") {
