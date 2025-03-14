@@ -37,6 +37,22 @@ async def analyze_finances(user_id: str, year: int, month: int):
         logger.warning(f"No financial data found for user {user_id} for {month}/{year}")
         raise HTTPException(status_code=404, detail="No financial data found")
 
+    # Compute total income, expenses, bills, and savings based on actual values with done=True
+    totalIncome = sum(item['actual'] for record in records for item in record.get('income', []) if item['done'])
+    totalExpenses = sum(item['actual'] for record in records for item in record.get('expenses', []) if item['done'])
+    totalBills = sum(item['actual'] for record in records for item in record.get('bills', []) if item['done'])
+    totalSavings = totalIncome - (totalExpenses + totalBills) + sum(item['actual'] for record in records for item in record.get('savings', []) if item['done'])
+    personalSavings = sum(item['actual'] for record in records for item in record.get('savings', []) if item['done'])
+    remainingBudget = totalIncome - (totalExpenses + totalBills)
+
+    # Convert computed values to strings
+    totalIncome_str = str(totalIncome)
+    totalExpenses_str = str(totalExpenses)
+    totalBills_str = str(totalBills)
+    totalSavings_str = str(totalSavings)
+    personalSavings_str = str(personalSavings)
+    remainingBudget_str = str(remainingBudget)
+
     # Format data for AI
     def convert_to_string(data):
         if isinstance(data, dict):
@@ -56,13 +72,29 @@ async def analyze_finances(user_id: str, year: int, month: int):
     Here is your financial data:
     {formatted_data}
     
-    ALL DATA PROVIDED ARE NON EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY. Provide a detailed diagnosis in 3 sentences discussing their financial behaviour and suggestion for improvement.
-    first sentence includes the financial behaivour, note no need and don't mention any percentage just use the actual values if you want, but avoid that as well, its safe to just
-    describe the financial behaivour. Note I forgot to adjust the naming in database but the expenses is the needs and the bills is the wants so in your feedback use the correct naming no need to mention the expenses or bills JUST USE THE NEEDS OR WANTS
-    to describe. Then on the second sentence describe what type of budget maker or finance is the user like is he a spender, saver, or a mix of both, etc use alot of to describe. Lastly, suggest some improvements and what to avoid next time. Note if you are to
-    mention money use the Philippine Peso currency sign. In addition, mention their potential risk if they continue this and then what and who to seek help in finances with according to their situation.
+    Total Savings: ₱{totalSavings_str}
+    Personal Savings: ₱{personalSavings_str}
+    Remaining Budget: ₱{remainingBudget_str}
+       Total Income: ₱{totalIncome_str}
+    Total Needs: ₱{totalExpenses_str}
+    Total Wants: ₱{totalBills_str}
+    
+    ALL DATA PROVIDED ARE NON EXISTENT AND FOR EDUCATIONAL PURPOSES ONLY.
+    
+    Detailed Analysis of User's Financial Behavior
+        1. Overview of Financial Performance: 
+            - Total Income: ₱{totalIncome_str} 
+            - Personal Savings: ₱{personalSavings_str} 
+            - Total Income Savings: ₱{totalSavings_str} ({round(((totalSavings + personalSavings) / totalIncome) * 100, 2)}%)
+            - Total Needs: ₱{totalExpenses_str} ({round((totalExpenses / totalIncome) * 100, 2)}%)
+            - Total Wants: ₱{totalBills_str} ({round((totalBills / totalIncome) * 100, 2)}%)
+        2. Financial Personality: Type (Saver, Spender, Investor, Debt Avoider, Risk-Taker, Security Seeker, Giver, Avoider, Status Seeker)
+        3. Suggestions for Improvement:
+        4. Actionable Recommendations:
+        5. Conclusion:
+        NOTE IF YOU EVER TO MENTION MONEY USE PHILIPPINE PESO CURRENCY SIGN, dont send me the ###3 something, dont put hastags just do it normally, and dont put or use the location of the user its unnecessary.
     """
-
+    
     # logger.info(f"AI Prompt: {prompt}")  # Log the AI prompt
 
     # Call AI API

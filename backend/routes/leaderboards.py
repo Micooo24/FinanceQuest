@@ -95,7 +95,7 @@ def get_top_savings():
 def get_top_savings():
     """Fetch the top 5 users with the highest savings balance"""
     try:
-        logger.info("Fetching top 5 users with the highest savings balance")
+        # logger.info("Fetching top 5 users with the highest savings balance")
         
         # Fetch the latest minibudget for each user where balance > 0 and sort by balance (descending)
         pipeline = [
@@ -137,24 +137,25 @@ def get_top_savings():
     try:
         logger.info("Fetching top 5 users with the highest savings balance")
         
-        # Fetch the latest minibudget for each user where balance > 0 and sort by balance (descending)
+        # Fetch the latest minibudget for each user where medals > 0 and sort by medals_count (descending)
         pipeline = [
-            {"$match": {"money": {"$gt": 0}}},
-            {"$sort": {"user_id": 1, "started_at": -1}},
+            {"$match": {"medals": {"$exists": True, "$not": {"$size": 0}}}},  # Ensure medals array exists and is not empty
+            {"$sort": {"user_id": 1, "started_at": -1}},  # Get latest budget per user
             {"$group": {
                 "_id": "$user_id",
                 "latest_budget": {"$first": "$$ROOT"}
             }},
             {"$replaceRoot": {"newRoot": "$latest_budget"}},
-            {"$sort": {"money": -1}},
-            {"$limit": 5}
+            {"$addFields": {"medals_count": {"$size": "$medals"}}},  # Count medals array size
+            {"$sort": {"medals_count": -1}},  # Sort by medals count
+            {"$limit": 5}  # Get top 5 users
         ]
         all_budgets = list(db.stats.aggregate(pipeline))
         logger.info(f"Fetched minibudgets: {all_budgets}")
         
         # Fetch usernames for each minibudget
         for budget in all_budgets:
-            user = db.users.find_one({"_id": ObjectId(budget["user_id"])})  
+            user = db.users.find_one({"_id": ObjectId(budget["user_id"])})
             if user:
                 budget["username"] = user["username"]
             else:
@@ -166,6 +167,7 @@ def get_top_savings():
             budget["_id"] = str(budget["_id"])
             budget["user_id"] = str(budget["user_id"])
 
+        logger.info(f"Final budgets to return: {all_budgets}")
         return all_budgets
     except Exception as e:
         logger.error(f"Error fetching users with balance: {str(e)}")
