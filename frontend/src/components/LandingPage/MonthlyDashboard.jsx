@@ -36,6 +36,7 @@ import { Link } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import TrackerReport from "./TrackerReport";
 import Navbar from './Navbar';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const FinanceTracker = () => {
   const navigate = useNavigate();
@@ -51,6 +52,8 @@ const FinanceTracker = () => {
   const [billsData, setBillsData] = useState([]);
   const [savingsData, setSavingsData] = useState([]);
   const [hasData, setHasData] = useState(true);
+  const [warningDialogOpen, setWarningDialogOpen] = useState(false);
+const [warningMessage, setWarningMessage] = useState("");
 
   // State to control dialog open/close and form data
   const [openDialog, setOpenDialog] = useState(false);
@@ -165,53 +168,58 @@ const FinanceTracker = () => {
     fetchFinanceData(parseInt(currentYear), monthIndex + 1); // Convert to 1-indexed month and parse year as integer
   }, [selectedMonth, currentYear]);
 
-  const handleCheckboxChange = (category, type, index, checked) => {
-    const updatedData = [...data];
-  
-    // Find the current item
-    const currentItem = type === "income" ? incomeData[index] :
-                        type === "expenses" ? expensesData[index] :
-                        type === "bills" ? billsData[index] :
-                        savingsData[index];
-  
-    updatedData.forEach((entry, entryIndex) => {
-      if (Array.isArray(entry[type])) {
-        updatedData[entryIndex] = {
-          ...entry,
-          [type]: entry[type].map(item =>
-            item.category === category && item.expected === currentItem.expected && item.actual === currentItem.actual && item.due === currentItem.due
-              ? { ...item, done: checked }
-              : item
-          ),
-        };
-      }
-    });
-  
-    updatedData.forEach((updatedRecord) => {
-      if (!updatedRecord.tracker_id) {
-        console.error("Missing tracker_id for update.");
-        return;
-      }
-  
-      // Log the data being sent in the PUT request
-      console.log("Updating record:", updatedRecord);
-  
-      axios
-        .put(
-          `http://127.0.0.1:8000/monthly_tracker/update-tracker/${updatedRecord.tracker_id}`,
-          updatedRecord
-        )
-        .then(response => {
-          setData(updatedData);
-          // Refetch data after update
-          const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth);
-          fetchFinanceData(parseInt(currentYear), monthIndex + 1);
-        })
-        .catch(error => {
-          console.error("Error updating the 'done' status:", error);
-        });
-    });
-  };
+ // Modify the handleCheckboxChange function
+const handleCheckboxChange = (category, type, index, checked) => {
+  const updatedData = [...data];
+
+  // Find the current item
+  const currentItem = type === "income" ? incomeData[index] :
+                      type === "expenses" ? expensesData[index] :
+                      type === "bills" ? billsData[index] :
+                      savingsData[index];
+
+  // Check if the actual values exceed the actual income
+  if ((type === "expenses" || type === "bills") && currentItem.actual > totalIncome) {
+    setWarningMessage("Expenses exceed Income. Please adjust your expenses.");
+    setWarningDialogOpen(true);
+    return;
+  }
+
+  updatedData.forEach((entry, entryIndex) => {
+    if (Array.isArray(entry[type])) {
+      updatedData[entryIndex] = {
+        ...entry,
+        [type]: entry[type].map(item =>
+          item.category === category && item.expected === currentItem.expected && item.actual === currentItem.actual && item.due === currentItem.due
+            ? { ...item, done: checked }
+            : item
+        ),
+      };
+    }
+  });
+
+  updatedData.forEach((updatedRecord) => {
+    if (!updatedRecord.tracker_id) {
+      console.error("Missing tracker_id for update.");
+      return;
+    }
+
+    axios
+      .put(
+        `http://127.0.0.1:8000/monthly_tracker/update-tracker/${updatedRecord.tracker_id}`,
+        updatedRecord
+      )
+      .then(response => {
+        setData(updatedData);
+        const monthIndex = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].indexOf(selectedMonth);
+        fetchFinanceData(parseInt(currentYear), monthIndex + 1);
+      })
+      .catch(error => {
+        console.error("Error updating the 'done' status:", error);
+      });
+  });
+};
+
 
   const handleAiAnalysis = async () => {
     try {
@@ -307,9 +315,24 @@ const FinanceTracker = () => {
             return `${label}: ₱${value} (${percentage}%)`;
           }
         }
+      },
+      datalabels: {
+        color: '#fff',
+        font: {
+          family: "'Lilita One'",
+          size: 14
+        },
+        align: 'center',
+        anchor: 'center',
+        formatter: (value, context) => {
+          const label = context.chart.data.labels[context.dataIndex];
+          const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+          const percentage = Math.round((value / total) * 100);
+          return `${label}:\n${percentage}%`;
+        }
       }
     },
-    cutout: '50%',
+    // Remove the cutout property to have a solid pie chart
     animation: {
       animateScale: true,
       animateRotate: true,
@@ -458,11 +481,11 @@ const FinanceTracker = () => {
   const handleCreateRecord = async () => {
     // Ensure numeric values are properly parsed
     const newRecord = {
-      category: formValues.category === "Others" ? formValues.customSubcategory : formValues.category,
+      category: formValues.category === "Others" ? formValues.customSubcategory : formValues.subcategory,
       subcategory: formValues.subcategory === "Others" ? formValues.customSubcategory : formValues.subcategory,
       expected: parseFloat(formValues.expected) || 0,
       actual: parseFloat(formValues.actual) || 0,
-      done: false,
+      done: dialogType === "income" || dialogType === "savings" ? true : false, // Set done to true for income and savings
       ...(dialogType === "expenses" || dialogType === "bills" ? { due: formValues.due } : {}),
     };
   
@@ -632,7 +655,7 @@ const FinanceTracker = () => {
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967", mb: 2 }}>Monthly Saving Rate</Typography>
           <Box sx={{ maxWidth: 350, mx: "auto" }}>
-            <Pie data={pieData} options={{ maintainAspectRatio: false }} width={600} height={250} />
+          <Pie data={pieData} options={pieOptions} plugins={[ChartDataLabels]} width={600} height={250} />
           </Box>
 
           <Divider sx={{ my: 5 }} />    
@@ -752,6 +775,55 @@ const FinanceTracker = () => {
         
         {/* Right - Bills and Savings Tables */}
         <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+          {/* Savings Breakdown Table */}
+          <Paper elevation={3} sx={{ p: 4 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Personal Savings</Typography>
+              <Button variant="contained" onClick={() => handleOpenDialog("savings")} sx={{ backgroundColor: "#4caf50" }}>Create</Button>
+            </Box>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Expected</TableCell>
+                    <TableCell>Actual</TableCell>
+                    <TableCell>Done</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {hasData ? savingsData.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item.category}</TableCell>
+                      <TableCell>₱{item.expected}</TableCell>
+                      <TableCell>₱{item.actual}</TableCell>
+                      <TableCell>
+                        <Checkbox
+                          checked={item.done}
+                          onChange={(e) => handleCheckboxChange(item.category, "savings", index, e.target.checked)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )) : (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center">No data recorded</TableCell>
+                    </TableRow>
+                  )}
+                  {hasData && savingsData.some(item => item.done) && (
+                    <TableRow>
+                      <TableCell>Total</TableCell>
+                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
+                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+
+          <Divider sx={{ my: 5 }} />
+
           {/* Bills Breakdown Table */}
           <Paper elevation={3} sx={{ p: 4 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
@@ -794,55 +866,6 @@ const FinanceTracker = () => {
                       <TableCell>₱{billsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
                       <TableCell>₱{billsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
                       <TableCell></TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Paper>
-
-          <Divider sx={{ my: 5 }} />
-
-          {/* Savings Breakdown Table */}
-          <Paper elevation={3} sx={{ p: 4 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: "#5e3967" }}>Personal Savings</Typography>
-              <Button variant="contained" onClick={() => handleOpenDialog("savings")} sx={{ backgroundColor: "#4caf50" }}>Create</Button>
-            </Box>
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Category</TableCell>
-                    <TableCell>Expected</TableCell>
-                    <TableCell>Actual</TableCell>
-                    <TableCell>Done</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {hasData ? savingsData.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{item.category}</TableCell>
-                      <TableCell>₱{item.expected}</TableCell>
-                      <TableCell>₱{item.actual}</TableCell>
-                      <TableCell>
-                        <Checkbox
-                          checked={item.done}
-                          onChange={(e) => handleCheckboxChange(item.category, "savings", index, e.target.checked)}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )) : (
-                    <TableRow>
-                      <TableCell colSpan={4} align="center">No data recorded</TableCell>
-                    </TableRow>
-                  )}
-                  {hasData && savingsData.some(item => item.done) && (
-                    <TableRow>
-                      <TableCell>Total</TableCell>
-                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.expected, 0)}</TableCell>
-                      <TableCell>₱{savingsData.filter(item => item.done).reduce((total, item) => total + item.actual, 0)}</TableCell>
                       <TableCell></TableCell>
                     </TableRow>
                   )}
@@ -983,6 +1006,34 @@ const FinanceTracker = () => {
     </Button>
   </DialogActions>
 </Dialog>
+
+<Dialog
+  open={warningDialogOpen}
+  onClose={() => setWarningDialogOpen(false)}
+  aria-labelledby="warning-dialog-title"
+  aria-describedby="warning-dialog-description"
+  PaperProps={{
+    style: {
+      backgroundColor: '#351742',
+      borderRadius: '15px',
+      padding: '20px',
+    },
+  }}
+>
+  <DialogTitle id="warning-dialog-title" sx={{ fontFamily: "'Lilita One'", textAlign: 'center',color: 'White' }}>
+    {"Warning"}
+  </DialogTitle>
+  <DialogContent>
+    <Typography id="warning-dialog-description" sx={{ fontFamily: "'Lilita One'", color: 'white' }}>
+      {warningMessage}
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setWarningDialogOpen(false)} sx={{ fontFamily: "'Lilita One'", color: '#fff', backgroundColor: '#009797', '&:hover': { backgroundColor: '#009797' } }} autoFocus>
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>   
     </Box>
   );
 };
