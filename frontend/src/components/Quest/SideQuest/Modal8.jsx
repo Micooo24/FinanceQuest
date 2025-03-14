@@ -77,7 +77,7 @@ const Modal8GroceryGame = ({ onCheckout, setPlayerStats }) => {
             🛒 Grocery Selection
           </Typography>
           <Typography variant="body1" sx={{ fontFamily: 'Fraunces, serif', mb: 2, color: '#000' }}>
-            Choose your items wisely! Stay within your ₱2,000 budget.
+            Choose your items wisely! Stay within your ₱1,000 budget.
           </Typography>
           <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 2, color: '#000' }}>
             Remaining Budget: ₱{budget - totalSpent}

@@ -46,7 +46,6 @@ import GameplayAnalysis from "./components/Game/GameplayAnalysis.jsx";
 import Leaderboards from "./components/Minigames/Leaderboards.jsx";
 
 import UserProfile from "./components/Game/UserProfile";
-import Shop from "./components/Game/Shop";
 import { Toaster } from 'react-hot-toast';
 import AdminDashboard from "./components/Admin/Dashboard";
 
@@ -94,7 +93,6 @@ function App() {
      
         <Route path="/gameplay" element={<ProtectedRoute><Gameplay /></ProtectedRoute>} />
         <Route path="/user-profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-        <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
         <Route path="/gameplayanalysis" element={<ProtectedRoute><GameplayAnalysis /></ProtectedRoute>} />
         <Route path="/leaderboards" element={<ProtectedRoute><Leaderboards /></ProtectedRoute>} />
         

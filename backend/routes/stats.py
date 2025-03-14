@@ -67,11 +67,11 @@ class MedalPurchaseRequest(BaseModel):
 #     money: int
 
 medals = {
-    "bronze_planner": 20,
-    "silver_analyst": 25,
-    "gold_strategist": 30,
-    "platinum_investor": 40,
-    "diamond_visionary": 50
+    "bronze_planner": 10,
+    "silver_analyst": 20,
+    "gold_strategist": 35,
+    "platinum_investor": 50,
+    "diamond_visionary": 60
 }
 
 @router.get("/get/player", response_model=Stats)
@@ -218,35 +218,59 @@ async def grocery_selection(request: GrocerySelectionRequest, current_user: dict
     }
     
     
-@router.put("/purchase/medal")
-async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Depends(get_current_user)):
+# @router.put("/purchase/medal")
+# async def purchase_medal(request: MedalPurchaseRequest, current_user: dict = Depends(get_current_user)):
+#     user_id = current_user["_id"]
+#     stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
+#     if stats is None:
+#         raise HTTPException(status_code=404, detail="Stats not found for the current user")
+    
+#     medal_cost = medals.get(request.medal)
+#     if medal_cost is None:
+#         raise HTTPException(status_code=400, detail="Invalid medal type")
+    
+#     if stats["points"] < medal_cost:
+#         raise HTTPException(status_code=400, detail="Insufficient points to purchase this medal")
+    
+#     new_points = stats["points"] - medal_cost
+#     medals_owned = stats.get("medals", [])
+#     medals_owned.append(request.medal)
+    
+#     db["stats"].update_one(
+#         {"user_id": ObjectId(user_id)},
+#         {"$set": {
+#             "points": new_points,
+#             "medals": medals_owned
+#         }}
+#     )
+    
+#     return {
+#         "message": f"{request.medal.replace('_', ' ').title()} purchased successfully",
+#         "new_points": new_points,
+#         "medals": medals_owned
+#     }
+
+@router.put("/check-and-award-medals")
+async def check_and_award_medals(current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
     stats = db["stats"].find_one({"user_id": ObjectId(user_id)})
     if stats is None:
         raise HTTPException(status_code=404, detail="Stats not found for the current user")
     
-    medal_cost = medals.get(request.medal)
-    if medal_cost is None:
-        raise HTTPException(status_code=400, detail="Invalid medal type")
-    
-    if stats["points"] < medal_cost:
-        raise HTTPException(status_code=400, detail="Insufficient points to purchase this medal")
-    
-    new_points = stats["points"] - medal_cost
+    current_points = stats["points"]
     medals_owned = stats.get("medals", [])
-    medals_owned.append(request.medal)
+    
+    for medal, points_required in medals.items():
+        if current_points >= points_required and medal not in medals_owned:
+            medals_owned.append(medal)
     
     db["stats"].update_one(
         {"user_id": ObjectId(user_id)},
-        {"$set": {
-            "points": new_points,
-            "medals": medals_owned
-        }}
+        {"$set": {"medals": medals_owned}}
     )
     
     return {
-        "message": f"{request.medal.replace('_', ' ').title()} purchased successfully",
-        "new_points": new_points,
+        "message": "Medals awarded based on current points",
         "medals": medals_owned
     }
 
@@ -354,7 +378,7 @@ async def sq2_decision(request: SQ2DecisionRequest, current_user: dict = Depends
         
         deposit_amount = stats["q2_outcome"]["money_spent"]
         new_money = stats["money"] + deposit_amount
-        points_earned = 5
+        points_earned = -5
         update_fields["money"] = new_money
         update_fields["points"] = stats["points"] + points_earned
         rewards = [
