@@ -24,7 +24,7 @@ import SunCity from "../../assets/suncity.mp4";
 import toast from 'react-hot-toast';
 
 const Signup = () => {
-  const [otp, setOtp] = useState(new Array(6).fill("")); // Initialize as an array of empty strings
+  const [otp, setOtp] = useState(new Array(6).fill(""));
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [formValues, setFormValues] = useState({});
@@ -39,7 +39,7 @@ const Signup = () => {
   }, [navigate]);
 
   const handleSignup = async (values, { setSubmitting }) => {
-    setFormValues(values); // Store form values in state
+    setFormValues(values);
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
@@ -94,10 +94,9 @@ const Signup = () => {
 
   const handleChange = (value, index) => {
     const newOtp = [...otp];
-    newOtp[index] = value.slice(0, 1); // Ensure only one character
+    newOtp[index] = value.slice(0, 1);
     setOtp(newOtp);
 
-    // Automatically move to the next input
     if (value && index < otp.length - 1) {
       document.getElementById(`otp-input-${index + 1}`).focus();
     }
@@ -125,197 +124,253 @@ const Signup = () => {
   return (
     <Box
       sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        minHeight: "140vh", // Ensure minimum height of 100% viewport height
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
+        width: "100%",
+        minHeight: "100vh",
         background: "linear-gradient(180deg, #5e3967, #351742)",
         color: darkMode ? "#fff" : "#002a5a",
-        margin: 0,
-        padding: 0,
+        padding: "30px 0",
+        overflowY: "auto", 
+        overflowX: "hidden",
+        "&::-webkit-scrollbar": {
+          width: "12px",
+        },
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "#351742",
+          borderRadius: "10px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#8c2fc7",
+          borderRadius: "10px",
+          border: "3px solid #351742",
+          "&:hover": {
+            backgroundColor: "#a13bdf",
+          },
+        },
+        scrollbarWidth: "thin",
+        scrollbarColor: "#8c2fc7 #351742",
       }}
     >
       <Grid
         container
-        sx={{
-          maxWidth: "1100px",
-          minHeight: "80vh",
-          borderRadius: "8px",
-          overflow: "hidden",
-          boxShadow: 3,
-          backgroundColor: "white",
-          position: "relative",
-        }}
+        justifyContent="center"
+        alignItems="center"
       >
-        <IconButton
-          onClick={() => navigate("/")}
+        <Grid 
+          item 
+          xs={11} 
+          sm={10} 
+          md={9} 
+          lg={8}
           sx={{
-            position: "absolute",
-            top: 15,
-            right: 15,
-            color: "white",
-            backgroundColor: "#451d6b",
-            "&:hover": { backgroundColor: "#8c2fc7" },
-          }}
-        >
-          <Close />
-        </IconButton>
-
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            position: "relative",
-            borderRadius: "8px 0 0 8px",
+            borderRadius: "8px",
             overflow: "hidden",
-            "&::after": {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0, 0, 0, 0.01)", 
-            },
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+            backgroundColor: "white",
+            marginBottom: "20px",
           }}
         >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{
+          <IconButton
+            onClick={() => navigate("/")}
+            sx={{
               position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              filter: "brightness(70%) contrast(100%) hue-rotate(240deg)", 
+              top: 15,
+              right: 15,
+              color: "white",
+              backgroundColor: "#451d6b",
+              "&:hover": { backgroundColor: "#8c2fc7" },
+              zIndex: 10,
             }}
           >
-            <source src={SunCity} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </Grid>
+            <Close />
+          </IconButton>
 
-        <Grid item xs={12} md={6} component={Paper} elevation={6} square  >
-          <Box sx={{ p: 6, display: "flex", flexDirection: "column", alignItems: "center" , color: "#331540"}}>
-            <Typography variant="h4" fontFamily="'Lilita One'" gutterBottom>
-              SIGNUP
-            </Typography>
-            <Typography variant="subtitle1" fontFamily="'Lilita One'" gutterBottom>
-              CREATE AN ACCOUNT TO CONTINUE
-            </Typography>
-
-            <Formik
-              initialValues={{ email: "", password: "", username: "", birthday: "", img: null }}
-              validationSchema={validationSchema}
-              onSubmit={handleSignup}
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                position: "relative",
+                minHeight: { xs: "250px", md: "600px" },
+                display: { xs: "none", md: "block" },
+              }}
             >
-              {({ setFieldValue, isSubmitting, touched, errors }) => (
-                <Form style={{ width: "100%" }}>
-                  <Field
-                    as={TextField}
-                    fullWidth
-                    margin="normal"
-                    label="Email"
-                    variant="outlined"
-                    name="email"
-                    InputProps={{ startAdornment: <Email /> }}
-                    helperText={<ErrorMessage name="email" />}
-                    error={touched.email && Boolean(errors.email)}
-                  />
-                  <Field
-                    as={TextField}
-                    fullWidth
-                    margin="normal"
-                    label="Password"
-                    type="password"
-                    variant="outlined"
-                    name="password"
-                    InputProps={{ startAdornment: <Lock /> }}
-                    helperText={<ErrorMessage name="password" />}
-                    error={touched.password && Boolean(errors.password)}
-                  />
-                  <Field
-                    as={TextField}
-                    fullWidth
-                    margin="normal"
-                    label="Username"
-                    variant="outlined"
-                    name="username"
-                    InputProps={{ startAdornment: <AccountCircle /> }}
-                    helperText={<ErrorMessage name="username" />}
-                    error={touched.username && Boolean(errors.username)}
-                  />
-                  <Field
-                    as={TextField}
-                    fullWidth
-                    margin="normal"
-                    label="Birthday"
-                    type="date"
-                    variant="outlined"
-                    name="birthday"
-                    InputProps={{ startAdornment: <Cake /> }}
-                    InputLabelProps={{ shrink: true }}
-                    helperText={<ErrorMessage name="birthday" />}
-                    error={touched.birthday && Boolean(errors.birthday)}
-                  />
-                  <Button
-                    variant="contained"
-                    component="label"
-                    sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
-                  >
-                    Upload Image
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => setFieldValue("img", e.target.files[0])}
-                    />
-                  </Button>
-                  <ErrorMessage name="img" component="div" style={{ color: 'red' }} />
-                  <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }} disabled={isSubmitting}>
-                    SIGNUP
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-
-            <Typography variant="body2" fontFamily="'Lilita One'">
-              Or sign up with:
-            </Typography>
-            <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
-              <IconButton
-                onClick={handleGoogleSignup}
-                sx={{
-                  backgroundColor: "#DB4437",
-                  color: "white",
-                  width: 50,
-                  height: 50,
-                  transition: "0.3s",
-                  "&:hover": { backgroundColor: "#C1351D" },
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  filter: "brightness(70%) contrast(100%) hue-rotate(240deg)", 
                 }}
               >
-                <GoogleIcon />
-              </IconButton>
-            </Box>
+                <source src={SunCity} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </Grid>
 
-            <Typography variant="body2" sx={{ mt: 2, fontFamily: "'Lilita One'", color: "#331540" }}>
-              Already have an account? <Button onClick={() => navigate("/login")} sx={{ color: "#331540", fontFamily: "'Lilita One'" }}>Login</Button>
-            </Typography>
-          </Box>
+            <Grid 
+              item 
+              xs={12} 
+              md={6} 
+              component={Paper} 
+              elevation={6}
+              sx={{ 
+                borderRadius: { xs: "8px", md: "0 8px 8px 0" },
+                padding: { xs: "30px 20px", md: "40px 30px" },
+              }}
+            >
+              <Box 
+                sx={{ 
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  color: "#331540",
+                  maxHeight: { xs: "auto", md: "600px" },
+                  overflowY: "auto",
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    backgroundColor: "rgba(53, 23, 66, 0.1)",
+                    borderRadius: "5px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(53, 23, 66, 0.3)",
+                    borderRadius: "5px",
+                  },
+                }}
+              >
+                <Typography variant="h4" fontFamily="'Lilita One'" gutterBottom>
+                  SIGNUP
+                </Typography>
+                <Typography variant="subtitle1" fontFamily="'Lilita One'" gutterBottom>
+                  CREATE AN ACCOUNT TO CONTINUE
+                </Typography>
+
+                <Formik
+                  initialValues={{ email: "", password: "", username: "", birthday: "", img: null }}
+                  validationSchema={validationSchema}
+                  onSubmit={handleSignup}
+                >
+                  {({ setFieldValue, isSubmitting, touched, errors }) => (
+                    <Form style={{ width: "100%" }}>
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        margin="normal"
+                        label="Email"
+                        variant="outlined"
+                        name="email"
+                        InputProps={{ startAdornment: <Email /> }}
+                        helperText={<ErrorMessage name="email" />}
+                        error={touched.email && Boolean(errors.email)}
+                      />
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        margin="normal"
+                        label="Password"
+                        type="password"
+                        variant="outlined"
+                        name="password"
+                        InputProps={{ startAdornment: <Lock /> }}
+                        helperText={<ErrorMessage name="password" />}
+                        error={touched.password && Boolean(errors.password)}
+                      />
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        margin="normal"
+                        label="Username"
+                        variant="outlined"
+                        name="username"
+                        InputProps={{ startAdornment: <AccountCircle /> }}
+                        helperText={<ErrorMessage name="username" />}
+                        error={touched.username && Boolean(errors.username)}
+                      />
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        margin="normal"
+                        label="Birthday"
+                        type="date"
+                        variant="outlined"
+                        name="birthday"
+                        InputProps={{ startAdornment: <Cake /> }}
+                        InputLabelProps={{ shrink: true }}
+                        helperText={<ErrorMessage name="birthday" />}
+                        error={touched.birthday && Boolean(errors.birthday)}
+                      />
+                      <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "white", backgroundColor: "#451d6b", "&:hover": { backgroundColor: "#8c2fc7" } }}
+                      >
+                        Upload Image
+                        <input
+                          type="file"
+                          hidden
+                          onChange={(e) => setFieldValue("img", e.target.files[0])}
+                        />
+                      </Button>
+                      <ErrorMessage name="img" component="div" style={{ color: 'red' }} />
+                      <Button 
+                        type="submit" 
+                        fullWidth 
+                        variant="contained" 
+                        sx={{ 
+                          mt: 3, 
+                          mb: 2, 
+                          fontFamily: "'Lilita One'", 
+                          color: "white", 
+                          backgroundColor: "#451d6b", 
+                          "&:hover": { backgroundColor: "#8c2fc7" } 
+                        }} 
+                        disabled={isSubmitting}
+                      >
+                        SIGNUP
+                      </Button>
+                    </Form>
+                  )}
+                </Formik>
+
+                <Typography variant="body2" fontFamily="'Lilita One'">
+                  Or sign up with:
+                </Typography>
+                <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+                  <IconButton
+                    onClick={handleGoogleSignup}
+                    sx={{
+                      backgroundColor: "#DB4437",
+                      color: "white",
+                      width: 50,
+                      height: 50,
+                      transition: "0.3s",
+                      "&:hover": { backgroundColor: "#C1351D" },
+                    }}
+                  >
+                    <GoogleIcon />
+                  </IconButton>
+                </Box>
+
+                <Typography variant="body2" sx={{ mt: 2, mb: 2, fontFamily: "'Lilita One'", color: "#331540" }}>
+                  Already have an account? <Button onClick={() => navigate("/login")} sx={{ color: "#331540", fontFamily: "'Lilita One'" }}>Login</Button>
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
-  {/* OTP Verification Dialog */}
-  <Dialog
+      {/* OTP Verification Dialog */}
+      <Dialog
         open={otpDialogOpen}
         onClose={() => setOtpDialogOpen(false)}
         style={{ textAlign: "center", padding: "20px" }}
