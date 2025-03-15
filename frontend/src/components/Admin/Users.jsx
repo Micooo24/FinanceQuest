@@ -120,7 +120,7 @@ const Users = () => {
     };
 
     return (
-        <div style={{ display: "flex", width: "90vw", margin: "auto", padding: "20px", gap: "30px" }}>
+        <div style={{ display: "flex", width: "90vw", margin: "auto", padding: "20px", gap: "30px", color: "#fff" }}>
             <div style={{ flex: 1 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "25px" }}>
                     <TextField
@@ -129,9 +129,9 @@ const Users = () => {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         InputProps={{ startAdornment: <Search sx={{ marginRight: "10px" }} /> }}
-                        sx={{ backgroundColor: "#C5BAFF", borderRadius: "4px", width: "270px" }}
+                        sx={{ backgroundColor: "#C5BAFF", borderRadius: "4px", width: "270px", color: "#fff" }}
                     />
-                    <Button onClick={handleSort} sx={{ color: "#451d6b", fontWeight: "bold" }}>
+                    <Button onClick={handleSort} sx={{ color: "#fff", fontWeight: "bold" }}>
                         {sortOrder === "asc" ? <ArrowUpward /> : <ArrowDownward />}
                     </Button>
                 </Box>
@@ -139,24 +139,24 @@ const Users = () => {
                 <TableContainer component={Paper} sx={{ backgroundColor: "#B2A5FF", borderRadius: "8px" }}>
                 <Table>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: "#C5BAFF", color: "#000" }}>
-                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Username</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Email</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Role</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Status</TableCell>
-                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#000" }}>Actions</TableCell>
+                        <TableRow sx={{ backgroundColor: "#C5BAFF", color: "#fff" }}>
+                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#fff" }}>Username</TableCell>
+                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#fff" }}>Email</TableCell>
+                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#fff" }}>Role</TableCell>
+                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#fff" }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: "bold", fontFamily: "'Fraunces'", color: "#fff" }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                             <TableRow key={user._id} sx={{ backgroundColor: "#DAD2FF", marginTop: "15px", borderRadius: "8px" }}>
-                                <TableCell sx={{ fontFamily: "'Lilita One'" }}>{user.username}</TableCell>
-                                <TableCell sx={{ fontFamily: "'Lilita One'" }}>{user.email}</TableCell>
-                                <TableCell sx={{ fontFamily: "'Lilita One'" }}>{user.role}</TableCell>
+                                <TableCell sx={{ fontFamily: "'Lilita One'", color: "#000" }}>{user.username}</TableCell>
+                                <TableCell sx={{ fontFamily: "'Lilita One'", color: "#000" }}>{user.email}</TableCell>
+                                <TableCell sx={{ fontFamily: "'Lilita One'", color: "#000" }}>{user.role}</TableCell>
                                 <TableCell sx={{ fontFamily: "'Lilita One'", color: user.is_active ? "green" : "red" }}>
                                     {user.is_active ? "Active" : "Deactivated"}
                                 </TableCell>
-                                <TableCell sx={{ fontFamily: "'Lilita One'" }}>
+                                <TableCell sx={{ fontFamily: "'Lilita One'", color: "#000" }}>
                                     <IconButton onClick={() => handleToggleStatus(user._id)} color="primary">
                                         {user.is_active ? <ToggleOn /> : <ToggleOff />}
                                     </IconButton>
@@ -175,13 +175,14 @@ const Users = () => {
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
+                    sx={{ color: "#fff" }}
                 />
             </div>
 
             <div style={{ flex: 0.5, padding: "10px", textAlign: "center" }}>
-            <h3>New vs Old Users</h3>
+            <h3 style={{ color: "#fff" }}>New vs Old Users</h3>
             <Bar data={barChartData} options={{ indexAxis: 'y' }} />
-                <h3>User Status Overview</h3>
+                <h3 style={{ color: "#fff" }}>User Status Overview</h3>
                 <Doughnut data={doughnutData} options={{ cutout: "50%" }} />
             </div>
         </div>
