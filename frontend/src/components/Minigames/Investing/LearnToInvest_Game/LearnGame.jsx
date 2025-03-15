@@ -1,12 +1,141 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+const GlobalStyle = createGlobalStyle`
+  * {
+    margin: 0; /* Reset all margins globally */
+    padding: 0; /* Reset all paddings globally */
+    box-sizing: border-box;
+  }
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+`;
+
+const Container = styled.div`
+  height: 100vh;
+  background: linear-gradient(black, #351742);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  font-family: "Georgia, serif";
+  position: relative;
+  overflow: hidden;
+`;
+
+const Content = styled.div`
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #351742;
+  padding: 30px;
+  border-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  width: 800px;
+  height: 550px;
+  z-index: 1; /* Ensure content is above background but below back icon */
+`;
+
+const SlideContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80%;
+  overflow: visible;
+  flex-direction: column;
+  transition: transform 0.3s ease-in-out;
+  transform: ${({ direction }) =>
+    direction === "left" ? "translateX(-100%)" : "translateX(0)"};
+`;
+
+const ImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 80%;
+`;
+
+const Description = styled.h3`
+  width: 300px;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  text-align: center;
+  font-size: 20px;
+`;
+
+const Dots = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 10px;
+`;
+
+const Dot = styled.div`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: ${({ active }) => (active ? "#00cac9" : "white")};
+  opacity: ${({ active }) => (active ? 1 : 0.5)};
+  cursor: pointer;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 25px;
+`;
+
+const StyledButton = styled.button`
+  padding: 0.8rem 1.5rem;
+  background: #00cac9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+`;
+
+const BackIconWrapper = styled.div`
+  position: absolute;
+  top: 20px; /* Consistent with previous components */
+  right: 20px; /* Consistent with previous components */
+  z-index: 2; /* Above content */
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background: rgba(140, 47, 199, 0.5); /* Matches UserProfile hover */
+  }
+`;
+
+const StyledBackIcon = styled(ArrowBackIcon)`
+  font-size: 35px !important;
+  color: white;
+`;
 
 const LearnTheGameInvest = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [transitionDirection, setTransitionDirection] = useState("");
   const navigate = useNavigate();
 
-  // Slides with images and descriptions
   const slides = [
     {
       image: "./mediaMinigameInvestment/learnGame/pic1.png",
@@ -16,12 +145,12 @@ const LearnTheGameInvest = () => {
     {
       image: "./mediaMinigameInvestment/learnGame/pic2.png",
       description:
-        "every 6 months, your pocket cash will refill with money you can invest.",
+        "Every 6 months, your pocket cash will refill with money you can invest.",
     },
     {
       image: "./mediaMinigameInvestment/learnGame/pic3.png",
       description:
-        "There are 4 different  investment opportunities you can unlock through the game.",
+        "There are 4 different investment opportunities you can unlock through the game.",
     },
     {
       image: "./mediaMinigameInvestment/learnGame/pic4.png",
@@ -31,7 +160,7 @@ const LearnTheGameInvest = () => {
     {
       image: "./mediaMinigameInvestment/learnGame/pic5.png",
       description:
-        "If you need a refresher on any of the investment types, click the '?' icon. ",
+        "If you need a refresher on any of the investment types, click the '?' icon.",
     },
     {
       image: "./mediaMinigameInvestment/learnGame/pic6.png",
@@ -58,155 +187,59 @@ const LearnTheGameInvest = () => {
     }
   };
 
+  const handleBackClick = () => {
+    navigate("/Invest_Game"); // Navigate to /Invest_Game
+  };
+
   return (
-    <div
-      className="container-investmentMinigame"
-      style={{
-        height: "100vh",
-        background: "linear-gradient(black, #351742)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        color: "white",
-        textAlign: "center",
-        fontFamily: "Georgia, serif",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          background: "#351742",
-          padding: "30px",
-          borderRadius: "50px",
-          boxShadow: "0 8px 20px rgba(0, 0, 0, 0.5)",
-          width: "500px",
-          height: "450px",
-          index: 1,
-        }}
-      >
-        {/* Slide Content */}
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            height: "80%",
-            overflow: "visible",
-            flexDirection: "column",
-            transition: "transform 0.3s ease-in-out",
-            transform: `translateX(${
-              transitionDirection === "left" ? "-100%" : "0"
-            })`,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative", // Ensure proper positioning
-              width: "100%", // Occupy the full width of the parent container
-              height: "100%", // Occupy the full height of the parent container
-            }}
-          >
-            <img
-              src={slides[currentSlide].image}
-              alt={`Slide ${currentSlide + 1}`}
-              style={{
-                maxWidth: "100%", // Ensure the image scales down to fit the width
-                maxHeight: "100%", // Ensure the image scales down to fit the height
-                objectFit: "contain", // Ensures the whole image is visible inside the container
-                borderRadius: "10px",
-                boxShadow: "2px 4px 8px rgba(0, 0, 0, 0.3)",
+    <>
+      <GlobalStyle />
+      <Container className="container-investmentMinigame">
+        <BackIconWrapper onClick={handleBackClick}>
+          <StyledBackIcon />
+        </BackIconWrapper>
+        <Content>
+          <SlideContainer direction={transitionDirection}>
+            <ImageWrapper>
+              <img
+                src={slides[currentSlide].image}
+                alt={`Slide ${currentSlide + 1}`}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                  borderRadius: "10px",
+                  boxShadow: "2px 4px 8px rgba(0, 0, 0, 0.3)",
+                }}
+              />
+            </ImageWrapper>
+            <Description>{slides[currentSlide].description}</Description>
+          </SlideContainer>
+          <Dots>
+            {slides.map((_, index) => (
+              <Dot
+                key={index}
+                active={currentSlide === index}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
+          </Dots>
+          <ButtonWrapper>
+            <StyledButton
+              onClick={() => {
+                if (isLastSlide) {
+                  handlePlayButton();
+                } else {
+                  nextSlide();
+                }
               }}
-            />
-          </div>
-
-          <div
-            style={{
-              width: "300px",
-              margin: "20px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              overflow: "visible",
-              textAlign: "center", // Center-align the text
-              index: 1,
-            }}
-          >
-            <h3 style={{ margin: 0 }}>{slides[currentSlide].description}</h3>
-          </div>
-        </div>
-
-        {/* Dots Navigation */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "0.5rem",
-            marginTop: "10px",
-            index: 2,
-          }}
-        >
-          {slides.map((_, index) => (
-            <div
-              key={index}
-              style={{
-                width: "12px",
-                height: "12px",
-                borderRadius: "50%",
-                background: currentSlide === index ? "#00cac9" : "white",
-                opacity: currentSlide === index ? 1 : 0.5,
-                cursor: "pointer",
-              }}
-              onClick={() => setCurrentSlide(index)}
-            />
-          ))}
-        </div>
-
-        {/* Next Button */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
-            marginTop: "25px",
-            index: 2,
-          }}
-        >
-          <button
-            onClick={() => {
-              if (isLastSlide) {
-                handlePlayButton();
-              } else {
-                nextSlide();
-              }
-            }}
-            style={{
-              padding: "0.8rem 1.5rem",
-              background: isLastSlide ? "#00cac9" : "#00cac9",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              boxShadow: "2px 4px 8px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            {isLastSlide ? "Ready" : "Next"}
-          </button>
-        </div>
-      </div>
-    </div>
+            >
+              {isLastSlide ? "Ready" : "Next"}
+            </StyledButton>
+          </ButtonWrapper>
+        </Content>
+      </Container>
+    </>
   );
 };
 

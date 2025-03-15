@@ -129,9 +129,7 @@ const Dot = styled.div`
 const slides = [
   { text: "Movement: Use WASD keys to move your character.\nJump: Press Spacebar to jump.\nCamera View: Move the mouse to adjust the camera angle.", icon: <GiRunningShoe /> },
   { text: "Successfully log in to your account.\nSelect 'New Game' or Click 'Start Game'.", icon: <GiJumpAcross /> },
-  { text: "Choose your character:\nMale or Female.", icon: <GiCharacter /> },
-  { text: "Begin at Level 1 with starting stats:\nMoney: 100\nHealth: 100\nExperience: 0", icon: <GiHealthNormal /> },
-  { text: "Main Missions: Follow the storyline.\nSide Quests: Gain extra rewards.\nUnlock new locations and special events.", icon: <GiAchievement /> },
+  { text: "Main Missions: Follow the storyline.\nSide Quests: Gain extra rewards.\nUnlock new quests and special lessons.", icon: <GiAchievement /> },
 ];
 
 const HowToPlay = () => {

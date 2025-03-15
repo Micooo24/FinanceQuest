@@ -1,253 +1,253 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
+import HomeIcon from "@mui/icons-material/Home";
+import MenuIcon from "@mui/icons-material/Menu";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import PersonIcon from "@mui/icons-material/Person"; // For User Profile
+import LogoutIcon from "@mui/icons-material/Logout"; // For Logout
+import toast from "react-hot-toast";
 
-// Keyframe animation for bouncing effect
-const bounce = keyframes`
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 `;
 
-// Global styles to reset margin/padding and ensure full height/width
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-
   html, body {
     height: 100%;
     width: 100%;
-    overflow: hidden; /* Remove any overflow */
+    overflow: hidden;
   }
 `;
 
 const StartPageWrapper = styled.div`
-  font-family: "Gravitas One", sans-serif;
+  font-family: "Oi", sans-serif;
   height: 100vh;
-  margin: 0;
-  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  background: linear-gradient(180deg, #451d6b, #331540);
   position: relative;
-  cursor: pointer;
-  background: linear-gradient(180deg, #451d6b, #451d6b);
+  overflow: hidden;
 `;
 
-const BackgroundImage = styled.img`
+const TiledBackground = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
   z-index: 0;
-  opacity: 0.3;
-  color: black;
-  filter: blur(5px);
+
+  div {
+    width: 100%;
+    height: 100%;
+    background-color: #331540;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+
+  div:nth-child(-n + 10):hover {
+    background: linear-gradient(180deg, #331540, #451d6b);
+  }
+  div:nth-child(n + 11):nth-child(-n + 20):hover {
+    background: linear-gradient(180deg, #331540, #451d6b);
+  }
+  div:nth-child(n + 21):nth-child(-n + 30):hover {
+    background: linear-gradient(180deg, #331540, #451d6b);
+  }
+  div:nth-child(n + 31):nth-child(-n + 40):hover {
+    background: linear-gradient(180deg, #451d6b, #8c2fc7);
+  }
+  div:nth-child(n + 41):nth-child(-n + 50):hover {
+    background: linear-gradient(180deg, #451d6b, #8c2fc7);
+  }
+  div:nth-child(n + 51):nth-child(-n + 60):hover {
+    background: linear-gradient(180deg, #8c2fc7, #00cac9);
+  }
+  div:nth-child(n + 61):nth-child(-n + 70):hover {
+    background: linear-gradient(180deg, #8c2fc7, #00cac9);
+  }
+  div:nth-child(n + 71):nth-child(-n + 80):hover {
+    background: linear-gradient(180deg, #00cac9, #331540);
+  }
+  div:nth-child(n + 81):nth-child(-n + 90):hover {
+    background: linear-gradient(180deg, #00cac9, #331540);
+  }
+  div:nth-child(n + 91):nth-child(-n + 100):hover {
+    background: linear-gradient(180deg, #00cac9, #331540);
+  }
 `;
 
 const Content = styled.div`
   text-align: center;
   z-index: 1;
-  padding: 20px;
+  padding: 50px;
+  color: white;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 `;
 
 const GameTitle = styled.div`
-  margin-top: 40px;
   font-size: 90px;
   text-transform: uppercase;
-  animation: ${bounce} 1s infinite alternate;
-  background: #451d6b;
-  -webkit-background-clip: text;
   color: transparent;
-  -webkit-text-stroke: 1px black;
-  display: inline-block;
-  transform: rotate(15deg);
-  transform-origin: bottom center;
+  background: linear-gradient(45deg, #8c2fc7, #451d6b);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 1px #000;
+  animation: ${pulse} 3s infinite;
+  margin-bottom: 1px;
 `;
 
-const GameTitle1 = styled.div`
-  font-size: 70px;
-  margin-bottom: 40px;
+const GameSubtitle = styled.div`
+  font-size: 80px;
   text-transform: uppercase;
-  animation: ${bounce} 1s infinite alternate;
-  background: #451d6b;
-  -webkit-background-clip: text;
   color: transparent;
-  -webkit-text-stroke: 1px black;
+  background: linear-gradient(45deg, #8c2fc7, #451d6b);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 1px #000;
+  animation: ${pulse} 3s infinite;
+  margin-bottom: 1px;
 `;
 
 const Button = styled.button`
-  background: transparent;
-  border: 2px black;
-  color: ${(props) =>
-    props.selected ? "black" : "white"}; /* Highlight selected button */
+  background: linear-gradient(45deg, #8c2fc7, #451d6b);
+  border: 2px solid #000;
+  color: white;
   font-size: 20px;
-  font-family: "Fraunces", sans-serif;
-  margin-top: 5px;
-  margin-bottom: 2px;
+  font-family: "Lora", sans-serif;
+  padding: 15px 40px;
+  margin: 10px 0;
   border-radius: 25px;
   cursor: pointer;
-  opacity: 0.9;
-  width: 200px;
-  transition: 0.3s;
-  padding: 10px;
+  width: 300px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(140, 47, 199, 0.5);
 
   &:hover {
-    background-color: rgba(156, 170, 241, 0.2);
-    opacity: 3;
-    transform: scale(1.1);
-  }
-
-  &:focus {
-    outline: none;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(140, 47, 199, 0.8);
+    background: linear-gradient(45deg, #451d6b, #8c2fc7);
   }
 `;
 
-const Arrow = styled.div`
+const IconButtonWrapper = styled.div`
   position: absolute;
-  top: ${(props) => props.top};
-  right: 600px;
+  top: 30px;
+  right: 30px;
   z-index: 2;
-  width: 20px;
-  height: 20px;
-  border-left: 3px solid white;
-  border-bottom: 3px solid white;
-  transform: rotate(45deg);
+  display: flex;
+  flex-direction: column; /* Changed to column for vertical stacking */
+  gap: 15px; /* Space between icons */
 `;
 
-const MusicIconWrapper = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  border-radius: 15px;
+const IconWrapper = styled.div`
   padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgba(140, 47, 199, 0.5);
+  }
 `;
 
-const MusicIcon = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
+const StyledHomeIcon = styled(HomeIcon)`
+  font-size: 35px !important;
+  color: white;
+`;
+
+const StyledMenuIcon = styled(MenuIcon)`
+  font-size: 35px !important;
+  color: white;
+`;
+
+const StyledHelpIcon = styled(HelpOutlineIcon)`
+  font-size: 35px !important;
+  color: white;
+`;
+
+const StyledPersonIcon = styled(PersonIcon)`
+  font-size: 35px !important;
+  color: white;
+`;
+
+const StyledLogoutIcon = styled(LogoutIcon)`
+  font-size: 35px !important;
+  color: white;
 `;
 
 const StartPage = () => {
   const audioRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0); // Track the selected button
   const navigate = useNavigate();
 
   const buttons = [
     { label: "START", onClick: () => navigate("/gameplay") },
-    { label: "MENU", onClick: () => navigate("/menu") },
-    { label: "HOW TO PLAY", onClick: () => navigate("/howtoplay") },
+    { label: "MINIGAMES", onClick: () => navigate("/minigame") }, // Added from MenuPage
     { label: "LEADERBOARDS", onClick: () => navigate("/leaderboards") },
-    { label: "HOME", onClick: () => navigate("/") },
   ];
 
-  // Auto-play audio on page load
+  const iconButtons = [
+    { Icon: StyledHomeIcon, onClick: () => navigate("/"), tooltip: "Home" },
+    { Icon: StyledHelpIcon, onClick: () => navigate("/howtoplay"), tooltip: "How to Play" },
+    { Icon: StyledPersonIcon, onClick: () => navigate("/user-profile"), tooltip: "User Profile" }, // Added from MenuPage
+    {
+      Icon: StyledLogoutIcon,
+      onClick: () => {
+        localStorage.clear();
+        toast.success("Logged out successfully!");
+        navigate("/");
+      },
+      tooltip: "Logout",
+    }, // Added from MenuPage
+  ];
+
   useEffect(() => {
     if (audioRef.current) {
-      const playAudio = async () => {
-        try {
-          await audioRef.current.play();
-        } catch (err) {
-          console.error(
-            "Autoplay prevented: User interaction may be required",
-            err
-          );
-        }
-      };
-
-      playAudio();
+      audioRef.current.play().catch((err) => console.error("Audio error:", err));
     }
   }, []);
-
-  const handleMuteToggle = () => {
-    setIsMuted((prevMuted) => {
-      const newMutedStatus = !prevMuted;
-      if (audioRef.current) {
-        audioRef.current.muted = newMutedStatus;
-      }
-      return newMutedStatus;
-    });
-  };
-
-  // Keyboard event listener for arrow keys
-  const handleKeyPress = (e) => {
-    if (e.key === "ArrowDown") {
-      setSelectedIndex((prevIndex) => (prevIndex + 1) % buttons.length);
-    } else if (e.key === "ArrowUp") {
-      setSelectedIndex((prevIndex) =>
-        prevIndex === 0 ? buttons.length - 1 : prevIndex - 1
-      );
-    } else if (e.key === "Enter") {
-      buttons[selectedIndex].onClick();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [selectedIndex]);
 
   return (
     <>
       <GlobalStyle />
       <StartPageWrapper>
-        <BackgroundImage
-          src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387358/bg_zjzffa.jpg"
-          alt="Game Background"
-        />
+        <TiledBackground>
+          {Array.from({ length: 100 }).map((_, index) => (
+            <div key={index}></div>
+          ))}
+        </TiledBackground>
         <audio ref={audioRef} loop>
           <source src="/assets/quiet.mp3" type="audio/mp3" />
-          Your browser does not support the audio element.
         </audio>
         <Content>
           <GameTitle>Finance</GameTitle>
-          <GameTitle1>Quest</GameTitle1>
-
+          <GameSubtitle>Quest</GameSubtitle>
           {buttons.map((button, index) => (
-            <Button
-              key={index}
-              selected={selectedIndex === index} // Highlight selected button
-              onClick={button.onClick}
-              style={{ alignSelf: "center" }}
-            >
+            <Button key={index} onClick={button.onClick}>
               {button.label}
             </Button>
           ))}
         </Content>
-
-        <Arrow top={`${selectedIndex * 52 + 380}px`} />
-
-        {/* Adjust for arrow positioning */}
-        <MusicIconWrapper onClick={handleMuteToggle}>
-          <MusicIcon
-            src={
-              isMuted
-                ? "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/mute_hzttoc.jpg"
-                : "https://res.cloudinary.com/dwp8u82sd/image/upload/v1740387737/music_hf9tay.jpg"
-            }
-            alt={isMuted ? "Mute Icon" : "Unmute Icon"}
-          />
-        </MusicIconWrapper>
+        <IconButtonWrapper>
+          {iconButtons.map(({ Icon, onClick, tooltip }, index) => (
+            <IconWrapper key={index} onClick={onClick} title={tooltip}>
+              <Icon />
+            </IconWrapper>
+          ))}
+        </IconButtonWrapper>
       </StartPageWrapper>
     </>
   );

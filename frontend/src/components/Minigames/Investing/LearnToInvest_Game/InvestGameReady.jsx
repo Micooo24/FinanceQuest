@@ -449,7 +449,7 @@ const InvestGameReady = () => {
         <div
           id="result-screen"
           style={{
-            height: "calc(100vh - 40px)", // Subtract marginBottom to fit within the screen
+            height: "calc(100vh - 0px)", // Subtract marginBottom to fit within the screen
             width: "100vw", // Full viewport width
             padding: "20px",
             marginBottom: "0", // No additional margin
@@ -468,7 +468,7 @@ const InvestGameReady = () => {
               color: "black",
               fontSize: "2.5rem",
               marginBottom: "20px",
-              fontFamily: "'Comic Sans MS', cursive, sans-serif",
+              fontFamily: "'Lora', sans-serif",
               textShadow: "2px 2px 5px rgba(0, 0, 0, 0.4)",
             }}
           >
@@ -479,7 +479,7 @@ const InvestGameReady = () => {
               fontSize: "1.5rem",
               color: "black",
               marginBottom: "20px",
-              fontFamily: "'Comic Sans MS', cursive, sans-serif",
+              fontFamily: "'Lora', sans-serif",
             }}
           >
             Your final pocket cash: <strong>₱{pocketCash.toFixed(2)}</strong>
@@ -489,7 +489,7 @@ const InvestGameReady = () => {
               fontSize: "1.5rem",
               color: "black",
               marginBottom: "30px",
-              fontFamily: "'Comic Sans MS', cursive, sans-serif",
+              fontFamily: "'Lora',  sans-serif",
             }}
           >
             Your final net worth: <strong>₱{netWorth.toFixed(2)}</strong>
