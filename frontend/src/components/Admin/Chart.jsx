@@ -152,36 +152,40 @@ const DashboardCharts = () => {
     fetchAdminUserData();
   }, []);
 
-  useEffect(() => {
-    const fetchLeaderboards = async () => {
-      try {
-        const [savingsRes, investingRes, budgetingRes] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/leaderboards/get-savings"),
-          axios.get("http://127.0.0.1:8000/leaderboards/get-investments"),
-          axios.get("http://127.0.0.1:8000/leaderboards/get-budgets"),
-        ]);
-        setLeaderboards({
-          savings: savingsRes.data.map((player) => ({
-            username: player.username,
-            score: player.balance,
-          })),
-          investing: investingRes.data.map((player) => ({
-            username: player.username,
-            score: player.score,
-          })),
-          budgeting: budgetingRes.data.map((player) => ({
-            username: player.username,
-            score: player.money,
-          })),
-        });
-      } catch (error) {
-        console.error("Error fetching leaderboards:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLeaderboards();
-  }, []);
+
+
+useEffect(() => {
+  const fetchLeaderboards = async () => {
+    try {
+      const [savingsRes, investingRes, budgetingRes] = await Promise.all([
+        axios.get("http://127.0.0.1:8000/leaderboards/get-savings"),
+        axios.get("http://127.0.0.1:8000/leaderboards/get-investments"),
+        axios.get("http://127.0.0.1:8000/leaderboards/get-budgets"),
+      ]);
+      setLeaderboards({
+        savings: savingsRes.data.map((player) => ({
+          username: player.username,
+          score: player.balance,
+        })),
+        investing: investingRes.data.map((player) => ({
+          username: player.username,
+          score: player.score,
+        })),
+        budgeting: budgetingRes.data.map((player) => ({
+          username: player.username,
+          score: player.medals_count, // Changed from player.money to player.medals_count
+        })),
+      });
+    } catch (error) {
+      console.error("Error fetching leaderboards:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchLeaderboards();
+}, []);
+
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -199,7 +203,7 @@ const DashboardCharts = () => {
     labels: currentLeaderboard.map((player) => player.username),
     datasets: [
       {
-        label: activeTab === "investing" ? "Score" : "Money",
+        label: activeTab === "investing" ? "Score" : activeTab === "budgeting" ? "Medals" : "Money",
         data: currentLeaderboard.map((player) => player.score),
         backgroundColor: ["#6d4c7d", "#4b2e5a", "#805c92", "#9b7aaf", "#5a3f6b"],
         borderColor: "#fff",
@@ -293,7 +297,10 @@ const DashboardCharts = () => {
         formatter: (value, context) => {
           if (value <= 0) return "";
           if (context.dataset.label === "Money") {
-            return `₱${value.toLocaleString()}`; // Peso sign for Savings and Budgeting
+            return `₱${value.toLocaleString()}`; // Peso sign for Savings
+          }
+          if (context.dataset.label === "Medals") {
+            return `${value} 🏅`; // Medal emoji for Budgeting
           }
           if (context.dataset.label === "Score") {
             return value.toLocaleString(); // No peso sign for Investing
