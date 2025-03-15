@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Button, TextField, Box, Typography, IconButton, Paper, Table, 
-  TableBody, TableCell, TableContainer, TableHead, TableRow, Modal, 
-  TablePagination 
+import {
+  Button, TextField, Box, Typography, IconButton, Paper, Table,
+  TableBody, TableCell, TableContainer, TableHead, TableRow, Modal,
+  TablePagination
 } from "@mui/material";
-import { 
-  ArrowUpward, ArrowDownward, Search, Delete, RestoreFromTrash 
+import {
+  ArrowUpward, ArrowDownward, Search, Delete, RestoreFromTrash
 } from "@mui/icons-material";
 import axios from "axios";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, LabelList } from "recharts";
 
 const Account = () => {
   const [users, setUsers] = useState([]);
@@ -30,7 +30,7 @@ const Account = () => {
       const storedDeletedUsers = JSON.parse(localStorage.getItem("deletedUsers")) || [];
       const fetchedUsers = response.data.users;
 
-      const activeUsers = fetchedUsers.filter(user => 
+      const activeUsers = fetchedUsers.filter(user =>
         !storedDeletedUsers.some(deleted => deleted._id === user._id)
       );
 
@@ -88,13 +88,15 @@ const Account = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  // Data for the BarChart
+  const chartData = [
+    { category: "Accounts", Admins: adminCount, Users: userCount }
+  ];
+
   return (
     <Box sx={{ display: "flex", gap: "20px", padding: "20px", width: "100%" }}>
-      
       {/* Left Side - Account Management */}
       <Box sx={{ flex: 2 }}>
-        
-
         {/* Search, Sort & Recycle Bin */}
         <Box sx={{ display: "flex", alignItems: "center", gap: "15px", marginBottom: "15px" }}>
           <TextField
@@ -102,36 +104,48 @@ const Account = () => {
             placeholder="Search Users"
             value={searchQuery}
             onChange={handleSearch}
-            InputProps={{ startAdornment: <Search sx={{ marginRight: "10px" }} /> }}
-            sx={{ backgroundColor: "#C5BAFF", borderRadius: "4px", width: "300px", ml: 35, mb: 1 }}
+            InputProps={{ startAdornment: <Search sx={{ marginRight: "10px", color: "#fff" }} /> }}
+            sx={{ 
+              backgroundColor: "#8a619b", 
+              borderRadius: "4px", 
+              width: "300px", 
+              ml: 35, 
+              mb: 1,
+              "& .MuiInputBase-input": { color: "#fff" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#9b71ad" },
+                "&:hover fieldset": { borderColor: "#b590c7" },
+                "&.Mui-focused fieldset": { borderColor: "#b590c7" },
+              },
+            }}
           />
-          <Button onClick={handleSort} sx={{ color: "#451d6b", fontWeight: "bold" }}>
+          <Button onClick={handleSort} sx={{ color: "#fff", fontWeight: "bold" }}>
             {sortOrder === "asc" ? <ArrowUpward /> : <ArrowDownward />}
           </Button>
-          <IconButton onClick={toggleModal} sx={{ color: "#451d6b" }}>
+          <IconButton onClick={toggleModal} sx={{ color: "#fff" }}>
             <RestoreFromTrash />
           </IconButton>
         </Box>
 
         {/* Users Table */}
-        <TableContainer component={Paper} sx={{ backgroundColor: "#DAD2FF", borderRadius: "8px" }}>
+        <TableContainer component={Paper} sx={{ backgroundColor: "#67407a", borderRadius: "8px" }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#C5BAFF" }}>
-                <TableCell sx={{ fontWeight: "bold" , fontFamily: "'Lora'"}}>Username</TableCell>
-                <TableCell sx={{ fontWeight: "bold" , fontFamily: "'Lora'"}}>Email</TableCell>
-                <TableCell sx={{ fontWeight: "bold" , fontFamily: "'Lora'"}}>Role</TableCell>
-                <TableCell sx={{ fontWeight: "bold" , fontFamily: "'Lora'"}}>Actions</TableCell>
+              <TableRow sx={{ backgroundColor: "#8a619b" }}>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Username</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Email</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Role</TableCell>
+                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                 <TableRow key={user._id}>
-                  <TableCell sx={{  fontFamily: "'Lora'"}} >{user.username} </TableCell>
-                  <TableCell sx={{  fontFamily: "'Lora'"}} >{user.email}</TableCell>
-                  <TableCell sx={{  fontFamily: "'Lora'"}} >{user.role}</TableCell>
+                  <TableCell sx={{ fontFamily: "'Lora'", color: "#fff" }}>{user.username}</TableCell>
+                  <TableCell sx={{ fontFamily: "'Lora'", color: "#fff" }}>{user.email}</TableCell>
+                  <TableCell sx={{ fontFamily: "'Lora'", color: "#fff" }}>{user.role}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleDelete(user._id)} color="error">
+                    <IconButton onClick={() => handleDelete(user._id)} sx={{ color: "#ff6b6b" }}>
                       <Delete />
                     </IconButton>
                   </TableCell>
@@ -140,55 +154,55 @@ const Account = () => {
             </TableBody>
           </Table>
         </TableContainer>
-   
-    <Modal open={isModalOpen} onClose={toggleModal}>
-        <Box sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          backgroundColor: "#DAD2FF",
-          padding: "20px",
-          borderRadius: "8px",
-          width: "700px",
-          boxShadow: 24
-        }}>
-          <Typography variant="h6" sx={{ marginBottom: "20px", fontFamily: "'Fraunces'", fontWeight: "bold", borderBottom: "1px solid #451d6b" }}>
-            Recycle Bin
-          </Typography>
-          <Table>
-            <TableHead >
-              <TableRow sx={{ backgroundColor: "#C5BAFF", borderRadius: "8px" }}>
-                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'" }}>Username</TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'" }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'" }}>Restore</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {deletedUsers.map((user) => (
-                <TableRow key={user._id} sx={{ backgroundColor: "#DAD2FF", borderRadius: "8px" }}>
-                  <TableCell >{user.username}</TableCell>
-                  <TableCell >{user.email}</TableCell>
-                  <TableCell>
-                    <Button
+
+        <Modal open={isModalOpen} onClose={toggleModal}>
+          <Box sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#67407a",
+            padding: "20px",
+            borderRadius: "8px",
+            width: "700px",
+            boxShadow: 24
+          }}>
+            <Typography variant="h6" sx={{ marginBottom: "20px", fontFamily: "'Fraunces'", fontWeight: "bold", color: "#fff", borderBottom: "1px solid #9b71ad" }}>
+              Recycle Bin
+            </Typography>
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: "#8a619b", borderRadius: "8px" }}>
+                  <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Username</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Email</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: "#fff" }}>Restore</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {deletedUsers.map((user) => (
+                  <TableRow key={user._id} sx={{ backgroundColor: "#67407a", borderRadius: "8px" }}>
+                    <TableCell sx={{ color: "#fff" }}>{user.username}</TableCell>
+                    <TableCell sx={{ color: "#fff" }}>{user.email}</TableCell>
+                    <TableCell>
+                      <Button
                         onClick={() => handleRestore(user._id)}
                         color="primary"
                         sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            color: '#451d6b',
-                            }}
-                        >
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          color: '#b590c7',
+                        }}
+                      >
                         <RestoreFromTrash sx={{ fontSize: "1rem" }} />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </Modal>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </Modal>
 
         {/* Pagination */}
         <TablePagination
@@ -201,30 +215,40 @@ const Account = () => {
             setRowsPerPage(parseInt(event.target.value, 10));
             setPage(0);
           }}
+          sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: '#fff' }}
         />
       </Box>
 
       {/* Right Side - Total Accounts & Graph */}
-      <Box sx={{ flex: 1 , ml: 5}}>
-        
+      <Box sx={{ flex: 1, ml: 5 }}>
         {/* Total Accounts */}
-        <Paper sx={{ padding: "15px", backgroundColor: "#B2A5FF", borderRadius: "8px", textAlign: "center", marginBottom: "20px", ml:5,  width: "80%"}}>
-          <Typography variant="h6" sx={{ fontWeight: "bold" , fontFamily: "'Lora'" }}>Total Accounts Registered</Typography>
-          <Typography variant="h4" sx={{ fontWeight: "bold", fontFamily: "'Lora'"  }}>{totalAccounts}</Typography>
+        <Paper sx={{ padding: "15px", backgroundColor: "#8a619b", borderRadius: "8px", textAlign: "center", marginBottom: "20px", ml: 5, width: "100%" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: '#fff' }}>Total Accounts Registered</Typography>
+          <Typography variant="h4" sx={{ fontWeight: "bold", fontFamily: "'Lora'", color: '#fff' }}>{totalAccounts}</Typography>
         </Paper>
 
         {/* Admin vs User Graph */}
-        <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "10px", ml: 13, mt: 8 , fontFamily: "'Lora'" }}>Admin & User Count</Typography>
-        <ResponsiveContainer width="90%" height={350}>
-          <BarChart data={[{ category: "Accounts", Admins: adminCount, Users: userCount }]}>
-            <XAxis dataKey="category" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Admins" fill="#C5BAFF" />
-            <Bar dataKey="Users" fill="#B2A5FF" />
-          </BarChart>
-        </ResponsiveContainer>
+        <Paper sx={{ padding: "5px", backgroundColor: "#8a619b", borderRadius: "8px", ml: 5, width: "100%" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "10px", fontFamily: "'Lora'", color: '#fff', textAlign: "center" }}>Admin & User Count</Typography>
+          <ResponsiveContainer width="100%" height={350}>
+            <BarChart data={chartData}>
+              <XAxis dataKey="category" tick={{ fill: "#fff" }} />
+              <YAxis tick={{ fill: "#fff" }} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#75538a", borderColor: "#9b71ad" }}
+                labelStyle={{ color: "#fff" }}
+                itemStyle={{ color: "#fff" }}
+              />
+              <Legend wrapperStyle={{ color: "#fff" }} />
+              <Bar dataKey="Admins" fill="#75538a">
+                <LabelList dataKey="Admins" position="top" fill="#fff" fontSize={12} formatter={(value) => value.toLocaleString()} />
+              </Bar>
+              <Bar dataKey="Users" fill="#67407a">
+                <LabelList dataKey="Users" position="top" fill="#fff" fontSize={12} formatter={(value) => value.toLocaleString()} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Paper>
       </Box>
     </Box>
   );

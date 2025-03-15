@@ -29,16 +29,16 @@ const AdminHeader = ({ activeSection }) => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ background: "#C5BAFF", top: 0, left: 0, width: "100%", zIndex: 1 , borderBottom: "1px solid rgb(26, 25, 24)",}}>
+    <AppBar position="fixed" sx={{ background: "#351742", top: 0, left: 0, width: "100%", zIndex: 1 , borderBottom: "1px solid rgb(26, 25, 24)",}}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Left Side - Active Section */}
-        <Typography variant="h6" sx={{ color: "#220E36", fontWeight: "bold", marginLeft: 10 , fontFamily: "'Lora'" }}>
+        <Typography variant="h6" sx={{ color: "#DAD2FF", fontWeight: "bold", marginLeft: 10 , fontFamily: "'Lora'" }}>
           {activeSection}
         </Typography>
 
         {/* Right Side - Admin Name */}
         <Box>
-          <Typography variant="body1" sx={{ color: "#220E36"  , fontFamily: "'Fraunces'"}}>
+          <Typography variant="body1" sx={{ color: "#DAD2FF"  , fontFamily: "'Fraunces'"}}>
             Welcome, {adminName}
           </Typography>
         </Box>

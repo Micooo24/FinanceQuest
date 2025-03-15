@@ -12,6 +12,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { IconButton } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -21,11 +25,9 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
-import { IconButton } from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import { useNavigate } from "react-router-dom";
 
 const DashboardCharts = () => {
   const [registeredPlayersData, setRegisteredPlayersData] = useState({
@@ -37,7 +39,6 @@ const DashboardCharts = () => {
     admins: [],
     users: [],
   });
-  
   const [leaderboards, setLeaderboards] = useState({
     savings: [],
     investing: [],
@@ -46,13 +47,8 @@ const DashboardCharts = () => {
   const [activeTab, setActiveTab] = useState("savings");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-
-
-
   const [activeUsers, setActiveUsers] = useState(0);
   const [inactiveUsers, setInactiveUsers] = useState(0);
-  
   const [totalAccounts, setTotalAccounts] = useState(0);
   const [adminCount, setAdminCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
@@ -62,63 +58,41 @@ const DashboardCharts = () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/admin/get-users");
         const users = response.data.users;
-  
-        // Count Users and Admins separately
-        const admins = users.filter(user => user.role.toLowerCase() === "admin").length;
-        const regularUsers = users.filter(user => user.role.toLowerCase() === "user").length;
-  
-        // Update states
+        const admins = users.filter((user) => user.role.toLowerCase() === "admin").length;
+        const regularUsers = users.filter((user) => user.role.toLowerCase() === "user").length;
         setAdminCount(admins);
         setUserCount(regularUsers);
         setTotalAccounts(admins + regularUsers);
-  
       } catch (error) {
         console.error("Error fetching total accounts:", error);
       }
     };
-  
     fetchTotalAccounts();
   }, []);
-  
 
   useEffect(() => {
     const fetchRegisteredPlayersData = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/admin/get-users");
         const users = response.data.users;
-    
-        console.log("API Response:", response.data);
-        console.log("Users Data:", users.map(user => user.role)); // Check roles
-    
         const groupedData = {
           Jan: 0, Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0,
           Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0
         };
-    
-        users.forEach(user => {
-          if (user.role) { 
-            const role = user.role.toLowerCase(); // Normalize role to lowercase
-            
-            if (role === "user" || role === "admin") { // Include both users & admins
-              if (user.created_at) { // Only use created_at now
+        users.forEach((user) => {
+          if (user.role) {
+            const role = user.role.toLowerCase();
+            if (role === "user" || role === "admin") {
+              if (user.created_at) {
                 const date = new Date(user.created_at);
-                
-                if (!isNaN(date)) { // Check if the date is valid
+                if (!isNaN(date)) {
                   const month = date.toLocaleString("default", { month: "short" });
                   groupedData[month] = (groupedData[month] || 0) + 1;
-                } else {
-                  console.warn("Invalid date format:", user.created_at);
                 }
-              } else {
-                console.warn("Missing created_at for user:", user);
               }
             }
           }
         });
-        
-    
-        console.log("Processed Data:", groupedData); // Debug processed results
-    
         setRegisteredPlayersData({
           labels: Object.keys(groupedData),
           counts: Object.values(groupedData),
@@ -127,7 +101,6 @@ const DashboardCharts = () => {
         console.error("Error fetching registered players data:", error);
       }
     };
-    
 
     const fetchActiveUsers = async () => {
       try {
@@ -148,15 +121,13 @@ const DashboardCharts = () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/admin/get-users");
         const users = response.data.users;
-
         const groupedData = {
           Jan: { admins: 0, users: 0 }, Feb: { admins: 0, users: 0 }, Mar: { admins: 0, users: 0 },
           Apr: { admins: 0, users: 0 }, May: { admins: 0, users: 0 }, Jun: { admins: 0, users: 0 },
           Jul: { admins: 0, users: 0 }, Aug: { admins: 0, users: 0 }, Sep: { admins: 0, users: 0 },
           Oct: { admins: 0, users: 0 }, Nov: { admins: 0, users: 0 }, Dec: { admins: 0, users: 0 }
         };
-
-        users.forEach(user => {
+        users.forEach((user) => {
           if (user.created_at && user.role) {
             const date = new Date(user.created_at);
             if (!isNaN(date)) {
@@ -169,20 +140,17 @@ const DashboardCharts = () => {
             }
           }
         });
-
         setAdminUserData({
           labels: Object.keys(groupedData),
-          admins: Object.values(groupedData).map(data => data.admins),
-          users: Object.values(groupedData).map(data => data.users),
+          admins: Object.values(groupedData).map((data) => data.admins),
+          users: Object.values(groupedData).map((data) => data.users),
         });
       } catch (error) {
         console.error("Error fetching admin/user data:", error);
       }
     };
-
     fetchAdminUserData();
   }, []);
-
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
@@ -192,7 +160,6 @@ const DashboardCharts = () => {
           axios.get("http://127.0.0.1:8000/leaderboards/get-investments"),
           axios.get("http://127.0.0.1:8000/leaderboards/get-budgets"),
         ]);
-
         setLeaderboards({
           savings: savingsRes.data.map((player) => ({
             username: player.username,
@@ -213,7 +180,6 @@ const DashboardCharts = () => {
         setLoading(false);
       }
     };
-
     fetchLeaderboards();
   }, []);
 
@@ -235,13 +201,12 @@ const DashboardCharts = () => {
       {
         label: activeTab === "investing" ? "Score" : "Money",
         data: currentLeaderboard.map((player) => player.score),
-        backgroundColor: ["#C5BAFF", "#B2A5FF", "#DAD2FF", "#5e3967", "#9966ff"],
+        backgroundColor: ["#6d4c7d", "#4b2e5a", "#805c92", "#9b7aaf", "#5a3f6b"],
         borderColor: "#fff",
         borderWidth: 1,
       },
     ],
   };
-
 
   const barData = {
     labels: adminUserData.labels,
@@ -249,33 +214,14 @@ const DashboardCharts = () => {
       {
         label: "Admins",
         data: adminUserData.admins,
-        backgroundColor: "#C5BAFF",
+        backgroundColor: "#6d4c7d",
       },
       {
         label: "Users",
         data: adminUserData.users,
-        backgroundColor: "#B2A5FF",
+        backgroundColor: "#4b2e5a",
       },
     ],
-  };
-
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: true },
-      tooltip: {
-        backgroundColor: "#B2A5FF",
-        titleColor: "#000",
-        bodyColor: "#000",
-        borderColor: "#ccc",
-        borderWidth: 1,
-      },
-    },
-    scales: {
-      x: { stacked: false },
-      y: { stacked: false },
-    },
   };
 
   const lineData = {
@@ -284,10 +230,10 @@ const DashboardCharts = () => {
       {
         label: "Registered Players",
         data: registeredPlayersData.counts,
-        borderColor: "#B2A5FF",
-        backgroundColor: "#C5BAFF",
+        borderColor: "#805c92",
+        backgroundColor: "#5a3f6b",
         borderWidth: 3,
-        pointBackgroundColor: "#C5BAFF",
+        pointBackgroundColor: "#6d4c7d",
         pointRadius: 4,
         tension: 0.4,
       },
@@ -299,45 +245,86 @@ const DashboardCharts = () => {
     datasets: [
       {
         data: [activeUsers, inactiveUsers],
-        backgroundColor: ["#B2A5FF", "#C5BAFF"],
-        borderWidth: 0,
+        backgroundColor: ["#6d4c7d", "#4b2e5a"],
+        borderWidth: 1,
       },
     ],
   };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: true, labels: { color: "#451d6b", font: { size: 12, weight: "bold" } } },
-      tooltip: {
-        backgroundColor: "#C5BAFF",
-        titleColor: "#451d6b",
-        bodyColor: "#451d6b",
-        borderColor: "#451d6b",
-        borderWidth: 1,
-        cornerRadius: 6,
-      },
-    },
-    scales: {
-      x: { ticks: { color: "#451d6b" }, grid: { color: "#C5BAFF" } },
-      y: { ticks: { color: "#451d6b" }, grid: { color: "#C5BAFF" } },
-    },
-  };
-
 
   const pieData = {
     labels: ["Admins", "Users"],
     datasets: [
       {
         data: [adminCount, userCount],
-        backgroundColor: ["#C5BAFF", "#B2A5FF"], // Admins: Purple, Users: Teal
-        hoverBackgroundColor: ["#DAD2FF", "#DAD2FF"],
+        backgroundColor: ["#6d4c7d", "#4b2e5a"],
+        hoverBackgroundColor: ["#805c92", "#9b7aaf"],
         borderWidth: 1,
       },
     ],
   };
-  
+
+  const commonChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+        labels: {
+          color: "#fff",
+          font: { size: 12, weight: "bold" },
+        },
+      },
+      tooltip: {
+        backgroundColor: "#5a3f6b",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        borderColor: "#805c92",
+        borderWidth: 1,
+        cornerRadius: 6,
+      },
+      datalabels: {
+        display: true,
+        color: "#fff",
+        font: {
+          weight: "bold",
+          size: 10,
+        },
+        formatter: (value, context) => {
+          if (value <= 0) return "";
+          if (context.dataset.label === "Money") {
+            return `₱${value.toLocaleString()}`; // Peso sign for Savings and Budgeting
+          }
+          if (context.dataset.label === "Score") {
+            return value.toLocaleString(); // No peso sign for Investing
+          }
+          if (
+            context.chart.data.labels[context.dataIndex].includes("Admin") ||
+            context.chart.data.labels[context.dataIndex].includes("User")
+          ) {
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            return `${value} (${percentage}%)`;
+          }
+          return value.toLocaleString();
+        },
+        anchor: "center",
+        align: "center",
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#fff" },
+        grid: { color: "#5a3f6b" },
+      },
+      y: {
+        ticks: { color: "#fff" },
+        grid: { color: "#5a3f6b" },
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
     <div
       style={{
@@ -345,153 +332,243 @@ const DashboardCharts = () => {
         flexDirection: "column",
         alignItems: "center",
         width: "100%",
-        height: "100vh",
+        minHeight: "100vh",
         gap: "20px",
         padding: "20px",
       }}
     >
-      {/* Line Chart */}
-      <div style={{ width: "100%", maxWidth: "800px", height: "300px" , marginBottom: "50px"}}>
-        <h3 style={{ color: "#451d6b", textAlign: "center", fontFamily: "'Lora'" }}>
-          Registered Accounts by Month
-        </h3>
-        <Line data={lineData} options={chartOptions} />
-      </div>
-
-      <div className="dashboard-charts-container">
-      <IconButton
-        className="home-button"
-        onClick={navigateHome}
-        aria-label="home"
-        sx={{ position: "absolute", top: "20px", left: "20px", color: "#009797" }}
-      >
-        <HomeIcon fontSize="large" />
-      </IconButton>
-
-      <h1
-  style={{
-    fontSize: "2rem",
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#451d6b",
-    padding: "15px",
-    borderRadius: "12px",
-    textTransform: "uppercase",
-    marginBottom: "20px",
-  }}
->
-  🏆 Quest Leaderboard 🏆
-</h1>
-
-<div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    gap: "15px",
-    marginBottom: "20px",
-  }}
->
-  {["savings", "investing", "budgeting"].map((tab) => (
-    <button
-      key={tab}
-      onClick={() => handleTabChange(tab)}
-      style={{
-        background:
-        activeTab === tab
-        ? "linear-gradient(45deg, #B2A5FF, #C5BAFF)"
-        : "linear-gradient(45deg, #DAD2FF, #B2A5FF)",
-        color: "#5e3967",
-        border: "none",
-        padding: "12px 20px",
-        fontSize: "1rem",
-        fontWeight: "bold",
-        borderRadius: "10px",
-        cursor: "pointer",
-        transition: "all 0.3s ease-in-out",
-        boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.2)",
-        transform: activeTab === tab ? "scale(1.1)" : "scale(1)",
-        fontFamily: "'Lora'",
-      }}
-      onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
-      onMouseLeave={(e) =>
-        (e.target.style.transform = activeTab === tab ? "scale(1.1)" : "scale(1)")
-      }
-    >
-      {tab === "savings" && "💰 Savings Battle"}
-      {tab === "investing" && "📈 Investing Assessment"}
-      {tab === "budgeting" && "📊 Budget Quest"}
-    </button>
-  ))}
-</div>
-
-<div style={{ width: "100%", maxWidth: "800px", height: "400px", marginBottom: "50px" }}>
-  <h3 style={{ color: "#451d6b", textAlign: "center", fontFamily: "'Lora'" }}>
-    Quest Leaderboard
-  </h3>
-  <Bar data={chartData} options={{ ...chartOptions, maintainAspectRatio: false }} />
-</div>
-
-    </div>
-  
-      {/* Total Accounts Info */}
+      {/* Top Container: Summary and Total Accounts */}
       <div
         style={{
-          width: "80%",
-          maxWidth: "500px",
-          textAlign: "center",
-          backgroundColor: "#C5BAFF",
-          borderRadius: "10px",
-          padding: "20px",
-          marginTop: "70px",
+          display: "flex",
+          justifyContent: "space-around",
+          width: "100%",
+          maxWidth: "1200px",
+          gap: "20px",
+          marginBottom: "40px",
+          flexWrap: "wrap",
         }}
       >
-        <h3 style={{ color: "#451d6b", fontSize: "18px", fontFamily: "'Lora'" }}>
-          Total Accounts Registered
-        </h3>
-        <h2 style={{ color: "#451d6b", fontSize: "22px", fontWeight: "bold" }}>{totalAccounts}</h2>
-        <p style={{ color: "#451d6b", fontSize: "16px" }}>
-          <b>Admin:</b> {adminCount} | <b>User:</b> {userCount}
-        </p>
+        {/* Registered Accounts Card */}
+        <div
+          style={{
+            flex: "2",
+            minWidth: "300px",
+            backgroundColor: "#4b2e5a",
+            borderRadius: "10px",
+            padding: "20px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          <h3 style={{ color: "#fff", textAlign: "center", fontFamily: "'Lora'" }}>
+            Registered Accounts by Month
+          </h3>
+          <div style={{ height: "250px" }}>
+            <Line
+              data={lineData}
+              options={{
+                ...commonChartOptions,
+                plugins: {
+                  ...commonChartOptions.plugins,
+                  datalabels: {
+                    ...commonChartOptions.plugins.datalabels,
+                    anchor: "end",
+                    align: "top",
+                  },
+                },
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Total Accounts Card */}
+        <div
+          style={{
+            flex: "1",
+            minWidth: "200px",
+            maxWidth: "200px",
+            backgroundColor: "#4b2e5a",
+            borderRadius: "10px",
+            padding: "20px",
+            textAlign: "center",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            height: "200px",
+            marginTop: "50px",
+          }}
+        >
+          <h3 style={{ color: "#fff", fontSize: "18px", fontFamily: "'Lora'", marginTop: "50px" }}>
+            Total Accounts Registered
+          </h3>
+          <h2 style={{ color: "#fff", fontSize: "22px", fontWeight: "bold" }}>
+            {totalAccounts}
+          </h2>
+          <p style={{ color: "#fff", fontSize: "16px" }}>
+            <b>Admin:</b> {adminCount} | <b>User:</b> {userCount}
+          </p>
+        </div>
       </div>
-  
-      {/* Doughnut and Bar Chart Section */}
-     {/* Doughnut and Bar Chart Section */}
-<div
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between", // Distribute evenly
-    alignItems: "center",
-    width: "100%",
-    maxWidth: "900px",
-    gap: "20px",
-  }}
->
-  {/* Doughnut Chart */}
-  <div style={{ flex: "1", minWidth: "280px", maxWidth: "300px", height: "300px" }}>
-    <h3 style={{ color: "#451d6b", textAlign: "center" }}>Total Active Users</h3>
-    <Doughnut data={gaugeData} options={{ cutout: "40%" }} />
-  </div>
 
-  {/* Bar Chart */}
-  <div style={{ flex: "1", minWidth: "280px", maxWidth: "300px", height: "300px" }}>
-    <h3 style={{ color: "#451d6b", textAlign: "center" }}>Admin & User Registrations by Month</h3>
-    <Bar data={barData} options={barOptions} />
-  </div>
+      {/* Middle Container: Pie Charts */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          width: "100%",
+          maxWidth: "1200px",
+          gap: "20px",
+          marginBottom: "40px",
+          flexWrap: "wrap",
+        }}
+      >
+        {/* Total Active Users */}
+        <div
+          style={{
+            flex: "1",
+            minWidth: "280px",
+            maxWidth: "300px",
+            backgroundColor: "#4b2e5a",
+            borderRadius: "10px",
+            padding: "20px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          <h3 style={{ color: "#fff", textAlign: "center", fontFamily: "'Lora'" }}>
+            Total Active Users
+          </h3>
+          <div style={{ height: "280px" }}>
+            <Doughnut
+              data={gaugeData}
+              options={{
+                ...commonChartOptions,
+                cutout: "40%",
+              }}
+            />
+          </div>
+        </div>
 
-  {/* Pie Chart */}
-  <div style={{ flex: "1", minWidth: "280px", maxWidth: "300px", height: "300px" }}>
-    <h3 style={{ color: "#451d6b", textAlign: "center" }}>Admin vs. User Distribution</h3>
-    <Doughnut data={pieData} options={{ cutout: "0%" }} />
-  </div>
-</div>
+        {/* Admin & User Registrations */}
+        <div
+          style={{
+            flex: "1",
+            minWidth: "280px",
+            maxWidth: "350px",
+            backgroundColor: "#4b2e5a",
+            borderRadius: "10px",
+            padding: "20px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          <h3 style={{ color: "#fff", textAlign: "center", fontFamily: "'Lora'" }}>
+            Admin & User Registrations by Month
+          </h3>
+          <div style={{ height: "250px" }}>
+            <Bar data={barData} options={commonChartOptions} />
+          </div>
+        </div>
 
+        {/* Admin vs User Distribution */}
+        <div
+          style={{
+            flex: "1",
+            minWidth: "280px",
+            maxWidth: "350px",
+            backgroundColor: "#4b2e5a",
+            borderRadius: "10px",
+            padding: "20px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          <h3 style={{ color: "#fff", textAlign: "center", fontFamily: "'Lora'" }}>
+            Admin vs User Distribution
+          </h3>
+          <div style={{ height: "250px" }}>
+            <Doughnut
+              data={pieData}
+              options={{
+                ...commonChartOptions,
+                cutout: "0%",
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
+      {/* Bottom Container: Leaderboard */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1200px",
+          backgroundColor: "#4b2e5a",
+          borderRadius: "10px",
+          padding: "20px",
+          marginBottom: "40px",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          position: "relative",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "2rem",
+            fontWeight: "bold",
+            textAlign: "center",
+            color: "#fff",
+            padding: "15px",
+            borderRadius: "12px",
+            textTransform: "uppercase",
+            marginBottom: "20px",
+            fontFamily: "'Lora'",
+          }}
+        >
+          🏆 Quest Leaderboard 🏆
+        </h1>
 
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "15px",
+            marginBottom: "20px",
+            flexWrap: "wrap",
+          }}
+        >
+          {[ "budgeting","savings", "investing"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              style={{
+                background:
+                  activeTab === tab
+                    ? "linear-gradient(45deg, #6d4c7d, #4b2e5a)"
+                    : "linear-gradient(45deg, #805c92, #5a3f6b)",
+                color: "#fff",
+                border: "none",
+                padding: "12px 20px",
+                fontSize: "1rem",
+                fontWeight: "bold",
+                borderRadius: "10px",
+                cursor: "pointer",
+                transition: "all 0.3s ease-in-out",
+                boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.2)",
+                transform: activeTab === tab ? "scale(1.1)" : "scale(1)",
+                fontFamily: "'Lora'",
+              }}
+              onMouseEnter={(e) => (e.target.style.transform = "scale(1.1)")}
+              onMouseLeave={(e) =>
+                (e.target.style.transform = activeTab === tab ? "scale(1.1)" : "scale(1)")
+              }
+            >
+              {tab === "savings" && "💰 Savings Battle"}
+              {tab === "investing" && "📈 Investing Assessment"}
+              {tab === "budgeting" && "📊 Budget Quest"}
+            </button>
+          ))}
+        </div>
 
+        <div style={{ height: "350px" }}>
+          <Bar data={chartData} options={commonChartOptions} />
+        </div>
+      </div>
     </div>
-  
-  
   );
 };
 

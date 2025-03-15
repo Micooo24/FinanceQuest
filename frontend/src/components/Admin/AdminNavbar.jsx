@@ -43,8 +43,8 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
       sx={{
         width: expanded ? 200 : 70,
         height: "100vh",
-        background: "#C5BAFF",
-        color: "#451d6b",
+        background: "#351742",
+        color: "#DAD2FF",
         position: "fixed",
         left: 0,
         top: 0,
@@ -89,7 +89,7 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
               onClick={() => setActiveSection(item.text)}
               sx={{ padding: "10px 16px"}}
             >
-              <ListItemIcon sx={{ color: "#331540", minWidth: "40px", backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
+              <ListItemIcon sx={{ color: "#DAD2FF", minWidth: "40px", backgroundColor: "#5e3967", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
                 {item.icon}
               </ListItemIcon>
               {expanded && <ListItemText primary={item.text} sx={{ fontSize: "0.9rem", ml: 2, fontFamily: "'Lora'" }} />}
@@ -107,13 +107,13 @@ const AdminNavbar = ({ activeSection, setActiveSection }) => {
             mb: 5,
             cursor: 'pointer',
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.2)'
+              backgroundColor: '#5e3967'
             },
             borderRadius: '8px',
             transition: 'all 0.2s ease-in-out'
           }}
         >
-          <ListItemIcon sx={{ color: "#331540", minWidth: "40px", backgroundColor: "#B2A5FF", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
+          <ListItemIcon sx={{ color: "#DAD2FF", minWidth: "40px", backgroundColor: "#5e3967", borderRadius: "30px", height: "40px", justifyContent: "center", alignItems: "center" }}>
             <Logout />
           </ListItemIcon>
           {expanded && <ListItemText primary="Logout" sx={{ fontSize: "0.9rem", ml: 2 }} />}

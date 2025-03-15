@@ -20,7 +20,7 @@ const Dashboard = () => {
         left: 0,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "#DAD2FF",
+        background: "linear-gradient(180deg, #5e3967, #351742)",
         overflow: "auto",
       }}
     >

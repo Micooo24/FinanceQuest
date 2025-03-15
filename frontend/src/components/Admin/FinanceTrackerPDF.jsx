@@ -17,7 +17,7 @@ Font.register({
 // Styles
 const styles = StyleSheet.create({
   page: { padding: 20 },
-  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 , fontFamily: "Lora", },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10, fontFamily: "Lora" },
   title: { fontSize: 18, fontWeight: "bold", marginBottom: 10, fontFamily: "Lora" },
   section: { marginBottom: 15 },
   table: {
@@ -52,7 +52,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "rgba(200, 200, 200, 0.3)",
     position: "absolute",
-    fontFamily: "Lora" 
+    fontFamily: "Lora",
+  },
+  userDetails: { 
+    fontSize: 12, 
+    marginBottom: 10, 
+    fontFamily: "Roboto" 
   },
 });
 
@@ -90,11 +95,8 @@ const generateFinancialReport = (user) => {
     Debt Considerations: If you have any debts, prioritize paying off high-interest loans first. Check your credit card balance and outstanding loans—your total debt obligations amount to ₱${categorizedRecords.expenses.find(e => e.category === 'Debt Payment')?.actual.toLocaleString() || 0}. Using strategies like the debt avalanche method can help you reduce financial strain efficiently.
     Long-Term Financial Planning: Consider setting long-term financial goals such as homeownership, business ventures, or retirement planning. If you haven’t yet, you may want to start investing in Pag-IBIG MP2 or other long-term financial instruments. Additionally, securing insurance (health, life, accident) can protect against unforeseen financial difficulties.
     Final Thoughts: Your financial situation is ${surplusOrDeficit >= 0 ? "showing positive signs, allowing for savings and investments. Keep refining your financial habits." : "in a deficit, meaning your spending exceeds your income. Consider adjusting your budget, reducing unnecessary expenses, and finding ways to increase your earnings."}
-
   `;
 };
-
-
 
 const Watermark = () => (
   <View style={styles.watermarkContainer}>
@@ -122,7 +124,7 @@ const FinanceTrackerPDF = ({ user, categories }) => {
   return (
     <Document>
       {/* Transaction Logs Pages */}
-      {categories.map(({ title, data }) => {
+      {categories.map(({ title, data }, categoryIndex) => {
         const maxRowsPerPage = 25;
         const tableChunks = [];
 
@@ -130,41 +132,49 @@ const FinanceTrackerPDF = ({ user, categories }) => {
           tableChunks.push(data.slice(i, i + maxRowsPerPage));
         }
 
-        return tableChunks.map((chunk, chunkIndex) => (
-          <Page key={`${title}-${chunkIndex}`} size="A4" style={styles.page}>
-            <Watermark />
-            <View style={styles.header}>
-              <Image src="/assets/TUPLogo.png" style={styles.logo} />
-              <Text style={styles.title}>Financial Tracker Logs</Text>
-              <Image src="/assets/financial.png" style={styles.logo} />
-            </View>
+        return tableChunks.map((chunk, chunkIndex) => {
+          const isFirstPage = categoryIndex === 0 && chunkIndex === 0;
 
-            <Text style={styles.title}>{title}</Text>
-
-            <View style={styles.table}>
-              <View style={styles.row} wrap={false}>
-                <Text style={styles.cell}>Category</Text>
-                <Text style={styles.cell}>Expected</Text>
-                <Text style={styles.cell}>Actual</Text>
-                <Text style={[styles.cell, styles.lastCell]}>Status</Text>
+          return (
+            <Page key={`${title}-${chunkIndex}`} size="A4" style={styles.page}>
+              <Watermark />
+              <View style={styles.header}>
+                <Image src="/assets/TUPLogo.png" style={styles.logo} />
+                <Text style={styles.title}>Financial Tracker Logs</Text>
+                <Image src="/assets/financial.png" style={styles.logo} />
               </View>
 
-              {chunk.map((item, index) => (
-                <View key={index} style={styles.row} wrap={false}>
-                  <Text style={styles.cell}>{item.category || "N/A"}</Text>
-                  <Text style={styles.cell}>₱{(item.expected || 0).toLocaleString()}</Text>
-                  <Text style={styles.cell}>₱{(item.actual || 0).toLocaleString()}</Text>
-                  <Text style={[styles.cell, styles.lastCell]}>{item.done ? "Done" : "Pending"}</Text>
+              {isFirstPage && (
+                <View style={styles.userDetails}>
+                  <Text>Name: {user.username || "N/A"}</Text>
                 </View>
-              ))}
-            </View>
-          </Page>
-        ));
-      })}
+              )}
 
+              <Text style={styles.title}>{title}</Text>
+
+              <View style={styles.table}>
+                <View style={styles.row} wrap={false}>
+                  <Text style={styles.cell}>Category</Text>
+                  <Text style={styles.cell}>Expected</Text>
+                  <Text style={styles.cell}>Actual</Text>
+                  <Text style={[styles.cell, styles.lastCell]}>Status</Text>
+                </View>
+
+                {chunk.map((item, index) => (
+                  <View key={index} style={styles.row} wrap={false}>
+                    <Text style={styles.cell}>{item.category || "N/A"}</Text>
+                    <Text style={styles.cell}>₱{(item.expected || 0).toLocaleString()}</Text>
+                    <Text style={styles.cell}>₱{(item.actual || 0).toLocaleString()}</Text>
+                    <Text style={[styles.cell, styles.lastCell]}>{item.done ? "Done" : "Pending"}</Text>
+                  </View>
+                ))}
+              </View>
+            </Page>
+          );
+        });
+      })}
     </Document>
   );
 };
-
 
 export default FinanceTrackerPDF;
