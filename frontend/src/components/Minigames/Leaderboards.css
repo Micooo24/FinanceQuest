@@ -35,6 +35,7 @@
     z-index: 1;
     opacity: 0.4;
   }
+
   
   .game-theme .leaderboards-title {
     text-align: center;
@@ -118,7 +119,7 @@
   }
   
   .game-theme .leaderboard-content {
-    min-height: 380px;
+    min-height: 450px;
     position: relative;
     flex: 1;
     display: flex;

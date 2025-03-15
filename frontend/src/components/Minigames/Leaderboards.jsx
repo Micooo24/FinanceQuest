@@ -104,7 +104,7 @@ const Leaderboards = () => {
   };
 
   const navigateHome = () => {
-    navigate('/dashboard');
+    navigate('/start');
   };
 
   const currentLeaderboard = leaderboards[activeTab] || [];
@@ -122,7 +122,7 @@ const Leaderboards = () => {
 
     }
   };
-
+  
   return (
     <div className="leaderboards-container game-theme">
       <IconButton 
