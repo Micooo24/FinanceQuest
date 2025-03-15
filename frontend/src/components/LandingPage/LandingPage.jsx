@@ -141,7 +141,7 @@ const LandingPage = () => {
                     width: "120px",
                     transform: "translate(-50%, -50%)",
                     borderRadius: "100% ",
-                    background: "#8c2fc7",
+                    background: "#592e83",
                     transition: "left 0.25s ease",
                     zIndex: -1,
                   }}

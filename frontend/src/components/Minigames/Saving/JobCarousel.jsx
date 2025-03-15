@@ -124,16 +124,16 @@ function JobCarousel() {
                                 padding: 3,
                             }}
                         >
-                            <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2 }}>
+                            <Typography variant="h3" sx={{ fontWeight: "bold", mb: 2, mt: 3 }}>
                                 TIME IS YOUR CURRENCY
                             </Typography>
-                            <Typography variant="body1" sx={{ mb: 4, textAlign: "center" }}>
+                            <Typography variant="body1" sx={{ mb: 2, textAlign: "center" }}>
                                 You're trading hours for pesos—some days, the clock never stops, but can you keep up?
                             </Typography>
 
-                            <Box sx={{ textAlign: "center", mb: 4 }}>
+                            <Box sx={{ textAlign: "center", mb: 2 }}>
                                 <Typography variant="h4" sx={{ color: "#00cac9" }}>
-                                    ₱{selectedJob.pay * 4} <span style={{ fontSize: "14px", marginLeft: "5px" }}>MONTHLY PAY BEFORE TAXES</span>
+                                    ₱{selectedJob.pay * 4} <span style={{ fontSize: "14px", marginLeft: "5px" , mb: 1}}>MONTHLY PAY BEFORE TAXES</span>
                                 </Typography>
                                 <span style={{ fontSize: "20px", marginLeft: "5px", color: "red" }}>Weekly Tax Overview: ₱{selectedJob.totalDeductions}</span>
                                 <Typography variant="h6" sx={{ color: "red" }}>
@@ -153,14 +153,14 @@ function JobCarousel() {
                             <Typography variant="h6" sx={{ fontWeight: "bold", color: "#00cac9", textAlign: "center" }}>
                                 WEEKLY PAY
                             </Typography>
-                            <Typography variant="h3" sx={{ fontWeight: "bold", color: "#00cac9", mb: 3 }}>
+                            <Typography variant="h4" sx={{ fontWeight: "bold", color: "#00cac9", mb: 1 }}>
                                 ₱{selectedJob.pay}
                             </Typography>
 
                             <Typography variant="h6" sx={{ fontWeight: "bold", color: "red", textAlign: "center" }}>
                                 MONTHLY TAX
                             </Typography>   
-                            <Typography variant="h3" sx={{ fontWeight: "bold", color: "red", mb: 3 }}>
+                            <Typography variant="h4" sx={{ fontWeight: "bold", color: "red", mb: 1 }}>
                                 ₱{selectedJob.totalDeductions * 4}
                             </Typography>
 

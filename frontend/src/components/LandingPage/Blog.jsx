@@ -6,12 +6,9 @@ import {
   IconButton,
   Card,
   CardContent,
+  Grow,
 } from "@mui/material";
-import {
-  ArrowUpward,
-  ViewList,
-  ViewModule,
-} from "@mui/icons-material";
+import { ArrowUpward } from "@mui/icons-material";
 import Navbar from './Navbar';
 
 const blogPosts = [
@@ -39,11 +36,7 @@ const blogPosts = [
 ];
 
 const Blog = () => {
-  const [isGridView, setIsGridView] = useState(false);
-
-  const toggleView = () => {
-    setIsGridView((prev) => !prev);
-  };
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
     <Box
@@ -52,22 +45,18 @@ const Blog = () => {
         top: 0,
         left: 0,
         width: "100vw",
-        height: "100vh",
+        minHeight: "100vh",
         background: "linear-gradient(135deg, #5e3967, #351742)",
-        overflowY: "auto",
       }}
     >
-      {/* Navbar */}
       <Navbar />
-
-      {/* Blog Page */}
+      
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          maxWidth: "1100px",
+          margin: "0 auto",
           mt: 12,
-          gap: 3,
+          mb: 6,
         }}
       >
         <Typography
@@ -76,98 +65,116 @@ const Blog = () => {
             fontWeight: "bold",
             fontFamily: "'Gravitas One'",
             color: "#fff",
-            mt: 5,
+            textAlign: "center",
+            mb: 2,
           }}
         >
           Finance Quest Blog
         </Typography>
         <Typography
-          sx={{ fontSize: "1.2rem", fontFamily: "'Lilita One'", color: "#fff" }}
+          sx={{
+            fontSize: "1.2rem",
+            fontFamily: "'Lilita One'",
+            color: "#d4b8e0",
+            textAlign: "center",
+            mb: 4,
+          }}
         >
-          Stay updated with the latest financial tips and insights.
+          Stay updated with the latest financial tips and insights
         </Typography>
-
-        {/* Toggle View Icon */}
-        <IconButton
-          onClick={toggleView}
-          sx={{ color: "#00cac9", mb: 2 }}
-        >
-          {isGridView ? <ViewList /> : <ViewModule />}
-        </IconButton>
 
         <Box
           sx={{
-            display: "flex",
-            flexDirection: isGridView ? "row" : "column",
-            flexWrap: isGridView ? "wrap" : "nowrap",
-            justifyContent: "center",
-            alignItems:"center",
-            gap: 3,
-            mb: 5,
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr",
+            },
+            gap: 4,
           }}
         >
           {blogPosts.map((post, index) => (
-            <Card
+            <Grow
+              in={true}
+              timeout={500 + index * 200}
               key={index}
-              sx={{
-                width: isGridView ? "300px" : "80%",
-                backgroundColor: "#f5f5f5",
-                p: 3,
-                borderRadius: "10px",
-                display: "flex",
-                alignItems: "center",
-                textAlign: "left",
-                flexDirection: isGridView ? "column" : index % 2 === 0 ? "row" : "row-reverse",
-              }}
             >
-              <Box
+              <Card
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
                 sx={{
-                  width: "150px",
-                  height: "150px",
-                  borderRadius: "10px",
-                  mx: 3,
-                  backgroundImage: `url(${post.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "15px",
+                  boxShadow: hoveredCard === index 
+                    ? "0 8px 24px rgba(92, 57, 103, 0.3)"
+                    : "0 4px 12px rgba(92, 57, 103, 0.1)",
+                  transform: hoveredCard === index 
+                    ? "translateY(-8px) scale(1.02)"
+                    : "translateY(0)",
+                  transition: "all 0.3s ease",
+                  overflow: "hidden",
+                  '&:hover': {
+                    '.card-image': {
+                      transform: "scale(1.05)",
+                    }
+                  }
                 }}
-              />
-              <CardContent sx={{ flex: 1 }}>
-                <IconButton
-                  component={Link}
-                  to={post.link}
-                  sx={{ color: "#8c2fc7", mt: 1 }}
-                >
-                  <ArrowUpward
-                    sx={{
-                      transform: `rotate(${
-                        index % 2 === 0 ? "45deg" : "-45deg"
-                      })`,
-                    }}
-                  />
-                </IconButton>
-                <Typography
-                  variant="h5"
-                  sx={{ fontFamily: "'Fraunces'", color: "#331540" }}
-                >
-                  {post.title}
-                </Typography>
-                <Typography
-                  sx={{ fontFamily: "'Lilita One'", mt: 1, color: "#451d6b" }}
-                >
-                  {post.summary}
-                </Typography>
-                <Typography
+              >
+                <Box
+                  className="card-image"
                   sx={{
-                    fontFamily: "'Lilita One'",
-                    fontSize: "0.9rem",
-                    mt: 1,
-                    color: "#8c2fc7",
+                    height: "200px",
+                    backgroundImage: `url(${post.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    transition: "transform 0.3s ease",
                   }}
-                >
-                  {post.date}
-                </Typography>
-              </CardContent>
-            </Card>
+                />
+                <CardContent sx={{ p: 2 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontFamily: "'Fraunces'",
+                      color: "#351742",
+                      fontWeight: 600,
+                      mb: 1,
+                    }}
+                  >
+                    {post.title}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Lilita One'",
+                      color: "#5e3967",
+                      fontSize: "0.95rem",
+                      mb: 1,
+                    }}
+                  >
+                    {post.summary}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "'Lilita One'",
+                      fontSize: "0.85rem",
+                      color: "#8c2fc7",
+                    }}
+                    
+                  >
+                    {post.date}
+                  </Typography>
+                </CardContent>
+                <Box sx={{ p: 2, pt: 0 }}>
+                  <IconButton
+                    component={Link}
+                    to={post.link}
+                    sx={{ color: "#58148e" }}
+                  >
+                    <ArrowUpward sx={{ transform: "rotate(45deg)" , mt: 2}} />
+                  </IconButton>
+                </Box>
+              </Card>
+            </Grow>
           ))}
         </Box>
       </Box>

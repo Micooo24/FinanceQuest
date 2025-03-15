@@ -1146,7 +1146,7 @@ const InvestingPage = () => {
                       >
                         <p
                           style={{
-                            fontFamily: "'Comic Sans MS', cursive, sans-serif", // Playful font
+                            fontFamily: "'Lora, sans-serif", // Playful font
                             fontSize: "1.2rem",
                             color: "#00cac9", // Parang Blue Green for text
                             textAlign: "center", // Center-align for a friendly feel
@@ -1177,6 +1177,7 @@ const InvestingPage = () => {
                               backgroundColor: "#351742",
                               borderRadius: "10px",
                               color: "#fff",
+                              fontFamily: "'Lora, sans-serif",
                             }}
                           >
                             <h3>Category Performance Analysis</h3>
@@ -1185,6 +1186,7 @@ const InvestingPage = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "20px",
+                                fontFamily: "'Lora, sans-serif",
                               }}
                             >
                               {[
@@ -1208,12 +1210,14 @@ const InvestingPage = () => {
                                       padding: "15px",
                                       borderRadius: "8px",
                                       border: "2px solid #00cac9",
+                                      
                                     }}
                                   >
                                     <h4
                                       style={{
                                         color: "#00cac9",
                                         marginBottom: "10px",
+                                        
                                       }}
                                     >
                                       {category}
@@ -1256,10 +1260,10 @@ const InvestingPage = () => {
                         }}
                       >
                         <div>
-                          <h3 style={{ color: "#351742" }}>
+                          <h3 style={{ color: "#351742" , fontFamily: "'Lora, sans-serif",}}>
                             Performance Analysis
                           </h3>
-                          <PieChart width={300} height={355}>
+                          <PieChart width={300} height={355} >
                             <Pie
                               data={[
                                 {
@@ -1278,6 +1282,7 @@ const InvestingPage = () => {
                               outerRadius={100}
                               fill="#8884d8"
                               paddingAngle={5}
+                              style={{ color: "#5e3967" , fontFamily: "'Lora, sans-serif",}}
                               label
                             >
                               <Cell key="Correct" fill="green" />
@@ -1289,13 +1294,14 @@ const InvestingPage = () => {
                         </div>
 
                         <div>
-                          <h3 style={{ color: "#351742" }}>Summary Table</h3>
+                          <h3 style={{ color: "#351742" , fontFamily: "'Lora, sans-serif", }}>Summary Table</h3>
                           <table
                             style={{
                               border: "1px solid #5e3967",
                               borderCollapse: "collapse",
                               width: "100%",
                               textAlign: "left",
+                              fontFamily: "'Lora, sans-serif",
                             }}
                           >
                             <thead>
@@ -1303,6 +1309,7 @@ const InvestingPage = () => {
                                 style={{
                                   backgroundColor: "#5e3967",
                                   color: "#fff",
+                                  fontFamily: "'Lora, sans-serif",
                                 }}
                               >
                                 <th
@@ -1414,14 +1421,14 @@ const InvestingPage = () => {
                             onClick={handleDownloadPDF}
                             style={{
                               padding: "15px 30px",
-                              backgroundColor: "#4CAF50",
+                              backgroundColor: "#8c2fc7",
                               color: "#fff",
                               border: "none",
                               borderRadius: "10px",
                               cursor: "pointer",
                               fontSize: "1.2rem",
                               fontFamily:
-                                "'Comic Sans MS', cursive, sans-serif",
+                                "'Lora, sans-serif",
                               boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
                               margin: "20px",
                             }}
@@ -1446,19 +1453,19 @@ const InvestingPage = () => {
                           <button
                             style={{
                               padding: "15px 30px",
-                              backgroundColor: "#4CAF50",
+                              backgroundColor: "#8c2fc7",
                               color: "#fff",
                               border: "none",
                               borderRadius: "10px",
                               cursor: "pointer",
                               fontSize: "1.2rem",
                               fontFamily:
-                                "'Comic Sans MS', cursive, sans-serif",
+                                "'Lora', sans-serif",
                               boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
                               margin: "20px",
                             }}
                           >
-                            Home
+                            Back
                           </button>
                         </Link>
                       </div>

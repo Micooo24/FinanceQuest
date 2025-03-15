@@ -531,12 +531,10 @@
 
 // export default FinanceTracker;
 
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Box, Typography, AppBar, Toolbar, IconButton, Paper, Divider } from "@mui/material";
-import { Home, SportsEsports, Article, TravelExplore, Info, Login, ArrowUpward } from "@mui/icons-material";
+import { Box, Typography, Paper, Divider, Button } from "@mui/material"; // Added Button
 import Navbar from "./Navbar";
 
 const FinanceTracker = () => {
@@ -556,12 +554,10 @@ const FinanceTracker = () => {
         paddingBottom: 5,
       }}
     >
-
       <Navbar />
-      
 
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 12, gap: 3 }}>
-        <Typography variant="h3" sx={{ fontWeight: "bold", fontFamily: "'Gravitas One'", color: "#fff", mt: 10 }}>
+        <Typography variant="h3" sx={{ fontWeight: "bold", fontFamily: "'Gravitas One'", color: "#fff", mt: 5 }}>
           Finance Tracker
         </Typography>
         <Typography sx={{ fontSize: "1.2rem", fontFamily: "'Lilita One'", color: "#fff", textAlign: "center" }}>
@@ -610,7 +606,7 @@ const FinanceTracker = () => {
               💜
             </Box>
           </Typography>
-          
+
           <Typography
             variant="h2"
             sx={{
@@ -618,21 +614,22 @@ const FinanceTracker = () => {
               color: "#5e3967",
               fontFamily: "'Lilita One'",
               textShadow: "2px 2px 0px #ffffff, 4px 4px 0px #c2b5dd",
+              display: "inline-block",
+              position: "relative",
               display: "flex",
               alignItems: "center",
             }}
             gutterBottom
           >
             RECEIVE
-            <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
-              <IconButton component={Link} to="/monthlydashboard" sx={{ color: "#8c2fc7", mt: 1, ml: 1 }}>
-                <ArrowUpward sx={{ transform: "rotate(45deg)", fontSize: "2rem" }} />
-              </IconButton>
-            </motion.div>
             
           </Typography>
 
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: "text.secondary" }} gutterBottom>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontFamily: "'Lilita One'", mb: 3, fontWeight: 600, color: "text.secondary" }}
+            gutterBottom
+          >
             3 TABS TO HELP YOU JUMPSTART YOUR FINANCES
           </Typography>
 
@@ -657,17 +654,51 @@ const FinanceTracker = () => {
                 {index + 1}
               </Box>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "16px", color: "#5E514D" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ fontFamily: "'Lilita One'", fontWeight: "bold", fontSize: "16px", color: "#5E514D" }}
+                >
                   {title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#A0978D", fontSize: "14px" }}>
-                  {index === 0 && "Make a budget and keep track of all your transactions, including your income, bills, savings, investments, and debt."}
-                  {index === 1 && "Automatically updating smart calendar that adjusts to any month or year and helps you track your bills & debt due dates."}
-                  {index === 2 && "Calculates your monthly and annual subscription costs and categorizes all subscriptions. Helps you cut unnecessary expenses."}
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "'Lilita One'", color: "#A0978D", fontSize: "14px" }}
+                >
+                  {index === 0 &&
+                    "Make a budget and keep track of all your transactions, including your income, bills, savings, investments, and debt."}
+                  {index === 1 &&
+                    "Automatically updating smart calendar that adjusts to any month or year and helps you track your bills & debt due dates."}
+                  {index === 2 &&
+                    "Calculates your monthly and annual subscription costs and categorizes all subscriptions. Helps you cut unnecessary expenses."}
                 </Typography>
               </Box>
+              
             </Box>
+            
           ))}
+          <motion.div whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
+              <Button
+                component={Link}
+                to="/monthlydashboard"
+                variant="contained"
+                sx={{
+                  bgcolor: "#5e3967",
+                  color: "#fff",
+                  fontFamily: "'Lilita One'",
+                  fontSize: "1rem",
+                  borderRadius: "8px",
+                  ml: 20,
+                  px: 2,
+                  py: 0.5,
+                  textTransform: "none",
+                  "&:hover": {
+                    bgcolor: "#6b2399", // Darker shade on hover
+                  },
+                }}
+              >
+                Explore
+              </Button>
+            </motion.div>
         </Box>
 
         <Divider orientation="vertical" flexItem sx={{ mx: 2, display: { xs: "none", md: "block" } }} />
@@ -678,7 +709,6 @@ const FinanceTracker = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            bgcolor: "#351742",
             borderRadius: 2,
             p: 2,
             height: "100%",
@@ -689,8 +719,8 @@ const FinanceTracker = () => {
             src="https://res.cloudinary.com/dwp8u82sd/image/upload/v1740389130/catmoney_olnul4.png"
             alt="Finance Planner Preview"
             sx={{
-              width: "100%",
-              height: "auto",
+              width: "400px",
+              height: "400px",
               borderRadius: 2,
             }}
           />
